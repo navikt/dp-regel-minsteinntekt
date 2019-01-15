@@ -1,0 +1,24 @@
+name: dp-regel-minsteinntekt
+image: repo.adeo.no:5443/dp-regel-minsteinntekt
+team: teamdagpenger
+port: 8095
+replicas:
+  min: 2
+  max: 4
+resources:
+  limits:
+    cpu: 1000m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+prometheus:
+  enabled: true
+fasitResources:
+  used:
+    - alias: srvdp-regel-minsteinntekt
+      resourceType: credential
+    - alias: dp-regel-minsteinntekt-properties
+      resourceType: applicationproperties
+    - alias:  kafka-schema-registry
+      resourceType: baseUrl
