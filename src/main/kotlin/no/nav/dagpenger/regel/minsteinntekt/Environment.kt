@@ -1,4 +1,4 @@
-package no.nav.dagpenger.inntekt
+package no.nav.dagpenger.regel.minsteinntekt
 
 data class Environment(
     val username: String = getEnvVar("SRVDP_REGEL_MINSTEINNTEKT_USERNAME"),

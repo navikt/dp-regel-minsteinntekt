@@ -1,4 +1,4 @@
-package no.nav.dagpenger.inntekt
+package no.nav.dagpenger.regel.minsteinntekt
 
 import mu.KotlinLogging
 import no.nav.dagpenger.events.avro.MinsteinntektResultat
