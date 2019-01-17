@@ -44,8 +44,8 @@ val ktorVersion = "1.0.0"
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("no.nav.dagpenger:streams:0.2.4-SNAPSHOT")
-    implementation("no.nav.dagpenger:events:0.2.0-SNAPSHOT")
+    implementation("no.nav.dagpenger:streams:0.2.5-SNAPSHOT")
+    implementation("no.nav.dagpenger:events:0.2.1-SNAPSHOT")
 
     implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
 
@@ -65,6 +65,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+    testImplementation("no.nav:kafka-embedded-env:2.0.1")
 }
 
 spotless {

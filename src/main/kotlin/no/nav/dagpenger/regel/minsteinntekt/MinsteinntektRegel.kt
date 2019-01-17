@@ -19,6 +19,7 @@ private val LOGGER = KotlinLogging.logger {}
 
 class MinsteinntektRegel(val env: Environment) : Service() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
+    override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
 
     companion object {
         @JvmStatic
@@ -55,10 +56,7 @@ class MinsteinntektRegel(val env: Environment) : Service() {
 
     private fun addRegelresultat(vilkår: Vilkår): Vilkår {
         val regel = vilkår.getRegel(RegelType.FIRE_FIRE)
-        regel!!.setResultat(MinsteinntektResultat.newBuilder().apply {
-            oppfyllerKravetTilMinsteArbeidsinntekt = true
-            periodeAntallUker = 104
-        })
+        regel!!.setResultat(MinsteinntektResultat(true, 104))
         return vilkår
     }
 }

@@ -9,7 +9,7 @@ data class Environment(
         "FASIT_ENVIRONMENT_NAME",
         ""
     ),
-    val httpPort: Int? = null
+    val httpPort: Int? = 8095
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =
