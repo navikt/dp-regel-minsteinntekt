@@ -20,6 +20,7 @@ apply {
 
 repositories {
     jcenter()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("http://packages.confluent.io/maven/")
 }
 
@@ -37,14 +38,25 @@ val kafkaVersion = "2.0.1"
 val kotlinLoggingVersion = "1.4.9"
 val log4j2Version = "2.11.1"
 val jupiterVersion = "5.3.2"
+val confluentVersion = "5.0.0"
+val prometheusVersion = "0.6.0"
+val ktorVersion = "1.0.0"
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("no.nav.dagpenger:streams:0.2.4-SNAPSHOT")
+    implementation("no.nav.dagpenger:events:0.2.0-SNAPSHOT")
+
     implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
-    implementation("no.nav.dagpenger:streams:0.2.2-SNAPSHOT")
-    implementation("no.nav.dagpenger:events:0.1.9-SNAPSHOT")
+
+    compile("io.prometheus:simpleclient_common:$prometheusVersion")
+    compile("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    compile("io.ktor:ktor-server-netty:$ktorVersion")
+
     compile("org.apache.kafka:kafka-clients:$kafkaVersion")
     compile("org.apache.kafka:kafka-streams:$kafkaVersion")
+    api("io.confluent:kafka-streams-avro-serde:$confluentVersion")
+
     implementation("org.apache.logging.log4j:log4j-api:$log4j2Version")
     implementation("org.apache.logging.log4j:log4j-core:$log4j2Version")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4j2Version")
@@ -53,11 +65,6 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
-}
-
-application {
-    applicationName = "dp-datalaster-inntekt"
-    mainClassName = "no.nav.dagpenger.inntekt.Datalaster"
 }
 
 spotless {
@@ -71,10 +78,15 @@ spotless {
 }
 
 tasks.withType<Test> {
+    useJUnitPlatform()
     testLogging {
         showExceptions = true
         showStackTraces = true
         exceptionFormat = TestExceptionFormat.FULL
         events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
     }
+}
+
+tasks.withType<Wrapper> {
+    gradleVersion = "5.0"
 }
