@@ -36,7 +36,7 @@ class MinsteinntektRegel(val env: Environment) : Service() {
 
         inngåendeJournalposter
                 .peek { key, value -> LOGGER.info("Processing ${value.javaClass} with key $key") }
-                .filter { _, regelbehov -> shouldBeProcessed(regelbehov) }
+                .filter { _, vilkår -> shouldBeProcessed(vilkår) }
                 .mapValues(this::addRegelresultat)
                 .peek { key, value -> LOGGER.info("Producing ${value.javaClass} with key $key") }
                 .toTopic(Topics.VILKÅR_EVENT, env.schemaRegistryUrl)
@@ -53,20 +53,20 @@ class MinsteinntektRegel(val env: Environment) : Service() {
         return props
     }
 
-    private fun addRegelresultat(regelbehov: Vilkår): Vilkår {
-        val regel = regelbehov.getRegel(RegelType.FIRE_FIRE)
+    private fun addRegelresultat(vilkår: Vilkår): Vilkår {
+        val regel = vilkår.getRegel(RegelType.FIRE_FIRE)
         regel!!.setResultat(MinsteinntektResultat.newBuilder().apply {
             oppfyllerKravetTilMinsteArbeidsinntekt = true
             periodeAntallUker = 104
         })
-        return regelbehov
+        return vilkår
     }
 }
 
-fun shouldBeProcessed(regelbehov: Vilkår): Boolean {
-    val regel = regelbehov.getRegel(RegelType.FIRE_FIRE) ?: return false
+fun shouldBeProcessed(vilkår: Vilkår): Boolean {
+    val regel = vilkår.getRegel(RegelType.FIRE_FIRE) ?: return false
 
-    return regel.getResultat() == null && regelbehov.getInntekter() != null
+    return regel.getResultat() == null && vilkår.getInntekter() != null
 }
 
 class MinsteinntektRegelException(override val message: String) : RuntimeException(message)

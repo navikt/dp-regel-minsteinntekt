@@ -38,7 +38,7 @@ val kafkaVersion = "2.0.1"
 val kotlinLoggingVersion = "1.4.9"
 val log4j2Version = "2.11.1"
 val jupiterVersion = "5.3.2"
-val confluentVersion = "4.1.2"
+val confluentVersion = "5.0.0"
 val prometheusVersion = "0.6.0"
 val ktorVersion = "1.0.0"
 
@@ -78,10 +78,15 @@ spotless {
 }
 
 tasks.withType<Test> {
+    useJUnitPlatform()
     testLogging {
         showExceptions = true
         showStackTraces = true
         exceptionFormat = TestExceptionFormat.FULL
         events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
     }
+}
+
+tasks.withType<Wrapper> {
+    gradleVersion = "5.0"
 }
