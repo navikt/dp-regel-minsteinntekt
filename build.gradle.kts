@@ -65,7 +65,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
-    testImplementation("no.nav:kafka-embedded-env:2.0.1")
+    testImplementation("no.nav:kafka-embedded-env:2.0.2")
 }
 
 spotless {
