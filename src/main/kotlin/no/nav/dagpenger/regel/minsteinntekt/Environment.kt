@@ -5,10 +5,6 @@ data class Environment(
     val password: String = getEnvVar("SRVDP_REGEL_MINSTEINNTEKT_PASSWORD"),
     val bootstrapServersUrl: String = getEnvVar("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092"),
     val schemaRegistryUrl: String = getEnvVar("KAFKA_SCHEMA_REGISTRY_URL", "http://localhost:8081"),
-    val fasitEnvironmentName: String = getEnvVar(
-        "FASIT_ENVIRONMENT_NAME",
-        ""
-    ),
     val httpPort: Int? = 8095
 )
 
