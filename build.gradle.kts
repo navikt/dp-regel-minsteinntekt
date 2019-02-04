@@ -41,13 +41,19 @@ val jupiterVersion = "5.3.2"
 val confluentVersion = "5.0.0"
 val prometheusVersion = "0.6.0"
 val ktorVersion = "1.0.0"
+val moshiVersion = "1.8.0"
+val ktorMoshiVersion = "1.0.1"
 
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("no.nav.dagpenger:streams:0.2.5-SNAPSHOT")
-    implementation("no.nav.dagpenger:events:0.2.1-SNAPSHOT")
 
     implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
+
+    implementation("com.squareup.moshi:moshi-adapters:$moshiVersion")
+    implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
+    implementation("com.squareup.moshi:moshi:$moshiVersion")
+    implementation("com.ryanharter.ktor:ktor-moshi:$ktorMoshiVersion")
 
     compile("io.prometheus:simpleclient_common:$prometheusVersion")
     compile("io.prometheus:simpleclient_hotspot:$prometheusVersion")
@@ -66,6 +72,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
     testImplementation("no.nav:kafka-embedded-env:2.0.2")
+    testImplementation("org.apache.kafka:kafka-streams-test-utils:$kafkaVersion")
 }
 
 spotless {

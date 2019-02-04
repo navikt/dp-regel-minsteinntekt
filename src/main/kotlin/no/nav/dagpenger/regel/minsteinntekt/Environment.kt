@@ -4,7 +4,6 @@ data class Environment(
     val username: String = getEnvVar("SRVDP_REGEL_MINSTEINNTEKT_USERNAME"),
     val password: String = getEnvVar("SRVDP_REGEL_MINSTEINNTEKT_PASSWORD"),
     val bootstrapServersUrl: String = getEnvVar("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092"),
-    val schemaRegistryUrl: String = getEnvVar("KAFKA_SCHEMA_REGISTRY_URL", "http://localhost:8081"),
     val httpPort: Int? = 8095
 )
 
