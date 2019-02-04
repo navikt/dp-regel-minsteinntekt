@@ -6,6 +6,7 @@ import no.nav.dagpenger.streams.Service
 import no.nav.dagpenger.streams.Topics
 import no.nav.dagpenger.streams.kbranch
 import no.nav.dagpenger.streams.streamConfig
+import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
@@ -18,8 +19,6 @@ private val LOGGER = KotlinLogging.logger {}
 class MinsteinntektRegel(val env: Environment) : Service() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
-
-    val jsonAdapter = moshiInstance.adapter(SubsumsjonsBehov::class.java).failOnUnknown()
 
     companion object {
         @JvmStatic
@@ -38,44 +37,36 @@ class MinsteinntektRegel(val env: Environment) : Service() {
         val builder = StreamsBuilder()
 
         val topic = Topics.DAGPENGER_BEHOV_EVENT
-        val inngåendeJournalposter = builder.stream<String, String>(
-            topic.name, Consumed.with(topic.keySerde, topic.valueSerde))
 
-        val (needsInntekt, needsSubsumsjon) = inngåendeJournalposter
-                .peek { key, value -> LOGGER.info("Processing ${value.javaClass} with key $key") }
-                .mapValues(this::deserializeSubsumsjonsBehov)
-                .filter { _, behov -> shouldBeProcessed(behov) }
-                .kbranch(
-                    { _, behov: SubsumsjonsBehov -> behov.inntekt == null },
-                    { _, behov: SubsumsjonsBehov -> behov.inntekt != null })
+        val stream = builder.stream(
+            Topics.DAGPENGER_BEHOV_EVENT.name,
+            Consumed.with(Serdes.StringSerde(), Serdes.serdeFrom(JsonSerializer(), JsonDeserializer()))
+        )
+
+        val (needsInntekt, needsSubsumsjon) = stream
+            .peek { key, value -> LOGGER.info("Processing ${value.javaClass} with key $key") }
+            .filter { _, behov -> shouldBeProcessed(behov) }
+            .kbranch(
+                { _, behov: SubsumsjonsBehov -> behov.inntekt == null },
+                { _, behov: SubsumsjonsBehov -> behov.inntekt != null })
 
         needsInntekt.mapValues(this::addInntektTask)
         needsSubsumsjon.mapValues(this::addRegelresultat)
 
         needsInntekt.merge(needsSubsumsjon)
-                .mapValues(this::serializeSubsumsjonsBehov)
-                .peek { key, value -> LOGGER.info("Producing ${value.javaClass} with key $key") }
-                .to(topic.name, Produced.with(topic.keySerde, topic.valueSerde))
+            .peek { key, value -> LOGGER.info("Producing ${value.javaClass} with key $key") }
+            .to(topic.name, Produced.with(Serdes.StringSerde(), Serdes.serdeFrom(JsonSerializer(), JsonDeserializer())))
 
         return builder.build()
     }
 
     override fun getConfig(): Properties {
         val props = streamConfig(
-                appId = SERVICE_APP_ID,
-                bootStapServerUrl = env.bootstrapServersUrl,
-                credential = KafkaCredential(env.username, env.password)
+            appId = SERVICE_APP_ID,
+            bootStapServerUrl = env.bootstrapServersUrl,
+            credential = KafkaCredential(env.username, env.password)
         )
         return props
-    }
-
-    private fun deserializeSubsumsjonsBehov(jsonBehov: String): SubsumsjonsBehov {
-        return jsonAdapter.fromJson(jsonBehov) ?: throw MinsteinntektRegelException("Sumsumsjonsbehov is null")
-    }
-
-    private fun serializeSubsumsjonsBehov(behov: SubsumsjonsBehov): String {
-        val json = jsonAdapter.toJson(behov)
-        return json
     }
 
     private fun addInntektTask(behov: SubsumsjonsBehov): SubsumsjonsBehov {
@@ -88,7 +79,8 @@ class MinsteinntektRegel(val env: Environment) : Service() {
             "aaa",
             "bbb",
             "Minsteinntekt.v1",
-            false)
+            false
+        )
         return behov
     }
 }
