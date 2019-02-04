@@ -1,18 +1,16 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import mu.KotlinLogging
-import no.nav.dagpenger.events.avro.MinsteinntektResultat
-import no.nav.dagpenger.events.avro.RegelType
-import no.nav.dagpenger.events.avro.Vilkår
-import no.nav.dagpenger.events.getRegel
 import no.nav.dagpenger.streams.KafkaCredential
 import no.nav.dagpenger.streams.Service
 import no.nav.dagpenger.streams.Topics
-import no.nav.dagpenger.streams.consumeTopic
+import no.nav.dagpenger.streams.kbranch
 import no.nav.dagpenger.streams.streamConfig
-import no.nav.dagpenger.streams.toTopic
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
+import org.apache.kafka.streams.Topology
+import org.apache.kafka.streams.kstream.Consumed
+import org.apache.kafka.streams.kstream.Produced
 import java.util.Properties
 
 private val LOGGER = KotlinLogging.logger {}
@@ -20,6 +18,8 @@ private val LOGGER = KotlinLogging.logger {}
 class MinsteinntektRegel(val env: Environment) : Service() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
+
+    val jsonAdapter = moshiInstance.adapter(SubsumsjonsBehov::class.java).failOnUnknown()
 
     companion object {
         @JvmStatic
@@ -31,18 +31,33 @@ class MinsteinntektRegel(val env: Environment) : Service() {
 
     override fun setupStreams(): KafkaStreams {
         LOGGER.info { "Initiating start of $SERVICE_APP_ID" }
+        return KafkaStreams(buildTopology(), getConfig())
+    }
+
+    internal fun buildTopology(): Topology {
         val builder = StreamsBuilder()
 
-        val inngåendeJournalposter = builder.consumeTopic(Topics.VILKÅR_EVENT, env.schemaRegistryUrl)
+        val topic = Topics.DAGPENGER_BEHOV_EVENT
+        val inngåendeJournalposter = builder.stream<String, String>(
+            topic.name, Consumed.with(topic.keySerde, topic.valueSerde))
 
-        inngåendeJournalposter
+        val (needsInntekt, needsSubsumsjon) = inngåendeJournalposter
                 .peek { key, value -> LOGGER.info("Processing ${value.javaClass} with key $key") }
-                .filter { _, vilkår -> shouldBeProcessed(vilkår) }
-                .mapValues(this::addRegelresultat)
-                .peek { key, value -> LOGGER.info("Producing ${value.javaClass} with key $key") }
-                .toTopic(Topics.VILKÅR_EVENT, env.schemaRegistryUrl)
+                .mapValues(this::deserializeSubsumsjonsBehov)
+                .filter { _, behov -> shouldBeProcessed(behov) }
+                .kbranch(
+                    { _, behov: SubsumsjonsBehov -> behov.inntekt == null },
+                    { _, behov: SubsumsjonsBehov -> behov.inntekt != null })
 
-        return KafkaStreams(builder.build(), this.getConfig())
+        needsInntekt.mapValues(this::addInntektTask)
+        needsSubsumsjon.mapValues(this::addRegelresultat)
+
+        needsInntekt.merge(needsSubsumsjon)
+                .mapValues(this::serializeSubsumsjonsBehov)
+                .peek { key, value -> LOGGER.info("Producing ${value.javaClass} with key $key") }
+                .to(topic.name, Produced.with(topic.keySerde, topic.valueSerde))
+
+        return builder.build()
     }
 
     override fun getConfig(): Properties {
@@ -54,17 +69,44 @@ class MinsteinntektRegel(val env: Environment) : Service() {
         return props
     }
 
-    private fun addRegelresultat(vilkår: Vilkår): Vilkår {
-        val regel = vilkår.getRegel(RegelType.FIRE_FIRE)
-        regel!!.setResultat(MinsteinntektResultat(true, 104))
-        return vilkår
+    private fun deserializeSubsumsjonsBehov(jsonBehov: String): SubsumsjonsBehov {
+        return jsonAdapter.fromJson(jsonBehov) ?: throw MinsteinntektRegelException("Sumsumsjonsbehov is null")
+    }
+
+    private fun serializeSubsumsjonsBehov(behov: SubsumsjonsBehov): String {
+        val json = jsonAdapter.toJson(behov)
+        return json
+    }
+
+    private fun addInntektTask(behov: SubsumsjonsBehov): SubsumsjonsBehov {
+        behov.tasks = listOf("hentInntekt")
+        return behov
+    }
+
+    private fun addRegelresultat(behov: SubsumsjonsBehov): SubsumsjonsBehov {
+        behov.minsteinntektSubsumsjon = MinsteinntektSubsumsjon(
+            "aaa",
+            "bbb",
+            "Minsteinntekt.v1",
+            false)
+        return behov
     }
 }
 
-fun shouldBeProcessed(vilkår: Vilkår): Boolean {
-    val regel = vilkår.getRegel(RegelType.FIRE_FIRE) ?: return false
+fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {
+    return when {
+        needsInntektTask(behov) -> true
+        needsMinsteinntektSubsumsjon(behov) -> true
+        else -> false
+    }
+}
 
-    return regel.getResultat() == null && vilkår.getInntekter() != null
+fun needsInntektTask(behov: SubsumsjonsBehov): Boolean {
+    return behov.inntekt == null && behov.tasks == null
+}
+
+fun needsMinsteinntektSubsumsjon(behov: SubsumsjonsBehov): Boolean {
+    return behov.inntekt != null && behov.minsteinntektSubsumsjon == null
 }
 
 class MinsteinntektRegelException(override val message: String) : RuntimeException(message)
