@@ -3,6 +3,7 @@ package no.nav.dagpenger.regel.minsteinntekt
 import java.time.LocalDate
 
 data class SubsumsjonsBehov (
+    val behovId: String,
     val aktørId: String,
     val vedtakId: Int,
     val beregningsDato: LocalDate,

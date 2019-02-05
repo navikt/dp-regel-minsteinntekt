@@ -38,6 +38,7 @@ class MinsteinntektTopologyTest {
         )
 
         val behov = SubsumsjonsBehov(
+            "34512",
             "12345",
             Random().nextInt(),
             LocalDate.now())
@@ -69,6 +70,7 @@ class MinsteinntektTopologyTest {
         )
 
         val behov = SubsumsjonsBehov(
+            "34512",
             "12345",
             Random().nextInt(),
             LocalDate.now(),
