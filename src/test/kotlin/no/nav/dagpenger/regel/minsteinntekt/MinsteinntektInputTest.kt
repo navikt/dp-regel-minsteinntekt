@@ -9,9 +9,10 @@ class MinsteinntektInputTest {
     @Test
     fun `Process behov without inntekt and no inntekt tasks`() {
         val behov = SubsumsjonsBehov(
-            "123456",
-            123,
-            LocalDate.now()
+            behovId = "123456",
+            aktørId = "123456",
+            vedtakId = 123,
+            beregningsDato = LocalDate.now()
         )
 
         assert(shouldBeProcessed(behov))
@@ -20,9 +21,10 @@ class MinsteinntektInputTest {
     @Test
     fun `Process behov with inntekt`() {
         val behov = SubsumsjonsBehov(
-            "123456",
-            123,
-            LocalDate.now(),
+            behovId = "123456",
+            aktørId = "123456",
+            vedtakId = 123,
+            beregningsDato = LocalDate.now(),
             inntekt = 555
         )
 
@@ -32,16 +34,18 @@ class MinsteinntektInputTest {
     @Test
     fun `Do not reprocess behov`() {
         val behovWithTask = SubsumsjonsBehov(
-            "123456",
-            123,
-            LocalDate.now(),
+            behovId = "123456",
+            aktørId = "123456",
+            vedtakId = 123,
+            beregningsDato = LocalDate.now(),
             tasks = listOf("minsteinntekt")
         )
 
         val behovWithSubsumsjon = SubsumsjonsBehov(
-            "123456",
-            123,
-            LocalDate.now(),
+            behovId = "123456",
+            aktørId = "123456",
+            vedtakId = 123,
+            beregningsDato = LocalDate.now(),
             inntekt = 555,
             minsteinntektSubsumsjon = MinsteinntektSubsumsjon(
                 "123",
