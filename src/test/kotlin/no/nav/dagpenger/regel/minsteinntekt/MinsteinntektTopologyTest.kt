@@ -5,21 +5,20 @@ import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.TopologyTestDriver
 import org.apache.kafka.streams.test.ConsumerRecordFactory
+import org.json.JSONObject
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Properties
-import java.util.Random
-import kotlin.test.assertTrue
 
 class MinsteinntektTopologyTest {
 
-    val jsonAdapter = moshiInstance.adapter(SubsumsjonsBehov::class.java)
-
     companion object {
         val factory = ConsumerRecordFactory<String, String>(
-                Topics.DAGPENGER_BEHOV_EVENT.name,
-                Serdes.String().serializer(),
-                Serdes.String().serializer()
+            Topics.DAGPENGER_BEHOV_EVENT.name,
+            Serdes.String().serializer(),
+            Serdes.String().serializer()
         )
 
         val config = Properties().apply {
@@ -37,15 +36,14 @@ class MinsteinntektTopologyTest {
             )
         )
 
-        val behov = SubsumsjonsBehov(
-            "34512",
-            "12345",
-            Random().nextInt(),
-            LocalDate.now())
-        val behovJson = jsonAdapter.toJson(behov)
+        val behov = SubsumsjonsBehov.Builder()
+            .vedtaksId("9988")
+            .aktorId("1233")
+            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
+            .build()
 
         TopologyTestDriver(datalaster.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(behovJson)
+            val inputRecord = factory.create(behov.jsonObject.toString())
             topologyTestDriver.pipeInput(inputRecord)
 
             val ut = topologyTestDriver.readOutput(
@@ -54,9 +52,9 @@ class MinsteinntektTopologyTest {
                 Serdes.String().deserializer()
             )
 
-            val utBehov = jsonAdapter.fromJson(ut.value())!!
+            val utBehov = SubsumsjonsBehov(JSONObject(ut.value()))
 
-            assertTrue("Inntekt task should have been added") { utBehov.tasks != null }
+            assertTrue { utBehov.hasTasks() }
         }
     }
 
@@ -69,16 +67,15 @@ class MinsteinntektTopologyTest {
             )
         )
 
-        val behov = SubsumsjonsBehov(
-            "34512",
-            "12345",
-            Random().nextInt(),
-            LocalDate.now(),
-            inntekt = 500000)
-        val behovJson = jsonAdapter.toJson(behov)
+        val behov = SubsumsjonsBehov.Builder()
+            .vedtaksId("9988")
+            .aktorId("1233")
+            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
+            .inntekt(5000)
+            .build()
 
         TopologyTestDriver(datalaster.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(behovJson)
+            val inputRecord = factory.create(behov.jsonObject.toString())
             topologyTestDriver.pipeInput(inputRecord)
 
             val ut = topologyTestDriver.readOutput(
@@ -87,11 +84,9 @@ class MinsteinntektTopologyTest {
                 Serdes.String().deserializer()
             )
 
-            val utBehov = jsonAdapter.fromJson(ut.value())!!
+            val utBehov = SubsumsjonsBehov(JSONObject(ut.value()))
 
-            assertTrue("MinsteinntektSubsumsjon should have been added") {
-                utBehov.minsteinntektSubsumsjon != null
-            }
+            assertTrue { utBehov.hasMinsteinntektSubsumsjon() }
         }
     }
 }
