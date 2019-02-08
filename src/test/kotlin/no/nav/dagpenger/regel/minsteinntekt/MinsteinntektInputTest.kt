@@ -2,8 +2,6 @@ package no.nav.dagpenger.regel.minsteinntekt
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class MinsteinntektInputTest {
 
@@ -35,17 +33,23 @@ class MinsteinntektInputTest {
     fun `Process behov with inntekt`() {
 
         val behov = SubsumsjonsBehov.Builder()
-            .inntekt(0)
+            .inntekt(Inntekt("id", 0))
             .build()
 
         assert(shouldBeProcessed(behov))
     }
 
     @Test
-    fun `Do not reprocess behov with subsumsjonsId`() {
+    fun `Do not reprocess behov`() {
 
         val behov = SubsumsjonsBehov.Builder()
-            .minsteinntektSubsumsjon(SubsumsjonsBehov.MinsteinntektSubsumsjon("123", "987", "555", false))
+            .minsteinntektResultat(
+                MinsteinntektResultat(
+                    "123",
+                    "987",
+                    "555",
+                    false))
+            .inntekt(Inntekt("id", 0))
             .build()
 
         assertFalse(shouldBeProcessed(behov))

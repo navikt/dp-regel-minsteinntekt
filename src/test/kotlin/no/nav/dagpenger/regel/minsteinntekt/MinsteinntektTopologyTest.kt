@@ -8,8 +8,6 @@ import org.apache.kafka.streams.test.ConsumerRecordFactory
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 class MinsteinntektTopologyTest {
@@ -65,7 +63,7 @@ class MinsteinntektTopologyTest {
         )
 
         val behov = SubsumsjonsBehov.Builder()
-            .inntekt(5000)
+            .inntekt(Inntekt("id", 5000))
             .build()
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -80,7 +78,7 @@ class MinsteinntektTopologyTest {
 
             val utBehov = SubsumsjonsBehov(JSONObject(ut.value()))
 
-            assertTrue { utBehov.hasMinsteinntektSubsumsjon() }
+            assertTrue { utBehov.hasMinsteinntektResultat() }
         }
     }
 }

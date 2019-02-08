@@ -47,8 +47,6 @@ class MinsteinntektRegel(val env: Environment) : Service() {
     internal fun buildTopology(): Topology {
         val builder = StreamsBuilder()
 
-        val topic = Topics.DAGPENGER_BEHOV_EVENT
-
         val stream = builder.stream(
             dagpengerBehovTopic.name,
             Consumed.with(dagpengerBehovTopic.keySerde, dagpengerBehovTopic.valueSerde)
@@ -60,14 +58,14 @@ class MinsteinntektRegel(val env: Environment) : Service() {
             .filter { _, behov -> shouldBeProcessed(behov) }
             .kbranch(
                 { _, behov: SubsumsjonsBehov -> behov.needsHentInntektsTask() },
-                { _, behov: SubsumsjonsBehov -> behov.needsMinsteinntektSubsumsjon() })
+                { _, behov: SubsumsjonsBehov -> behov.needsMinsteinntektResultat() })
 
         needsInntekt.mapValues(this::addInntektTask)
         needsSubsumsjon.mapValues(this::addRegelresultat)
 
         needsInntekt.merge(needsSubsumsjon)
             .peek { key, value -> LOGGER.info("Producing ${value.javaClass} with key $key") }
-            .mapValues { _, behov -> behov.jsonObject }
+            .mapValues { behov -> behov.jsonObject }
             .to(dagpengerBehovTopic.name, Produced.with(dagpengerBehovTopic.keySerde, dagpengerBehovTopic.valueSerde))
 
         return builder.build()
@@ -90,8 +88,8 @@ class MinsteinntektRegel(val env: Environment) : Service() {
     }
 
     private fun addRegelresultat(behov: SubsumsjonsBehov): SubsumsjonsBehov {
-        behov.addMinsteinntektSubsumsjon(
-            SubsumsjonsBehov.MinsteinntektSubsumsjon(
+        behov.addMinsteinntektResultat(
+            MinsteinntektResultat(
                 ulidGenerator.nextULID(),
                 ulidGenerator.nextULID(),
                 REGELIDENTIFIKATOR,
@@ -100,14 +98,14 @@ class MinsteinntektRegel(val env: Environment) : Service() {
     }
 }
 
-fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Int): Boolean {
+fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt): Boolean {
     return verneplikt
 }
 
 fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {
     return when {
         behov.needsHentInntektsTask() -> true
-        behov.needsMinsteinntektSubsumsjon() -> true
+        behov.needsMinsteinntektResultat() -> true
         else -> false
     }
 }

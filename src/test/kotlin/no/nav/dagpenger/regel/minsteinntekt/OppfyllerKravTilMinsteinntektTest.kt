@@ -7,13 +7,13 @@ class OppfyllerKravTilMinsteinntektTest {
 
     @Test
     fun `Skal oppfylle krav til minsteinntekt ved verneplikt`() {
-        val resultat = oppfyllerKravTilMinsteinntekt(true, 0)
+        val resultat = oppfyllerKravTilMinsteinntekt(true, Inntekt("id", 0))
         assert(resultat)
     }
 
     @Test
     fun `Skal ikke oppfylle krav til minsteinntekt uten inntekt`() {
-        val resultat = oppfyllerKravTilMinsteinntekt(false, 0)
+        val resultat = oppfyllerKravTilMinsteinntekt(false, Inntekt("id", 0))
         assertFalse(resultat)
     }
 }

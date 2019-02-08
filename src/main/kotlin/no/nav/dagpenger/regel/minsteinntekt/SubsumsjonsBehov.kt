@@ -10,18 +10,13 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
         val TASKS = "tasks"
         val TASKS_HENT_INNTEKT = "hentInntekt"
         val AVTJENT_VERNEPLIKT = "avtjentVerneplikt"
-
-        val SPORINGSID = "sporingsId"
-        val SUBSUMSJONSID = "subsumsjonsId"
-        val REGELIDENTIFIKATOR = "regelIdentifikator"
-        val OPPFYLLER_MINSTEINNTEKT = "oppfyllerMinsteinntekt"
     }
 
     fun needsHentInntektsTask(): Boolean = !hasInntekt() && !hasHentInntektTask()
 
-    fun needsMinsteinntektSubsumsjon(): Boolean = hasInntekt() && !hasMinsteinntektSubsumsjon()
+    fun needsMinsteinntektResultat(): Boolean = hasInntekt() && !hasMinsteinntektResultat()
 
-    fun hasMinsteinntektSubsumsjon(): Boolean = jsonObject.has(MINSTEINNTEKT_RESULTAT )
+    fun hasMinsteinntektResultat(): Boolean = jsonObject.has(MINSTEINNTEKT_RESULTAT)
 
     private fun hasInntekt() = jsonObject.has(INNTEKT)
 
@@ -49,27 +44,16 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
     fun hasVerneplikt(): Boolean = if (jsonObject.has(AVTJENT_VERNEPLIKT)) jsonObject.getBoolean(AVTJENT_VERNEPLIKT) else false
 
-    fun addMinsteinntektSubsumsjon(minsteinntektSubsumsjon: MinsteinntektSubsumsjon) { jsonObject.put(MINSTEINNTEKT_RESULTAT , minsteinntektSubsumsjon.build()) }
+    fun addMinsteinntektResultat(minsteinntektResultat: MinsteinntektResultat) { jsonObject.put(MINSTEINNTEKT_RESULTAT, minsteinntektResultat.build()) }
 
-    fun getInntekt(): Int = jsonObject.get(INNTEKT) as Int
-
-    data class MinsteinntektSubsumsjon(val sporingsId: String, val subsumsjonsId: String, val regelidentifikator: String, val oppfyllerMinsteinntekt: Boolean) {
-
-        fun build(): JSONObject {
-            return JSONObject()
-                .put(SPORINGSID, sporingsId)
-                .put(SUBSUMSJONSID, subsumsjonsId)
-                .put(REGELIDENTIFIKATOR, regelidentifikator)
-                .put(OPPFYLLER_MINSTEINNTEKT, oppfyllerMinsteinntekt)
-        }
-    }
+    fun getInntekt(): Inntekt = Inntekt(jsonObject.get(INNTEKT) as JSONObject)
 
     class Builder {
 
         val jsonObject = JSONObject()
 
-        fun inntekt(inntekt: Int): Builder {
-            jsonObject.put(INNTEKT, inntekt)
+        fun inntekt(inntekt: Inntekt): Builder {
+            jsonObject.put(INNTEKT, inntekt.build())
             return this
         }
 
@@ -78,11 +62,46 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
             return this
         }
 
-        fun minsteinntektSubsumsjon(minsteinntektSubsumsjon: MinsteinntektSubsumsjon): Builder {
-            jsonObject.put(MINSTEINNTEKT_RESULTAT,  minsteinntektSubsumsjon.build())
+        fun minsteinntektResultat(minsteinntektResultat: MinsteinntektResultat): Builder {
+            jsonObject.put(MINSTEINNTEKT_RESULTAT, minsteinntektResultat.build())
             return this
         }
 
         fun build(): SubsumsjonsBehov = SubsumsjonsBehov(jsonObject)
+    }
+}
+
+data class MinsteinntektResultat(val sporingsId: String, val subsumsjonsId: String, val regelidentifikator: String, val oppfyllerMinsteinntekt: Boolean) {
+
+    companion object {
+        val SPORINGSID = "sporingsId"
+        val SUBSUMSJONSID = "subsumsjonsId"
+        val REGELIDENTIFIKATOR = "regelIdentifikator"
+        val OPPFYLLER_MINSTEINNTEKT = "oppfyllerMinsteinntekt"
+    }
+
+    fun build(): JSONObject {
+        return JSONObject()
+            .put(SPORINGSID, sporingsId)
+            .put(SUBSUMSJONSID, subsumsjonsId)
+            .put(REGELIDENTIFIKATOR, regelidentifikator)
+            .put(OPPFYLLER_MINSTEINNTEKT, oppfyllerMinsteinntekt)
+    }
+}
+
+data class Inntekt(val inntektsId: String, val inntektValue: Int) {
+
+    companion object {
+        val INNTEKTSID = "inntektsId"
+        val INNTEKT = "inntekt"
+    }
+
+    constructor(jsonObject: JSONObject):
+        this(jsonObject.get(INNTEKTSID) as String, jsonObject.get(INNTEKT) as Int)
+
+    fun build(): JSONObject {
+        return JSONObject()
+            .put(INNTEKTSID, inntektsId)
+            .put(INNTEKT, inntektValue)
     }
 }
