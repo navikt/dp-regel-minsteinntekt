@@ -9,11 +9,7 @@ class MinsteinntektInputTest {
 
     @Test
     fun `Process behov without inntekt and no inntekt tasks`() {
-        val behov = SubsumsjonsBehov.Builder()
-                .vedtaksId("9988")
-                .aktorId("1233")
-                .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
-            .build()
+        val behov = SubsumsjonsBehov.Builder().build()
 
         assert(shouldBeProcessed(behov))
     }
@@ -21,9 +17,6 @@ class MinsteinntektInputTest {
     @Test
     fun `Process behov without inntekt and no hentInntekt task`() {
         val behov = SubsumsjonsBehov.Builder()
-                .vedtaksId("9988")
-                .aktorId("1233")
-                .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .task(listOf("noe annet"))
             .build()
 
@@ -33,9 +26,6 @@ class MinsteinntektInputTest {
     @Test
     fun `Do not process behov without inntekt but with hentInntekt task`() {
         val behov = SubsumsjonsBehov.Builder()
-            .vedtaksId("123456")
-            .aktorId("123")
-            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .task(listOf("hentInntekt"))
             .build()
         assertFalse(shouldBeProcessed(behov))
@@ -45,9 +35,6 @@ class MinsteinntektInputTest {
     fun `Process behov with inntekt`() {
 
         val behov = SubsumsjonsBehov.Builder()
-            .vedtaksId("123456")
-            .aktorId("123")
-            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .inntekt(0)
             .build()
 
@@ -55,11 +42,9 @@ class MinsteinntektInputTest {
     }
 
     @Test
-    fun `Do not reprocess behov whit subsumsjonsId`() {
+    fun `Do not reprocess behov with subsumsjonsId`() {
 
         val behov = SubsumsjonsBehov.Builder()
-            .aktorId("123")
-            .inntekt(0)
             .minsteinntektSubsumsjon(SubsumsjonsBehov.MinsteinntektSubsumsjon("123", "987", "555", false))
             .build()
 

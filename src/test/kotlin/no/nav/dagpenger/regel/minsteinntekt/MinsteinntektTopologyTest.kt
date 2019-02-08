@@ -37,9 +37,6 @@ class MinsteinntektTopologyTest {
         )
 
         val behov = SubsumsjonsBehov.Builder()
-            .vedtaksId("9988")
-            .aktorId("1233")
-            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .build()
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -68,9 +65,6 @@ class MinsteinntektTopologyTest {
         )
 
         val behov = SubsumsjonsBehov.Builder()
-            .vedtaksId("9988")
-            .aktorId("1233")
-            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .inntekt(5000)
             .build()
 
