@@ -42,6 +42,19 @@ class MinsteinntektInputTest {
     }
 
     @Test
+    fun `Process behov with inntekt`() {
+
+        val behov = SubsumsjonsBehov.Builder()
+            .vedtaksId("123456")
+            .aktorId("123")
+            .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
+            .inntekt(0)
+            .build()
+
+        assert(shouldBeProcessed(behov))
+    }
+
+    @Test
     fun `Do not reprocess behov whit subsumsjonsId`() {
 
         val behov = SubsumsjonsBehov.Builder()

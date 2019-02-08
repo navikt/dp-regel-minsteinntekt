@@ -34,7 +34,7 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
         }
     }
 
-    fun hasVerneplikt(): Boolean = jsonObject.has("tasks")
+    fun hasVerneplikt(): Boolean = if (jsonObject.has("avtjentVerneplikt")) jsonObject.getBoolean("avtjentVerneplikt") else false
 
     fun addMinsteinntektSubsumsjon(minsteinntektSubsumsjon: MinsteinntektSubsumsjon) { jsonObject.put("minsteinntektSubsumsjon", minsteinntektSubsumsjon.build()) }
 

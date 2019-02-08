@@ -29,7 +29,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` Should add inntekt task to subsumsjonsBehov without inntekt `() {
-        val datalaster = MinsteinntektRegel(
+        val minsteinntekt = MinsteinntektRegel(
             Environment(
                 username = "bogus",
                 password = "bogus"
@@ -42,7 +42,7 @@ class MinsteinntektTopologyTest {
             .beregningsDato(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .build()
 
-        TopologyTestDriver(datalaster.buildTopology(), config).use { topologyTestDriver ->
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
             val inputRecord = factory.create(behov.jsonObject.toString())
             topologyTestDriver.pipeInput(inputRecord)
 
@@ -60,7 +60,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` Should add MinsteinntektSubumsjon to subsumsjonsBehov with inntekt `() {
-        val datalaster = MinsteinntektRegel(
+        val minsteinntekt = MinsteinntektRegel(
             Environment(
                 username = "bogus",
                 password = "bogus"
@@ -74,7 +74,7 @@ class MinsteinntektTopologyTest {
             .inntekt(5000)
             .build()
 
-        TopologyTestDriver(datalaster.buildTopology(), config).use { topologyTestDriver ->
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
             val inputRecord = factory.create(behov.jsonObject.toString())
             topologyTestDriver.pipeInput(inputRecord)
 
