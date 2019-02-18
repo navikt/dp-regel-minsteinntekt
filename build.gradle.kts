@@ -34,6 +34,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Multi-Release"] = "true" // https://github.com/johnrengelman/shadow/issues/449
+    }
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
 
 val kafkaVersion = "2.0.1"
