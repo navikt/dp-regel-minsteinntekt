@@ -1,58 +1,50 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import org.json.JSONException
+import org.json.JSONObject
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 
-class PeriodeSubsumsjonsBehovTest {
+class MinsteinntektSubsumsjonsBehovTest {
+
+    fun jsonToBehov(json: String): SubsumsjonsBehov =
+        SubsumsjonsBehov(JsonDeserializer().deserialize("", json.toByteArray()) ?: JSONObject())
 
     val emptyjsonBehov = """
             {}
             """.trimIndent()
-    val emptyjsonObject = JsonDeserializer().deserialize(null, emptyjsonBehov.toByteArray())!!
-    val emptysubsumsjonsBehov = SubsumsjonsBehov(emptyjsonObject)
 
     val jsonBehovMedInntekt = """
             {
                 "inntekt": {"inntektsId": "", "inntekt": 0}
             }
             """.trimIndent()
-    val jsonObjectMedInntekt = JsonDeserializer().deserialize(null, jsonBehovMedInntekt.toByteArray())!!
-    val subsumsjonsBehovMedInntekt = SubsumsjonsBehov(jsonObjectMedInntekt)
 
     val jsonBehovMedMinsteinntektResultat = """
             {
                 "minsteinntektResultat": {}
             }
             """.trimIndent()
-    val jsonObjectMedMinsteinntektResultat = JsonDeserializer().deserialize(null, jsonBehovMedMinsteinntektResultat.toByteArray())!!
-    val subsumsjonsBehovMedMinsteinntektResultat = SubsumsjonsBehov(jsonObjectMedMinsteinntektResultat)
 
     val jsonBehovMedHentInntektTask = """
             {
                 "tasks": ["hentInntekt"]
             }
             """.trimIndent()
-    val jsonObjectMedHentInntektTask = JsonDeserializer().deserialize(null, jsonBehovMedHentInntektTask.toByteArray())!!
-    val subsumsjonsBehovMedHentInntektTask = SubsumsjonsBehov(jsonObjectMedHentInntektTask)
 
     val jsonBehovMedAnnenTask = """
             {
                 "tasks": ["annen task"]
             }
             """.trimIndent()
-    val jsonObjectMedAnnenTask = JsonDeserializer().deserialize(null, jsonBehovMedAnnenTask.toByteArray())!!
-    val subsumsjonsBehovAnnentTask = SubsumsjonsBehov(jsonObjectMedAnnenTask)
 
     val jsonBehovMedFlereTasks = """
             {
                 "tasks": ["annen task", "hentInntekt"]
             }
             """.trimIndent()
-    val jsonObjectMedFlereTasks = JsonDeserializer().deserialize(null, jsonBehovMedFlereTasks.toByteArray())!!
-    val subsumsjonsBehovFleretTasks = SubsumsjonsBehov(jsonObjectMedFlereTasks)
 
     val jsonBehovMedInntektogMinsteinntektResultat = """
             {
@@ -60,8 +52,6 @@ class PeriodeSubsumsjonsBehovTest {
                 "minsteinntektResultat": {}
             }
             """.trimIndent()
-    val jsonObjectMedInntektogMinsteinntektResultat = JsonDeserializer().deserialize(null, jsonBehovMedInntektogMinsteinntektResultat.toByteArray())!!
-    val subsumsjonsBehovMedInntektogMinsteinntektResultat = SubsumsjonsBehov(jsonObjectMedInntektogMinsteinntektResultat)
 
     val jsonBehovMedInntektogHentInntektTask = """
             {
@@ -69,78 +59,72 @@ class PeriodeSubsumsjonsBehovTest {
                 "tasks": ["hentInntekt"]
             }
             """.trimIndent()
-    val jsonObjectMedInntektogHentInntektTask = JsonDeserializer().deserialize(null, jsonBehovMedInntektogHentInntektTask.toByteArray())!!
-    val subsumsjonsBehovMedInntektogHentInntektTask = SubsumsjonsBehov(jsonObjectMedInntektogHentInntektTask)
 
     val jsonBehovMedVernepliktTrue = """
             {
                 "harAvtjentVerneplikt": true
             }
             """.trimIndent()
-    val jsonObjectMedVernepliktTrue = JsonDeserializer().deserialize(null, jsonBehovMedVernepliktTrue.toByteArray())!!
-    val subsumsjonsBehovmedVernepliktTrue = SubsumsjonsBehov(jsonObjectMedVernepliktTrue)
 
     val jsonBehovMedVernepliktFalse = """
             {
                 "harAvtjentVerneplikt": false
             }
             """.trimIndent()
-    val jsonObjectMedVernepliktFalse = JsonDeserializer().deserialize(null, jsonBehovMedVernepliktFalse.toByteArray())!!
-    val subsumsjonsBehovmedVernepliktFalse = SubsumsjonsBehov(jsonObjectMedVernepliktFalse)
 
     @Test
     fun ` Should need hentInntektsTask when there is no hentInntektsTask and no inntekt `() {
 
-        assert(emptysubsumsjonsBehov.needsHentInntektsTask())
-        Assertions.assertFalse(subsumsjonsBehovMedInntekt.needsHentInntektsTask())
-        Assertions.assertFalse(subsumsjonsBehovMedHentInntektTask.needsHentInntektsTask())
-        Assertions.assertFalse(subsumsjonsBehovMedInntektogHentInntektTask.needsHentInntektsTask())
+        assert(jsonToBehov(emptyjsonBehov).needsHentInntektsTask())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedInntekt).needsHentInntektsTask())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedHentInntektTask).needsHentInntektsTask())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedInntektogHentInntektTask).needsHentInntektsTask())
     }
 
     @Test
     fun ` Should need minsteinntektResultat when there is inntekt and no minsteinntektResultat `() {
 
-        assert(subsumsjonsBehovMedInntekt.needsMinsteinntektResultat())
-        Assertions.assertFalse(emptysubsumsjonsBehov.needsMinsteinntektResultat())
-        Assertions.assertFalse(subsumsjonsBehovMedInntektogMinsteinntektResultat.needsMinsteinntektResultat())
-        Assertions.assertFalse(subsumsjonsBehovMedMinsteinntektResultat.needsMinsteinntektResultat())
+        assert(jsonToBehov(jsonBehovMedInntekt).needsMinsteinntektResultat())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).needsMinsteinntektResultat())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedInntektogMinsteinntektResultat).needsMinsteinntektResultat())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedMinsteinntektResultat).needsMinsteinntektResultat())
     }
 
     @Test
     fun ` Should have minsteinntektResultat when it has minsteinntektResultat `() {
 
-        assert(subsumsjonsBehovMedMinsteinntektResultat.hasMinsteinntektResultat())
-        Assertions.assertFalse(emptysubsumsjonsBehov.hasMinsteinntektResultat())
+        assert(jsonToBehov(jsonBehovMedMinsteinntektResultat).hasMinsteinntektResultat())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).hasMinsteinntektResultat())
     }
 
     @Test
     fun ` Should have inntekt when it has inntekt `() {
 
-        assert(subsumsjonsBehovMedInntekt.hasInntekt())
-        Assertions.assertFalse(emptysubsumsjonsBehov.hasInntekt())
+        assert(jsonToBehov(jsonBehovMedInntekt).hasInntekt())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).hasInntekt())
     }
 
     @Test
     fun ` Should have hentInntektTask when it has hentInntektTask `() {
 
-        assert(subsumsjonsBehovMedHentInntektTask.hasHentInntektTask())
-        assert(subsumsjonsBehovFleretTasks.hasHentInntektTask())
-        Assertions.assertFalse(emptysubsumsjonsBehov.hasHentInntektTask())
-        Assertions.assertFalse(subsumsjonsBehovAnnentTask.hasHentInntektTask())
+        assert(jsonToBehov(jsonBehovMedHentInntektTask).hasHentInntektTask())
+        assert(jsonToBehov(jsonBehovMedFlereTasks).hasHentInntektTask())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).hasHentInntektTask())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedAnnenTask).hasHentInntektTask())
     }
 
     @Test
     fun ` Should have tasks when it has tasks `() {
 
-        assert(subsumsjonsBehovMedHentInntektTask.hasTasks())
-        assert(subsumsjonsBehovAnnentTask.hasTasks())
-        assert(subsumsjonsBehovFleretTasks.hasTasks())
-        Assertions.assertFalse(emptysubsumsjonsBehov.hasTasks())
+        assert(jsonToBehov(jsonBehovMedHentInntektTask).hasTasks())
+        assert(jsonToBehov(jsonBehovMedAnnenTask).hasTasks())
+        assert(jsonToBehov(jsonBehovMedFlereTasks).hasTasks())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).hasTasks())
     }
 
     @Test
     fun ` Should be able to add tasks `() {
-        val subsumsjonsBehov = emptysubsumsjonsBehov
+        val subsumsjonsBehov = jsonToBehov(emptyjsonBehov)
 
         Assertions.assertFalse(subsumsjonsBehov.hasTasks())
 
@@ -158,14 +142,14 @@ class PeriodeSubsumsjonsBehovTest {
     @Test
     fun ` Should be able to return verneplikt `() {
 
-        assert(subsumsjonsBehovmedVernepliktTrue.hasVerneplikt())
-        Assertions.assertFalse(subsumsjonsBehovmedVernepliktFalse.hasVerneplikt())
-        Assertions.assertFalse(emptysubsumsjonsBehov.hasVerneplikt())
+        assert(jsonToBehov(jsonBehovMedVernepliktTrue).hasVerneplikt())
+        Assertions.assertFalse(jsonToBehov(jsonBehovMedVernepliktFalse).hasVerneplikt())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).hasVerneplikt())
     }
 
     @Test
     fun ` Should be able to add minsteinntektResultat `() {
-        val subsumsjonsBehov = emptysubsumsjonsBehov
+        val subsumsjonsBehov = jsonToBehov(emptyjsonBehov)
 
         Assertions.assertFalse(subsumsjonsBehov.hasMinsteinntektResultat())
 
@@ -178,7 +162,7 @@ class PeriodeSubsumsjonsBehovTest {
     @Test
     fun ` Should be able to return inntekt `() {
 
-        assertEquals(0, subsumsjonsBehovMedInntekt.getInntekt().inntektValue)
-        assertThrows<JSONException> { emptysubsumsjonsBehov.getInntekt() }
+        assertEquals(0, jsonToBehov(jsonBehovMedInntekt).getInntekt().inntektValue)
+        assertThrows<JSONException> { jsonToBehov(emptyjsonBehov).getInntekt() }
     }
 }
