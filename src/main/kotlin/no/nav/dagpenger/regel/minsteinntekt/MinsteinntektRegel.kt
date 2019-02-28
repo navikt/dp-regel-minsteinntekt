@@ -99,7 +99,23 @@ class MinsteinntektRegel(val env: Environment) : Service() {
 }
 
 fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt): Boolean {
+    val enG = 96883
+    val inntektSiste12 = sumInntektSiste12(inntekt)
+    val inntektSiste36 = sumInntektSiste36(inntekt)
+
+    if (inntektSiste12 > (enG * 1.5) || inntektSiste36 > (enG * 3)) {
+        return true
+    }
+
     return verneplikt
+}
+
+fun sumInntektSiste12(inntekt: Inntekt): Int {
+    return 0
+}
+
+fun sumInntektSiste36(inntekt: Inntekt): Int {
+    return 0
 }
 
 fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {
