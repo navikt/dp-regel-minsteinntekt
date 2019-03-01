@@ -1,68 +1,35 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.YearMonth
+import kotlin.test.assertEquals
 
 class SumInntekterTest {
 
-    val jsonBehovMedInntekt = """
-        {
-            "inntekt": {
-                "inntektsId": "12345",
-                "inntektsListe": [
-                    {
-                        "årMåned": "2017-09",
-                        "klassifiserteInntekter": [
-                            {
-                                "beløp": "362000",
-                                "inntektKlasse": "ARBEIDSINNTEKT"
-                            }
-                        ]
-                    },
-                    {
-                        "årMåned": "2017-08",
-                        "klassifiserteInntekter": [
-                            {
-                                "beløp": "18900",
-                                "inntektKlasse": "ARBEIDSINNTEKT"
-                            }
-                        ]
-                    },
-                    {
-                        "årMåned": "2018-04",
-                        "klassifiserteInntekter": [
-                            {
-                                "beløp": "89700",
-                                "inntektKlasse": "ARBEIDSINNTEKT"
-                            }
-                        ]
-                    },
-                    {
-                        "årMåned": "2018-03",
-                        "klassifiserteInntekter": [
-                            {
-                                "beløp": "25000",
-                                "inntektKlasse": "ARBEIDSINNTEKT"
-                            }
-                        ]
-                    }
-                ]
-            }
-            }
-            """.trimIndent()
+    fun generateSiste36MånederArbeidsInntekt(): List<KlassifisertInntektMåned> {
 
-    @Test
-    fun ` should add Arbeidsinntekt in sumSiste12 `() {
+        return (1..36).toList().map {
+            KlassifisertInntektMåned(YearMonth.now().minusMonths(it.toLong()), listOf(KlassifisertInntekt(BigDecimal(1000), InntektKlasse.ARBEIDSINNTEKT)))
+        }
+    }
+
+    fun generateSiste36MånederNæringsInntekt(): List<KlassifisertInntektMåned> {
+
+        return (1..36).toList().map {
+            KlassifisertInntektMåned(YearMonth.now().minusMonths(it.toLong()), listOf(KlassifisertInntekt(BigDecimal(1000), InntektKlasse.NÆRINGSINNTEKT)))
+        }
     }
 
     @Test
-    fun ` should add Arbeidsinntekt in sumSiste36 `() {
+    fun ` should add Arbeidsinntekt in sumSiste12 `() {
+
+        assertEquals(BigDecimal(12000), sumArbeidsInntekt(Inntekt("123", generateSiste36MånederArbeidsInntekt()), YearMonth.now().minusMonths(1), 11))
     }
 
     @Test
     fun ` should not add næringsinntekt in sumSiste12 when there is no fangst og fisk `() {
-    }
 
-    @Test
-    fun ` should not add næringsinntekt in sumSiste36 when there is no fangst og fisk `() {
+        assertEquals(BigDecimal(0), sumArbeidsInntekt(Inntekt("123", generateSiste36MånederNæringsInntekt()), YearMonth.now().minusMonths(1), 11))
     }
 }

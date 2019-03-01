@@ -15,6 +15,8 @@ import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.json.JSONObject
+import java.math.BigDecimal
+import java.time.YearMonth
 import java.util.Properties
 
 private val LOGGER = KotlinLogging.logger {}
@@ -93,29 +95,39 @@ class MinsteinntektRegel(val env: Environment) : Service() {
                 ulidGenerator.nextULID(),
                 ulidGenerator.nextULID(),
                 REGELIDENTIFIKATOR,
-                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt())))
+                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt(), behov.getFraMåned())))
         return behov
     }
 }
 
-fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt): Boolean {
-    val enG = 96883
-    val inntektSiste12 = sumInntektSiste12(inntekt)
-    val inntektSiste36 = sumInntektSiste36(inntekt)
+fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt, fraMåned: YearMonth): Boolean {
+    val enG = BigDecimal(96883)
+    val inntektSiste12 = sumArbeidsInntekt(inntekt, fraMåned, 11)
+    val inntektSiste36 = sumArbeidsInntekt(inntekt, fraMåned, 35)
 
-    if (inntektSiste12 > (enG * 1.5) || inntektSiste36 > (enG * 3)) {
+    if (inntektSiste12 > (enG.times(BigDecimal(1.5))) || inntektSiste36 > (enG.times(BigDecimal(3)))) {
         return true
     }
 
     return verneplikt
 }
 
-fun sumInntektSiste12(inntekt: Inntekt): Int {
-    return 0
+fun sumArbeidsInntekt(inntekt: Inntekt, fraMåned: YearMonth, lengde: Int): BigDecimal {
+    val tidligsteMåned = finnTidligsteMåned(fraMåned, lengde)
+
+    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= fraMåned && it.årMåned >= tidligsteMåned }
+
+    val sumGjeldendeMåneder = gjeldendeMåneder
+        .flatMap { it.klassifiserteInntekter
+            .filter { it.inntektKlasse == InntektKlasse.ARBEIDSINNTEKT }
+            .map { it.beløp } }.fold(BigDecimal.ZERO, BigDecimal::add)
+
+    return sumGjeldendeMåneder
 }
 
-fun sumInntektSiste36(inntekt: Inntekt): Int {
-    return 0
+fun finnTidligsteMåned(fraMåned: YearMonth, lengde: Int): YearMonth {
+
+    return fraMåned.minusMonths(lengde.toLong())
 }
 
 fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {
