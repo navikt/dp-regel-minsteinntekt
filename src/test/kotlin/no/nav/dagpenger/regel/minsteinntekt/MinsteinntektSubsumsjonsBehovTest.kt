@@ -17,8 +17,21 @@ class MinsteinntektSubsumsjonsBehovTest {
             """.trimIndent()
 
     val jsonBehovMedInntekt = """
-            {
-                "inntekt": {"inntektsId": "", "inntekt": 0}
+        {
+            "inntektV1": {
+                "inntektsId": "12345",
+                "inntektsListe": [
+                    {
+                        "årMåned": "2018-03",
+                        "klassifiserteInntekter": [
+                            {
+                                "beløp": "25000",
+                                "inntektKlasse": "ARBEIDSINNTEKT"
+                            }
+                        ]
+                    }
+                ]
+            }
             }
             """.trimIndent()
 
@@ -48,14 +61,14 @@ class MinsteinntektSubsumsjonsBehovTest {
 
     val jsonBehovMedInntektogMinsteinntektResultat = """
             {
-                "inntekt": 0,
+                "inntektV1": {"inntektsId": "", "inntekt": 0},
                 "minsteinntektResultat": {}
             }
             """.trimIndent()
 
     val jsonBehovMedInntektogHentInntektTask = """
             {
-                "inntekt": {"inntektsId": "", "inntekt": 0},
+                "inntektV1": {"inntektsId": "", "inntekt": 0},
                 "tasks": ["hentInntekt"]
             }
             """.trimIndent()
@@ -162,7 +175,7 @@ class MinsteinntektSubsumsjonsBehovTest {
     @Test
     fun ` Should be able to return inntekt `() {
 
-        assertEquals(0, jsonToBehov(jsonBehovMedInntekt).getInntekt().inntektValue)
+        assertEquals("12345", jsonToBehov(jsonBehovMedInntekt).getInntekt().inntektsId)
         assertThrows<JSONException> { jsonToBehov(emptyjsonBehov).getInntekt() }
     }
 }

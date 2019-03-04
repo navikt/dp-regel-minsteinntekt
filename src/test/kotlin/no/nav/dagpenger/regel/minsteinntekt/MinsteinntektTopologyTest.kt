@@ -8,6 +8,7 @@ import org.apache.kafka.streams.test.ConsumerRecordFactory
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.time.YearMonth
 import java.util.Properties
 
 class MinsteinntektTopologyTest {
@@ -63,7 +64,8 @@ class MinsteinntektTopologyTest {
         )
 
         val behov = SubsumsjonsBehov.Builder()
-            .inntekt(Inntekt("id", 5000))
+            .inntekt(Inntekt("123", emptyList()))
+            .fraMåned(YearMonth.now())
             .build()
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->

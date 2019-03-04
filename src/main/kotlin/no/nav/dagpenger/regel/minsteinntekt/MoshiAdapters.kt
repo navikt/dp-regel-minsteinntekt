@@ -4,16 +4,16 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 val moshiInstance: Moshi = Moshi.Builder()
     .add(YearMonthJsonAdapter())
-    .add(LocalDateTimeJsonAdapter())
     .add(LocalDateJsonAdapter())
     .add(KotlinJsonAdapterFactory())
+    .add(BigDecimalJsonAdapter())
     .build()!!
 
 class YearMonthJsonAdapter {
@@ -40,14 +40,15 @@ class LocalDateJsonAdapter {
     }
 }
 
-class LocalDateTimeJsonAdapter {
+class BigDecimalJsonAdapter {
+
     @ToJson
-    fun toJson(localDateTime: LocalDateTime): String {
-        return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    fun toJson(bigDecimal: BigDecimal): String {
+        return bigDecimal.toString()
     }
 
     @FromJson
-    fun fromJson(json: String): LocalDateTime {
-        return LocalDateTime.parse(json)
+    fun fromJson(json: String): BigDecimal {
+        return BigDecimal(json)
     }
 }

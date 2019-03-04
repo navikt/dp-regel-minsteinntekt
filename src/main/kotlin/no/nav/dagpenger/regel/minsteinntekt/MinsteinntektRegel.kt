@@ -15,6 +15,8 @@ import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.json.JSONObject
+import java.math.BigDecimal
+import java.time.YearMonth
 import java.util.Properties
 
 private val LOGGER = KotlinLogging.logger {}
@@ -93,13 +95,39 @@ class MinsteinntektRegel(val env: Environment) : Service() {
                 ulidGenerator.nextULID(),
                 ulidGenerator.nextULID(),
                 REGELIDENTIFIKATOR,
-                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt())))
+                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt(), behov.getSenesteInntektsmåned())))
         return behov
     }
 }
 
-fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt): Boolean {
+fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt, fraMåned: YearMonth): Boolean {
+    val enG = BigDecimal(96883)
+    val inntektSiste12 = sumArbeidsInntekt(inntekt, fraMåned, 11)
+    val inntektSiste36 = sumArbeidsInntekt(inntekt, fraMåned, 35)
+
+    if (inntektSiste12 > (enG.times(BigDecimal(1.5))) || inntektSiste36 > (enG.times(BigDecimal(3)))) {
+        return true
+    }
+
     return verneplikt
+}
+
+fun sumArbeidsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): BigDecimal {
+    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
+
+    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
+
+    val sumGjeldendeMåneder = gjeldendeMåneder
+        .flatMap { it.klassifiserteInntekter
+            .filter { it.inntektKlasse == InntektKlasse.ARBEIDSINNTEKT }
+            .map { it.beløp } }.fold(BigDecimal.ZERO, BigDecimal::add)
+
+    return sumGjeldendeMåneder
+}
+
+fun finnTidligsteMåned(fraMåned: YearMonth, lengde: Int): YearMonth {
+
+    return fraMåned.minusMonths(lengde.toLong())
 }
 
 fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {

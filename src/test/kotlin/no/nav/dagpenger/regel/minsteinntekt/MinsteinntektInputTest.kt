@@ -33,7 +33,7 @@ class MinsteinntektInputTest {
     fun `Process behov with inntekt`() {
 
         val behov = SubsumsjonsBehov.Builder()
-            .inntekt(Inntekt("id", 0))
+            .inntekt(Inntekt("123", emptyList()))
             .build()
 
         assert(shouldBeProcessed(behov))
@@ -49,7 +49,7 @@ class MinsteinntektInputTest {
                     "987",
                     "555",
                     false))
-            .inntekt(Inntekt("id", 0))
+            .inntekt(Inntekt("123", emptyList()))
             .build()
 
         assertFalse(shouldBeProcessed(behov))
