@@ -95,7 +95,7 @@ class MinsteinntektRegel(val env: Environment) : Service() {
                 ulidGenerator.nextULID(),
                 ulidGenerator.nextULID(),
                 REGELIDENTIFIKATOR,
-                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt(), behov.getFraMåned())))
+                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt(), behov.getSenesteInntektsmåned())))
         return behov
     }
 }
@@ -112,10 +112,10 @@ fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt, fraMån
     return verneplikt
 }
 
-fun sumArbeidsInntekt(inntekt: Inntekt, fraMåned: YearMonth, lengde: Int): BigDecimal {
-    val tidligsteMåned = finnTidligsteMåned(fraMåned, lengde)
+fun sumArbeidsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): BigDecimal {
+    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
 
-    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= fraMåned && it.årMåned >= tidligsteMåned }
+    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
 
     val sumGjeldendeMåneder = gjeldendeMåneder
         .flatMap { it.klassifiserteInntekter

@@ -18,7 +18,7 @@ class MinsteinntektSubsumsjonsBehovTest {
 
     val jsonBehovMedInntekt = """
         {
-            "inntekt": {
+            "inntektV1": {
                 "inntektsId": "12345",
                 "inntektsListe": [
                     {
@@ -61,14 +61,14 @@ class MinsteinntektSubsumsjonsBehovTest {
 
     val jsonBehovMedInntektogMinsteinntektResultat = """
             {
-                "inntekt": 0,
+                "inntektV1": {"inntektsId": "", "inntekt": 0},
                 "minsteinntektResultat": {}
             }
             """.trimIndent()
 
     val jsonBehovMedInntektogHentInntektTask = """
             {
-                "inntekt": {"inntektsId": "", "inntekt": 0},
+                "inntektV1": {"inntektsId": "", "inntekt": 0},
                 "tasks": ["hentInntekt"]
             }
             """.trimIndent()

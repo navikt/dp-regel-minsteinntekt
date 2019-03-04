@@ -8,11 +8,11 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
     companion object {
         val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
-        val INNTEKT = "inntekt"
+        val INNTEKT = "inntektV1"
         val TASKS = "tasks"
         val TASKS_HENT_INNTEKT = "hentInntekt"
         val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
-        val FRAMÅNED = "fraMåned"
+        val SENESTE_INNTEKTSMÅNED = "senesteInntektsmåned"
         val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
     }
 
@@ -24,7 +24,7 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
     fun hasInntekt() = jsonObject.has(INNTEKT)
 
-    fun getFraMåned(): YearMonth = YearMonth.parse(jsonObject.get(FRAMÅNED).toString())
+    fun getSenesteInntektsmåned(): YearMonth = YearMonth.parse(jsonObject.get(SENESTE_INNTEKTSMÅNED).toString())
 
     fun hasHentInntektTask(): Boolean {
         if (jsonObject.has(TASKS)) {
@@ -67,7 +67,7 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
         }
 
         fun fraMåned(fraMåned: YearMonth): Builder {
-            jsonObject.put(FRAMÅNED, fraMåned)
+            jsonObject.put(SENESTE_INNTEKTSMÅNED, fraMåned)
             return this
         }
 
