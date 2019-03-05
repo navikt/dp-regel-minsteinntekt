@@ -5,9 +5,10 @@ import org.json.JSONObject
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.YearMonth
 import kotlin.test.assertEquals
 
-class MinsteinntektSubsumsjonsBehovTest {
+class SubsumsjonsBehovTest {
 
     fun jsonToBehov(json: String): SubsumsjonsBehov =
         SubsumsjonsBehov(JsonDeserializer().deserialize("", json.toByteArray()) ?: JSONObject())
@@ -82,6 +83,12 @@ class MinsteinntektSubsumsjonsBehovTest {
     val jsonBehovMedVernepliktFalse = """
             {
                 "harAvtjentVerneplikt": false
+            }
+            """.trimIndent()
+
+    val jsonBehovMedBruktInntektsPeriode = """
+            {
+                "bruktInntektsPeriode": {"førsteMåned": "2018-01", "sisteMåned": "2019-06"}
             }
             """.trimIndent()
 
@@ -176,6 +183,22 @@ class MinsteinntektSubsumsjonsBehovTest {
     fun ` Should be able to return inntekt `() {
 
         assertEquals("12345", jsonToBehov(jsonBehovMedInntekt).getInntekt().inntektsId)
+        assertThrows<JSONException> { jsonToBehov(emptyjsonBehov).getInntekt() }
+    }
+
+    @Test
+    fun ` Should have bruktInntektsPeriode when it has bruktInntektsPeriode `() {
+
+        assert(jsonToBehov(jsonBehovMedBruktInntektsPeriode).hasBruktInntektsPeriode())
+        Assertions.assertFalse(jsonToBehov(emptyjsonBehov).hasBruktInntektsPeriode())
+    }
+
+    @Test
+    fun ` Should be able to return bruktInntektsPeriode `() {
+
+        assertEquals(
+            YearMonth.of(2018, 1),
+            jsonToBehov(jsonBehovMedBruktInntektsPeriode).getBruktInntektsPeriode()!!.førsteMåned)
         assertThrows<JSONException> { jsonToBehov(emptyjsonBehov).getInntekt() }
     }
 }
