@@ -13,18 +13,25 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
         val TASKS_HENT_INNTEKT = "hentInntekt"
         val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         val SENESTE_INNTEKTSMÅNED = "senesteInntektsmåned"
+        val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
+
         val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
+        val jsonAdapterInntektsPeriode = moshiInstance.adapter(InntektsPeriode::class.java)
     }
 
     fun needsHentInntektsTask(): Boolean = !hasInntekt() && !hasHentInntektTask()
 
     fun needsMinsteinntektResultat(): Boolean = hasInntekt() && !hasMinsteinntektResultat()
 
-    fun hasMinsteinntektResultat(): Boolean = jsonObject.has(MINSTEINNTEKT_RESULTAT)
-
-    fun hasInntekt() = jsonObject.has(INNTEKT)
-
     fun getSenesteInntektsmåned(): YearMonth = YearMonth.parse(jsonObject.get(SENESTE_INNTEKTSMÅNED).toString())
+
+    fun hasBruktInntektsPeriode(): Boolean = jsonObject.has(BRUKT_INNTEKTSPERIODE)
+
+    fun getBruktInntektsPeriode(): InntektsPeriode? {
+        return if (hasBruktInntektsPeriode())
+            jsonAdapterInntektsPeriode.fromJson(jsonObject.get(BRUKT_INNTEKTSPERIODE).toString())!!
+        else null
+    }
 
     fun hasHentInntektTask(): Boolean {
         if (jsonObject.has(TASKS)) {
@@ -50,7 +57,11 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
     fun hasVerneplikt(): Boolean = if (jsonObject.has(AVTJENT_VERNEPLIKT)) jsonObject.getBoolean(AVTJENT_VERNEPLIKT) else false
 
+    fun hasMinsteinntektResultat(): Boolean = jsonObject.has(MINSTEINNTEKT_RESULTAT)
+
     fun addMinsteinntektResultat(minsteinntektResultat: MinsteinntektResultat) { jsonObject.put(MINSTEINNTEKT_RESULTAT, minsteinntektResultat.build()) }
+
+    fun hasInntekt() = jsonObject.has(INNTEKT)
 
     fun getInntekt(): Inntekt = jsonAdapterInntekt.fromJson(jsonObject.get(INNTEKT).toString())!!
 
@@ -60,14 +71,18 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
         fun inntekt(inntekt: Inntekt): Builder {
             val json = jsonAdapterInntekt.toJson(inntekt)
-            jsonObject.put(INNTEKT,
-                JSONObject(json)
-            )
+            jsonObject.put(INNTEKT, JSONObject(json))
             return this
         }
 
-        fun fraMåned(fraMåned: YearMonth): Builder {
-            jsonObject.put(SENESTE_INNTEKTSMÅNED, fraMåned)
+        fun bruktInntektsPeriode(bruktInntektsPeriode: InntektsPeriode): Builder {
+            val json = jsonAdapterInntektsPeriode.toJson(bruktInntektsPeriode)
+            jsonObject.put(BRUKT_INNTEKTSPERIODE, JSONObject(json))
+            return this
+        }
+
+        fun senesteInntektsmåned(senesteInntektsmåned: YearMonth): Builder {
+            jsonObject.put(SENESTE_INNTEKTSMÅNED, senesteInntektsmåned)
             return this
         }
 
@@ -102,6 +117,11 @@ data class MinsteinntektResultat(val sporingsId: String, val subsumsjonsId: Stri
             .put(OPPFYLLER_MINSTEINNTEKT, oppfyllerMinsteinntekt)
     }
 }
+
+data class InntektsPeriode(
+    val førsteMåned: YearMonth,
+    val sisteMåned: YearMonth
+)
 
 data class Inntekt(
     val inntektsId: String,

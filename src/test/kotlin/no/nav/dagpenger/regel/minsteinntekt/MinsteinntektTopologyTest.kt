@@ -65,7 +65,7 @@ class MinsteinntektTopologyTest {
 
         val behov = SubsumsjonsBehov.Builder()
             .inntekt(Inntekt("123", emptyList()))
-            .fraMåned(YearMonth.now())
+            .senesteInntektsmåned(YearMonth.now())
             .build()
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
