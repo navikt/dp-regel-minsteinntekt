@@ -14,6 +14,7 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
         val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         val SENESTE_INNTEKTSMÅNED = "senesteInntektsmåned"
         val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
+        val FANGST_OG_FISK = "fangstOgFisk"
 
         val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
         val jsonAdapterInntektsPeriode = moshiInstance.adapter(InntektsPeriode::class.java)
@@ -59,6 +60,8 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
     fun hasVerneplikt(): Boolean = if (jsonObject.has(AVTJENT_VERNEPLIKT)) jsonObject.getBoolean(AVTJENT_VERNEPLIKT) else false
 
+    fun hasFangstOgFisk(): Boolean = if (jsonObject.has(FANGST_OG_FISK)) jsonObject.getBoolean(FANGST_OG_FISK) else false
+
     fun hasMinsteinntektResultat(): Boolean = jsonObject.has(MINSTEINNTEKT_RESULTAT)
 
     fun addMinsteinntektResultat(minsteinntektResultat: MinsteinntektResultat) { jsonObject.put(MINSTEINNTEKT_RESULTAT, minsteinntektResultat.build()) }
@@ -85,6 +88,11 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
         fun senesteInntektsmåned(senesteInntektsmåned: YearMonth): Builder {
             jsonObject.put(SENESTE_INNTEKTSMÅNED, senesteInntektsmåned)
+            return this
+        }
+
+        fun fangstOgFisk(fangstOgFisk: Boolean): Builder {
+            jsonObject.put(FANGST_OG_FISK, fangstOgFisk)
             return this
         }
 
