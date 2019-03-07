@@ -21,7 +21,7 @@ data class SubsumsjonsBehov(val jsonObject: JSONObject) {
 
     fun needsHentInntektsTask(): Boolean = !hasInntekt() && !hasHentInntektTask()
 
-    fun needsMinsteinntektResultat(): Boolean = hasInntekt() && !hasMinsteinntektResultat()
+    fun needsMinsteinntektResultat(): Boolean = hasInntekt() && !hasMinsteinntektResultat() && hasSenesteInntektsmåned()
 
     fun hasSenesteInntektsmåned(): Boolean = jsonObject.has(SENESTE_INNTEKTSMÅNED)
 

@@ -2,6 +2,7 @@ package no.nav.dagpenger.regel.minsteinntekt
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
+import java.time.YearMonth
 
 class MinsteinntektInputTest {
 
@@ -34,6 +35,7 @@ class MinsteinntektInputTest {
 
         val behov = SubsumsjonsBehov.Builder()
             .inntekt(Inntekt("123", emptyList()))
+            .senesteInntektsmåned(YearMonth.of(2018, 1))
             .build()
 
         assert(shouldBeProcessed(behov))
@@ -50,6 +52,7 @@ class MinsteinntektInputTest {
                     "555",
                     false))
             .inntekt(Inntekt("123", emptyList()))
+            .senesteInntektsmåned(YearMonth.of(2018, 1))
             .build()
 
         assertFalse(shouldBeProcessed(behov))

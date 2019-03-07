@@ -32,7 +32,8 @@ class SubsumsjonsBehovTest {
                         ]
                     }
                 ]
-            }
+            },
+            "senesteInntektsmåned":"2018-03"
             }
             """.trimIndent()
 

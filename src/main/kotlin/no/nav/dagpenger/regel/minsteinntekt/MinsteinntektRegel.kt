@@ -156,7 +156,6 @@ fun finnTidligsteMåned(senesteMåned: YearMonth, lengde: Int): YearMonth {
 
 fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {
     return when {
-        !behov.hasSenesteInntektsmåned() -> false
         behov.needsHentInntektsTask() -> true
         behov.needsMinsteinntektResultat() -> true
         else -> false
