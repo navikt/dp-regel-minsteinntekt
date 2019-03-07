@@ -95,15 +95,31 @@ class MinsteinntektRegel(val env: Environment) : Service() {
                 ulidGenerator.nextULID(),
                 ulidGenerator.nextULID(),
                 REGELIDENTIFIKATOR,
-                oppfyllerKravTilMinsteinntekt(behov.hasVerneplikt(), behov.getInntekt(), behov.getSenesteInntektsmåned())))
+                oppfyllerKravTilMinsteinntekt(
+                    behov.hasVerneplikt(),
+                    behov.getInntekt(),
+                    behov.getSenesteInntektsmåned(),
+                    behov.hasFangstOgFisk())))
         return behov
     }
 }
 
-fun oppfyllerKravTilMinsteinntekt(verneplikt: Boolean, inntekt: Inntekt, fraMåned: YearMonth): Boolean {
+fun oppfyllerKravTilMinsteinntekt(
+    verneplikt: Boolean,
+    inntekt: Inntekt,
+    fraMåned: YearMonth,
+    fangstOgFisk: Boolean
+): Boolean {
+
     val enG = BigDecimal(96883)
-    val inntektSiste12 = sumArbeidsInntekt(inntekt, fraMåned, 11)
-    val inntektSiste36 = sumArbeidsInntekt(inntekt, fraMåned, 35)
+
+    var inntektSiste12 = sumArbeidsInntekt(inntekt, fraMåned, 11)
+    var inntektSiste36 = sumArbeidsInntekt(inntekt, fraMåned, 35)
+
+    if (fangstOgFisk) {
+        inntektSiste12 += sumNæringsInntekt(inntekt, fraMåned, 11)
+        inntektSiste36 += sumNæringsInntekt(inntekt, fraMåned, 35)
+    }
 
     if (inntektSiste12 > (enG.times(BigDecimal(1.5))) || inntektSiste36 > (enG.times(BigDecimal(3)))) {
         return true
@@ -120,6 +136,19 @@ fun sumArbeidsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): 
     val sumGjeldendeMåneder = gjeldendeMåneder
         .flatMap { it.klassifiserteInntekter
             .filter { it.inntektKlasse == InntektKlasse.ARBEIDSINNTEKT }
+            .map { it.beløp } }.fold(BigDecimal.ZERO, BigDecimal::add)
+
+    return sumGjeldendeMåneder
+}
+
+fun sumNæringsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): BigDecimal {
+    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
+
+    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
+
+    val sumGjeldendeMåneder = gjeldendeMåneder
+        .flatMap { it.klassifiserteInntekter
+            .filter { it.inntektKlasse == InntektKlasse.NÆRINGSINNTEKT }
             .map { it.beløp } }.fold(BigDecimal.ZERO, BigDecimal::add)
 
     return sumGjeldendeMåneder
