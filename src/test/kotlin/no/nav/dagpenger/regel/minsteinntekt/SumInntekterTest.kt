@@ -24,21 +24,22 @@ class SumInntekterTest {
     @Test
     fun ` should add Arbeidsinntekt in sumSiste12 `() {
 
-        assertEquals(BigDecimal(12000), sumArbeidsInntekt(generateSiste36MånederArbeidsInntekt(), YearMonth.now().minusMonths(1), 11))
+        assertEquals(BigDecimal(12000), sumInntekt(generateSiste36MånederArbeidsInntekt(), listOf(InntektKlasse.ARBEIDSINNTEKT), YearMonth.now().minusMonths(1), 11))
     }
 
     @Test
     fun ` should not add næringsinntekt in sumSiste12 when we use sumArbeidsInntekt `() {
 
-        assertEquals(BigDecimal(0), sumArbeidsInntekt(generateSiste36MånederNæringsInntekt(), YearMonth.now().minusMonths(1), 11))
+        assertEquals(BigDecimal(0), sumInntekt(generateSiste36MånederNæringsInntekt(), listOf(InntektKlasse.ARBEIDSINNTEKT), YearMonth.now().minusMonths(1), 11))
     }
 
     @Test
     fun ` should add næringsinntekt in sumSiste12 when we use sumNæringsInntekt `() {
 
         assertEquals(BigDecimal(12000),
-            sumNæringsInntekt(
+            sumInntekt(
                 generateSiste36MånederNæringsInntekt(),
+                listOf(InntektKlasse.NÆRINGSINNTEKT),
                 YearMonth.now().minusMonths(1),
                 11)
         )
@@ -48,8 +49,9 @@ class SumInntekterTest {
     fun ` should add not add Arbeidsinntekt in sumSiste12 when we use sumNæringsInntekt`() {
 
         assertEquals(BigDecimal(0),
-            sumNæringsInntekt(
+            sumInntekt(
                 generateSiste36MånederArbeidsInntekt(),
+                listOf(InntektKlasse.NÆRINGSINNTEKT),
                 YearMonth.now().minusMonths(1),
                 11)
         )
