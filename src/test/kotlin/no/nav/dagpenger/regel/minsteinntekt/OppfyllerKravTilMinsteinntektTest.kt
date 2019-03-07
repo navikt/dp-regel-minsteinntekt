@@ -20,6 +20,7 @@ class OppfyllerKravTilMinsteinntektTest {
             true,
             Inntekt("123", emptyList()),
             YearMonth.of(2019, 4),
+            null,
             false)
 
         assert(resultat)
@@ -31,6 +32,7 @@ class OppfyllerKravTilMinsteinntektTest {
             false,
             Inntekt("123", emptyList()),
             YearMonth.of(2019, 4),
+            null,
             false)
         assertFalse(resultat)
     }
@@ -51,6 +53,7 @@ class OppfyllerKravTilMinsteinntektTest {
             false,
             Inntekt("123", inntektsListe),
             YearMonth.now().minusMonths(1),
+            null,
             false)
         assertTrue(resultat)
     }
@@ -71,6 +74,7 @@ class OppfyllerKravTilMinsteinntektTest {
             false,
             Inntekt("123", inntektsListe),
             YearMonth.now().minusMonths(1),
+            null,
             true)
         assertTrue(resultat)
     }
@@ -91,6 +95,7 @@ class OppfyllerKravTilMinsteinntektTest {
             false,
             Inntekt("123", inntektsListe),
             YearMonth.now().minusMonths(1),
+            null,
             false)
         assertFalse(resultat)
     }
@@ -100,7 +105,9 @@ class OppfyllerKravTilMinsteinntektTest {
         val resultat = oppfyllerKravTilMinsteinntekt(
             false,
             Inntekt("123", generate36MånederArbeidsInntekt()),
-            YearMonth.of(2019, 2)
+            YearMonth.of(2019, 2),
+            null,
+            false
         )
 
         assertTrue(resultat)
@@ -112,7 +119,8 @@ class OppfyllerKravTilMinsteinntektTest {
             false,
             Inntekt("123", generate36MånederArbeidsInntekt()),
             YearMonth.of(2019, 2),
-            InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2018, 10 ))
+            InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2018, 10)),
+            false
         )
 
         assertFalse(resultat)

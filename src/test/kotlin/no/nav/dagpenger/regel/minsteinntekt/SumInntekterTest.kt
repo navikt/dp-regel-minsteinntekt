@@ -36,12 +36,22 @@ class SumInntekterTest {
     @Test
     fun ` should add næringsinntekt in sumSiste12 when we use sumNæringsInntekt `() {
 
-        assertEquals(BigDecimal(12000), sumNæringsInntekt(Inntekt("123", generateSiste36MånederNæringsInntekt()), YearMonth.now().minusMonths(1), 11))
+        assertEquals(BigDecimal(12000),
+            sumNæringsInntekt(
+                generateSiste36MånederNæringsInntekt(),
+                YearMonth.now().minusMonths(1),
+                11)
+        )
     }
 
     @Test
     fun ` should add not add Arbeidsinntekt in sumSiste12 when we use sumNæringsInntekt`() {
 
-        assertEquals(BigDecimal(0), sumNæringsInntekt(Inntekt("123", generateSiste36MånederArbeidsInntekt()), YearMonth.now().minusMonths(1), 11))
+        assertEquals(BigDecimal(0),
+            sumNæringsInntekt(
+                generateSiste36MånederArbeidsInntekt(),
+                YearMonth.now().minusMonths(1),
+                11)
+        )
     }
 }
