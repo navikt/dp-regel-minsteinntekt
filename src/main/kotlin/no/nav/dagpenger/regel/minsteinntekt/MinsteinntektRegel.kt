@@ -99,6 +99,7 @@ class MinsteinntektRegel(val env: Environment) : Service() {
                     behov.hasVerneplikt(),
                     behov.getInntekt(),
                     behov.getSenesteInntektsmåned(),
+                    behov.getBruktInntektsPeriode(),
                     behov.hasFangstOgFisk())))
         return behov
     }
@@ -108,17 +109,22 @@ fun oppfyllerKravTilMinsteinntekt(
     verneplikt: Boolean,
     inntekt: Inntekt,
     fraMåned: YearMonth,
+    bruktInntektsPeriode: InntektsPeriode? = null,
     fangstOgFisk: Boolean
 ): Boolean {
 
+    val inntektsListe = bruktInntektsPeriode?.let {
+        filterBruktInntekt(inntekt.inntektsListe, bruktInntektsPeriode)
+    } ?: inntekt.inntektsListe
+
     val enG = BigDecimal(96883)
 
-    var inntektSiste12 = sumArbeidsInntekt(inntekt, fraMåned, 11)
-    var inntektSiste36 = sumArbeidsInntekt(inntekt, fraMåned, 35)
+    var inntektSiste12 = sumArbeidsInntekt(inntektsListe, fraMåned, 11)
+    var inntektSiste36 = sumArbeidsInntekt(inntektsListe, fraMåned, 35)
 
     if (fangstOgFisk) {
-        inntektSiste12 += sumNæringsInntekt(inntekt, fraMåned, 11)
-        inntektSiste36 += sumNæringsInntekt(inntekt, fraMåned, 35)
+        inntektSiste12 += sumNæringsInntekt(inntektsListe, fraMåned, 11)
+        inntektSiste36 += sumNæringsInntekt(inntektsListe, fraMåned, 35)
     }
 
     if (inntektSiste12 > (enG.times(BigDecimal(1.5))) || inntektSiste36 > (enG.times(BigDecimal(3)))) {
@@ -128,10 +134,20 @@ fun oppfyllerKravTilMinsteinntekt(
     return verneplikt
 }
 
-fun sumArbeidsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): BigDecimal {
+fun filterBruktInntekt(
+    inntektsListe: List<KlassifisertInntektMåned>,
+    bruktInntektsPeriode: InntektsPeriode
+): List<KlassifisertInntektMåned> {
+
+    return inntektsListe.filter {
+        it.årMåned.isBefore(bruktInntektsPeriode.førsteMåned) || it.årMåned.isAfter(bruktInntektsPeriode.sisteMåned)
+    }
+}
+
+fun sumArbeidsInntekt(inntektsListe: List<KlassifisertInntektMåned>, senesteMåned: YearMonth, lengde: Int): BigDecimal {
     val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
 
-    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
+    val gjeldendeMåneder = inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
 
     val sumGjeldendeMåneder = gjeldendeMåneder
         .flatMap { it.klassifiserteInntekter
@@ -141,10 +157,10 @@ fun sumArbeidsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): 
     return sumGjeldendeMåneder
 }
 
-fun sumNæringsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int): BigDecimal {
+fun sumNæringsInntekt(inntektsListe: List<KlassifisertInntektMåned>, senesteMåned: YearMonth, lengde: Int): BigDecimal {
     val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
 
-    val gjeldendeMåneder = inntekt.inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
+    val gjeldendeMåneder = inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
 
     val sumGjeldendeMåneder = gjeldendeMåneder
         .flatMap { it.klassifiserteInntekter
@@ -154,9 +170,9 @@ fun sumNæringsInntekt(inntekt: Inntekt, senesteMåned: YearMonth, lengde: Int):
     return sumGjeldendeMåneder
 }
 
-fun finnTidligsteMåned(fraMåned: YearMonth, lengde: Int): YearMonth {
+fun finnTidligsteMåned(senesteMåned: YearMonth, lengde: Int): YearMonth {
 
-    return fraMåned.minusMonths(lengde.toLong())
+    return senesteMåned.minusMonths(lengde.toLong())
 }
 
 fun shouldBeProcessed(behov: SubsumsjonsBehov): Boolean {
