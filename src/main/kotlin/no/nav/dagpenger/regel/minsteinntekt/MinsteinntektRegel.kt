@@ -9,7 +9,6 @@ import no.nav.dagpenger.streams.Topics
 import no.nav.dagpenger.streams.kbranch
 import no.nav.dagpenger.streams.streamConfig
 import org.apache.kafka.common.serialization.Serdes
-import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -41,12 +40,7 @@ class MinsteinntektRegel(val env: Environment) : Service() {
         }
     }
 
-    override fun setupStreams(): KafkaStreams {
-        LOGGER.info { "Initiating start of $SERVICE_APP_ID" }
-        return KafkaStreams(buildTopology(), getConfig())
-    }
-
-    internal fun buildTopology(): Topology {
+    override fun buildTopology(): Topology {
         val builder = StreamsBuilder()
 
         val stream = builder.stream(
