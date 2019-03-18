@@ -1,7 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import de.huxhorn.sulky.ulid.ULID
-import mu.KotlinLogging
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -12,8 +11,6 @@ import no.nav.dagpenger.streams.streamConfig
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.time.YearMonth
-
-private val LOGGER = KotlinLogging.logger {}
 
 class Minsteinntekt(val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
