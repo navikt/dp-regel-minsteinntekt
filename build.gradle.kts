@@ -26,7 +26,7 @@ repositories {
 
 application {
     applicationName = "dp-regel-minsteinntekt"
-    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.MinsteinntektRegel"
+    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.MinsteinntektRegelKt"
 }
 
 java {
@@ -56,6 +56,7 @@ val orgJsonVersion = "20180813"
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("no.nav.dagpenger:streams:0.3.0-SNAPSHOT")
+    implementation("no.nav.dagpenger:events:0.3.1-SNAPSHOT")
 
     implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
 
