@@ -67,7 +67,7 @@ class OppfyllerKravTilMinsteinntektTest {
                 listOf(
                     KlassifisertInntekt(
                         BigDecimal(14500),
-                        InntektKlasse.NÆRINGSINNTEKT)))
+                        InntektKlasse.FANGST_FISKE)))
         }
 
         val resultat = oppfyllerKravTilMinsteinntekt(
@@ -88,7 +88,7 @@ class OppfyllerKravTilMinsteinntektTest {
                 listOf(
                     KlassifisertInntekt(
                         BigDecimal(14500),
-                        InntektKlasse.NÆRINGSINNTEKT)))
+                        InntektKlasse.FANGST_FISKE)))
         }
 
         val resultat = oppfyllerKravTilMinsteinntekt(
