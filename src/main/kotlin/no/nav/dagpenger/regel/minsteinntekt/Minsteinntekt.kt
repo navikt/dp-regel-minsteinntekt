@@ -51,11 +51,11 @@ class Minsteinntekt(val env: Environment) : River() {
             ulidGenerator.nextULID(),
             REGELIDENTIFIKATOR,
             oppfyllerKravTilMinsteinntekt(
-                packet.getBoolean(AVTJENT_VERNEPLIKT),
+                packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false,
                 packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) },
                 packet.getYearMonth(SENESTE_INNTEKTSMÅNED),
                 packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { serialized -> checkNotNull(jsonAdapterInntektsPeriode.fromJson(serialized)) },
-                packet.getBoolean(FANGST_OG_FISK)
+                packet.getNullableBoolean(FANGST_OG_FISK) ?: false
             )
         )
 
