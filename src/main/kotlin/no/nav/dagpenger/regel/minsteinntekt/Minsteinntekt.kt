@@ -54,7 +54,7 @@ class Minsteinntekt(val env: Environment) : River() {
                 packet.getBoolean(AVTJENT_VERNEPLIKT),
                 packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) },
                 packet.getYearMonth(SENESTE_INNTEKTSMÅNED),
-                packet.getObjectValue(BRUKT_INNTEKTSPERIODE) { serialized -> checkNotNull(jsonAdapterInntektsPeriode.fromJson(serialized)) },
+                packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { serialized -> checkNotNull(jsonAdapterInntektsPeriode.fromJson(serialized)) },
                 packet.getBoolean(FANGST_OG_FISK)
             )
         )
