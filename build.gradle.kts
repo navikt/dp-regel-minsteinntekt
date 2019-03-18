@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     application
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.3.11"
     id("com.diffplug.gradle.spotless") version "3.13.0"
     id("com.github.johnrengelman.shadow") version "4.0.3"
 }
@@ -26,7 +26,7 @@ repositories {
 
 application {
     applicationName = "dp-regel-minsteinntekt"
-    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.MinsteinntektRegelKt"
+    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.MinsteinntektKt"
 }
 
 java {
