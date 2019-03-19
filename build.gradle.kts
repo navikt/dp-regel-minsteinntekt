@@ -65,6 +65,8 @@ dependencies {
     implementation("com.squareup.moshi:moshi:$moshiVersion")
     implementation("com.ryanharter.ktor:ktor-moshi:$ktorMoshiVersion")
 
+    implementation("no.nav:nare:13785ff")
+
     implementation("de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.2.0")
 
     compile("io.prometheus:simpleclient_common:$prometheusVersion")

@@ -8,6 +8,8 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.streams.KafkaCredential
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
+import no.nav.nare.core.evaluations.Evaluering
+import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.time.YearMonth
@@ -41,24 +43,38 @@ class Minsteinntekt(val env: Environment) : River() {
             Predicate { _, packet -> !packet.hasField(MINSTEINNTEKT_RESULTAT) },
             Predicate { _, packet -> packet.hasField(INNTEKT) },
             Predicate { _, packet -> packet.hasField(SENESTE_INNTEKTSMÅNED) }
-
         )
     }
 
     override fun onPacket(packet: Packet): Packet {
-        val resultat = MinsteinntektSubsumsjon(
-            ulidGenerator.nextULID(),
-            ulidGenerator.nextULID(),
-            REGELIDENTIFIKATOR,
-            oppfyllerKravTilMinsteinntekt(
-                packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false,
-                packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) },
-                packet.getYearMonth(SENESTE_INNTEKTSMÅNED),
-                packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { serialized -> checkNotNull(jsonAdapterInntektsPeriode.fromJson(serialized)) },
-                packet.getNullableBoolean(FANGST_OG_FISK) ?: false
-            )
-        )
 
+        val inntekt: Inntekt =
+            packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) }
+        val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
+        val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
+        val bruktInntektsPeriode: InntektsPeriode? =
+            packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { serialized ->
+                checkNotNull(
+                    jsonAdapterInntektsPeriode.fromJson(serialized)
+                )
+            }
+        val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
+
+        val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
+
+        val evaluering: Evaluering = inngangsVilkår.evaluer(fakta)
+
+        println(evaluering.resultat)
+        println(evaluering.children.filter { it.resultat == Resultat.JA })
+        println(evaluering.begrunnelse)
+
+        val resultat =
+            MinsteinntektSubsumsjon(
+                ulidGenerator.nextULID(),
+                ulidGenerator.nextULID(),
+                REGELIDENTIFIKATOR,
+                evaluering.resultat == Resultat.JA
+            )
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         return packet
     }
@@ -67,35 +83,6 @@ class Minsteinntekt(val env: Environment) : River() {
 fun main(args: Array<String>) {
     val service = Minsteinntekt(Environment())
     service.start()
-}
-
-fun oppfyllerKravTilMinsteinntekt(
-    verneplikt: Boolean,
-    inntekt: Inntekt,
-    fraMåned: YearMonth,
-    bruktInntektsPeriode: InntektsPeriode? = null,
-    fangstOgFisk: Boolean
-): Boolean {
-
-    val inntektsListe = bruktInntektsPeriode?.let {
-        filterBruktInntekt(inntekt.inntektsListe, bruktInntektsPeriode)
-    } ?: inntekt.inntektsListe
-
-    val enG = BigDecimal(96883)
-
-    var inntektSiste12 = sumArbeidsInntekt(inntektsListe, fraMåned, 11)
-    var inntektSiste36 = sumArbeidsInntekt(inntektsListe, fraMåned, 35)
-
-    if (fangstOgFisk) {
-        inntektSiste12 += sumNæringsInntekt(inntektsListe, fraMåned, 11)
-        inntektSiste36 += sumNæringsInntekt(inntektsListe, fraMåned, 35)
-    }
-
-    if (inntektSiste12 > (enG.times(BigDecimal(1.5))) || inntektSiste36 > (enG.times(BigDecimal(3)))) {
-        return true
-    }
-
-    return verneplikt
 }
 
 fun filterBruktInntekt(
