@@ -1,0 +1,178 @@
+package no.nav.dagpenger.regel.minsteinntekt
+
+import no.nav.dagpenger.events.inntekt.v1.Inntekt
+import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
+import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
+import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.nare.core.evaluations.Resultat
+import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.YearMonth
+import kotlin.test.assertEquals
+
+internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 12 mnd`() {
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", emptyList()),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false
+        )
+
+        val evaluering = ordinærSiste12Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent litt for lite siste 12 mnd`() {
+
+        val inntekt = generateArbeidsInntekt(1..3, BigDecimal(1))
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false,
+            grunnbeløp = BigDecimal(4)
+        )
+
+        val evaluering = ordinærSiste12Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har hatt nok inntekt siste 12 mnd`() {
+
+        val inntekt = generate12MånederArbeidsInntekt()
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false
+        )
+
+        val evaluering = ordinærSiste12Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.JA, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 36 mnd`() {
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", emptyList()),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false
+        )
+
+        val evaluering = ordinærSiste36Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent litt for lite siste 36 mnd`() {
+
+        val inntekt = generateArbeidsInntekt(1..24, BigDecimal(1))
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false,
+            grunnbeløp = BigDecimal(23)
+        )
+
+        val evaluering = ordinærSiste36Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har hatt nok inntekt siste 36 mnd`() {
+
+        val inntekt = generate36MånederArbeidsInntekt()
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false
+        )
+
+        val evaluering = ordinærSiste36Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.JA, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom man har næringsinntekt siste 12 mnd, men er fangst og fisk er ikke oppfylt `() {
+
+        val inntekt = generateFangstOgFiske(1..12, BigDecimal(50000))
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false
+        )
+
+        val evaluering = ordinærSiste12Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom man har næringsinntekt siste 36 mnd, men er fangst og fisk er ikke oppfylt `() {
+
+        val inntekt = generateFangstOgFiske(1..36, BigDecimal(50000))
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt),
+            fraMåned = YearMonth.of(2019, 4),
+            bruktInntektsPeriode = null,
+            verneplikt = true,
+            fangstOgFisk = false
+        )
+
+        val evaluering = ordinærSiste36Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    fun generateFangstOgFiske(range: IntRange, beløpPerMnd: BigDecimal): List<KlassifisertInntektMåned> {
+        return (range).toList().map {
+            KlassifisertInntektMåned(YearMonth.of(2019, 1).minusMonths(it.toLong()), listOf(KlassifisertInntekt(
+                beløpPerMnd, InntektKlasse.FANGST_FISKE)))
+        }
+    }
+
+    fun generateArbeidsInntekt(range: IntRange, beløpPerMnd: BigDecimal): List<KlassifisertInntektMåned> {
+        return (range).toList().map {
+            KlassifisertInntektMåned(YearMonth.of(2019, 1).minusMonths(it.toLong()), listOf(KlassifisertInntekt(
+                beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT)))
+        }
+    }
+
+    fun generate12MånederArbeidsInntekt(): List<KlassifisertInntektMåned> {
+        return generateArbeidsInntekt(1..12, BigDecimal(50000))
+    }
+
+    fun generate36MånederArbeidsInntekt(): List<KlassifisertInntektMåned> {
+        return generateArbeidsInntekt(1..36, BigDecimal(50000))
+    }
+}
