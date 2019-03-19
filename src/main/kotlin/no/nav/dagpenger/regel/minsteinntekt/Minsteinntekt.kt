@@ -64,10 +64,6 @@ class Minsteinntekt(val env: Environment) : River() {
 
         val evaluering: Evaluering = inngangsVilkår.evaluer(fakta)
 
-        println(evaluering.resultat)
-        println(evaluering.children.filter { it.resultat == Resultat.JA })
-        println(evaluering.begrunnelse)
-
         val resultat =
             MinsteinntektSubsumsjon(
                 ulidGenerator.nextULID(),

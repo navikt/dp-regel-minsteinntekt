@@ -16,11 +16,11 @@ val minsteinntektEtterAvtjentVerneplikt: Spesifikasjon<Fakta> = Spesifikasjon(
     }
 )
 
-private val ordinærSiste12Måneder = Spesifikasjon<Fakta>(
+val ordinærSiste12Måneder = Spesifikasjon<Fakta>(
     beskrivelse = "§ 4-4. Krav til minsteinntekt, siste 12 måneder",
     identitet = "ORDINÆR_12",
     implementasjon = { fakta ->
-        if (fakta.inntektSiste12 > (fakta.grunnbeløp.times(BigDecimal(1.5)))) {
+        if (fakta.arbeidsinntektSiste12 > (fakta.grunnbeløp.times(BigDecimal(1.5)))) {
             Evaluering.ja("Rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 12 måneder")
         } else {
             Evaluering.nei("Ikke rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 12 måneder")
@@ -28,11 +28,11 @@ private val ordinærSiste12Måneder = Spesifikasjon<Fakta>(
     }
 )
 
-private val ordinærSiste36Måneder = Spesifikasjon<Fakta>(
+val ordinærSiste36Måneder = Spesifikasjon<Fakta>(
     beskrivelse = "§ 4-4. Krav til minsteinntekt, siste 36 måneder",
     identitet = "ORDINÆR_36",
     implementasjon = { fakta ->
-        if (fakta.inntektSiste36 > (fakta.grunnbeløp.times(BigDecimal(3)))) {
+        if (fakta.arbeidsinntektSiste36 > (fakta.grunnbeløp.times(BigDecimal(3)))) {
             Evaluering.ja("Rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 36 måneder")
         } else {
             Evaluering.nei("Ikke rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 36 måneder")
@@ -40,11 +40,11 @@ private val ordinærSiste36Måneder = Spesifikasjon<Fakta>(
     }
 )
 
-private val ordinærSiste12MånederEtterNæringsInntekter = Spesifikasjon<Fakta>(
+val ordinærSiste12MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
     beskrivelse = "§ 4-4. Krav til minsteinntekt, siste 12 måneder, etter næringsinntekt",
     identitet = "ORDINÆR_12_NÆRING",
     implementasjon = { fakta ->
-        if (fakta.arbeidsInntektOgNæringsInntektSiste12 > (fakta.grunnbeløp.times(BigDecimal(1.5)))) {
+        if (fakta.fangstOgFisk && fakta.inntektSiste12inkludertFangstOgFiske > (fakta.grunnbeløp.times(BigDecimal(1.5)))) {
             Evaluering.ja("Rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 12 måneder, etter næringsinntekt")
         } else {
             Evaluering.nei("Ikke rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 12 måneder, etter næringsinntekt")
@@ -52,11 +52,11 @@ private val ordinærSiste12MånederEtterNæringsInntekter = Spesifikasjon<Fakta>
     }
 )
 
-private val ordinærSiste36MånederEtterNæringsInntekter = Spesifikasjon<Fakta>(
+val ordinærSiste36MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
     beskrivelse = "§ 4-4. Krav til minsteinntekt, siste 12 måneder, etter næringsinntekt",
     identitet = "ORDINÆR_36_NÆRING",
     implementasjon = { fakta ->
-        if (fakta.arbeidsInntektOgNæringsInntektSiste36 > (fakta.grunnbeløp.times(BigDecimal(3)))) {
+        if (fakta.fangstOgFisk && fakta.inntektSiste36inkludertFangstOgFiske > (fakta.grunnbeløp.times(BigDecimal(3)))) {
             Evaluering.ja("Rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 12 måneder, etter næringsinntekt")
         } else {
             Evaluering.nei("Ikke rett til Dagpenger etter § 4-4. Krav til minsteinntekt, siste 12 måneder, etter næringsinntekt")
@@ -65,7 +65,7 @@ private val ordinærSiste36MånederEtterNæringsInntekter = Spesifikasjon<Fakta>
 )
 
 val ordninær: Spesifikasjon<Fakta> =
-    (ordinærSiste12Måneder eller ordinærSiste36Måneder).eller(ordinærSiste12MånederEtterNæringsInntekter eller ordinærSiste36MånederEtterNæringsInntekter)
+    (ordinærSiste12Måneder eller ordinærSiste36Måneder).eller(ordinærSiste12MånederMedFangstOgFiske eller ordinærSiste36MånederMedFangstOgFiske)
         .med(
             identitet = "ORDINÆR",
             beskrivelse = "§ 4-4. Krav til minsteinntekt etter ordinær inntekt oppfyllt?"

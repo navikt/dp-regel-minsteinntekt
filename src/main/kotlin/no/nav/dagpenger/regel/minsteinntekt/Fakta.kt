@@ -16,9 +16,9 @@ data class Fakta(
         filterBruktInntekt(inntekt.inntektsListe, bruktInntektsPeriode)
     } ?: inntekt.inntektsListe
 
-    val inntektSiste12 = sumArbeidsInntekt(inntektsListe, fraMåned, 11)
-    val inntektSiste36 = sumArbeidsInntekt(inntektsListe, fraMåned, 35)
+    val arbeidsinntektSiste12 = sumArbeidsInntekt(inntektsListe, fraMåned, 11)
+    val arbeidsinntektSiste36 = sumArbeidsInntekt(inntektsListe, fraMåned, 35)
 
-    val arbeidsInntektOgNæringsInntektSiste12 = sumArbeidsInntekt(inntektsListe, fraMåned, 11) + sumNæringsInntekt(inntektsListe, fraMåned, 11)
-    val arbeidsInntektOgNæringsInntektSiste36 = sumArbeidsInntekt(inntektsListe, fraMåned, 35) + sumNæringsInntekt(inntektsListe, fraMåned, 35)
+    val inntektSiste12inkludertFangstOgFiske = arbeidsinntektSiste12 + sumNæringsInntekt(inntektsListe, fraMåned, 11)
+    val inntektSiste36inkludertFangstOgFiske = arbeidsinntektSiste36 + sumNæringsInntekt(inntektsListe, fraMåned, 35)
 }

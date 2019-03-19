@@ -2,7 +2,7 @@ package no.nav.dagpenger.regel.minsteinntekt
 
 class OppfyllerKravTilMinsteinntektTest {
 //
-//    fun generate36MånederArbeidsInntekt(): List<KlassifisertInntektMåned> {
+//    fun generate36MånederFangstOgFiskInntekt(): List<KlassifisertInntektMåned> {
 //        return (1..36).toList().map {
 //            KlassifisertInntektMåned(YearMonth.of(2019, 1).minusMonths(it.toLong()), listOf(KlassifisertInntekt(BigDecimal(50000), InntektKlasse.ARBEIDSINNTEKT)))
 //        }
@@ -98,7 +98,7 @@ class OppfyllerKravTilMinsteinntektTest {
 //    fun `Skal oppfylle krav til minsteinntekt ved nok arbeidsinntekt`() {
 //        val resultat = oppfyllerKravTilMinsteinntekt(
 //            false,
-//            Inntekt("123", generate36MånederArbeidsInntekt()),
+//            Inntekt("123", generate36MånederFangstOgFiskInntekt()),
 //            YearMonth.of(2019, 2),
 //            null,
 //            false
@@ -111,7 +111,7 @@ class OppfyllerKravTilMinsteinntektTest {
 //    fun `Hvis tidligere brukte inntekter finnes skal de ikke taes med`() {
 //        val resultat = oppfyllerKravTilMinsteinntekt(
 //            false,
-//            Inntekt("123", generate36MånederArbeidsInntekt()),
+//            Inntekt("123", generate36MånederFangstOgFiskInntekt()),
 //            YearMonth.of(2019, 2),
 //            InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2018, 10)),
 //            false
