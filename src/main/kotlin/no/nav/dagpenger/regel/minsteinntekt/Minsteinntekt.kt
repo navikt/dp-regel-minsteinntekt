@@ -53,11 +53,7 @@ class Minsteinntekt(val env: Environment) : River() {
         val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
         val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
         val bruktInntektsPeriode: InntektsPeriode? =
-            packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { serialized ->
-                checkNotNull(
-                    jsonAdapterInntektsPeriode.fromJson(serialized)
-                )
-            }
+            packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { jsonAdapterInntektsPeriode.fromJson(it) }
         val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
 
         val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
