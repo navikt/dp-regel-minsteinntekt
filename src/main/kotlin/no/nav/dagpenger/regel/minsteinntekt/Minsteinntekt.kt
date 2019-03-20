@@ -3,16 +3,12 @@ package no.nav.dagpenger.regel.minsteinntekt
 import de.huxhorn.sulky.ulid.ULID
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
-import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
-import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.streams.KafkaCredential
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
-import java.math.BigDecimal
-import java.time.YearMonth
 
 class Minsteinntekt(val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
@@ -75,49 +71,4 @@ class Minsteinntekt(val env: Environment) : River() {
 fun main(args: Array<String>) {
     val service = Minsteinntekt(Environment())
     service.start()
-}
-
-fun filterBruktInntekt(
-    inntektsListe: List<KlassifisertInntektMåned>,
-    bruktInntektsPeriode: InntektsPeriode
-): List<KlassifisertInntektMåned> {
-
-    return inntektsListe.filter {
-        it.årMåned.isBefore(bruktInntektsPeriode.førsteMåned) || it.årMåned.isAfter(bruktInntektsPeriode.sisteMåned)
-    }
-}
-
-fun sumArbeidsInntekt(inntektsListe: List<KlassifisertInntektMåned>, senesteMåned: YearMonth, lengde: Int): BigDecimal {
-    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
-
-    val gjeldendeMåneder = inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
-
-    val sumGjeldendeMåneder = gjeldendeMåneder
-        .flatMap {
-            it.klassifiserteInntekter
-                .filter { it.inntektKlasse == InntektKlasse.ARBEIDSINNTEKT }
-                .map { it.beløp }
-        }.fold(BigDecimal.ZERO, BigDecimal::add)
-
-    return sumGjeldendeMåneder
-}
-
-fun sumNæringsInntekt(inntektsListe: List<KlassifisertInntektMåned>, senesteMåned: YearMonth, lengde: Int): BigDecimal {
-    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
-
-    val gjeldendeMåneder = inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
-
-    val sumGjeldendeMåneder = gjeldendeMåneder
-        .flatMap {
-            it.klassifiserteInntekter
-                .filter { it.inntektKlasse == InntektKlasse.FANGST_FISKE }
-                .map { it.beløp }
-        }.fold(BigDecimal.ZERO, BigDecimal::add)
-
-    return sumGjeldendeMåneder
-}
-
-fun finnTidligsteMåned(senesteMåned: YearMonth, lengde: Int): YearMonth {
-
-    return senesteMåned.minusMonths(lengde.toLong())
 }
