@@ -114,13 +114,13 @@ class CreateInntektPerioderTest {
         assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
-        assertEquals(BigDecimal(24000), inntektsPerioder.find { it.periode == 1}?.andel)
-        assertEquals(BigDecimal(16000), inntektsPerioder.find { it.periode == 2}?.andel)
-        assertEquals(BigDecimal.ZERO, inntektsPerioder.find { it.periode == 3}?.andel)
+        assertEquals(BigDecimal(24000), inntektsPerioder.find { it.periode == 1 }?.andel)
+        assertEquals(BigDecimal(16000), inntektsPerioder.find { it.periode == 2 }?.andel)
+        assertEquals(BigDecimal.ZERO, inntektsPerioder.find { it.periode == 3 }?.andel)
         assertTrue(inntektsPerioder.none { it.inneholderFangstOgFisk })
     }
 
-    fun assertThreeCorrectPeriods(inntektsInfoListe: List<InntektInfo>, senesteMåned: YearMonth) {
+    fun assertThreeCorrectPeriods(inntektsInfoListe: List<InntektPeriodeInfo>, senesteMåned: YearMonth) {
         assertEquals(3, inntektsInfoListe.size)
 
         val førstePeriode = inntektsInfoListe.find { it.periode == 1 }

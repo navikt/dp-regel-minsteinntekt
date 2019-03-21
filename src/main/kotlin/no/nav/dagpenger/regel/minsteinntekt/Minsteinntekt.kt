@@ -1,5 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
@@ -20,10 +22,13 @@ class Minsteinntekt(val env: Environment) : River() {
 
     val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
     val jsonAdapterInntektsPeriode = moshiInstance.adapter(InntektsPeriode::class.java)
+    val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
+        moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))
 
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
+        const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
         const val INNTEKT = "inntektV1"
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val SENESTE_INNTEKTSMÅNED = "senesteInntektsmåned"
@@ -62,19 +67,20 @@ class Minsteinntekt(val env: Environment) : River() {
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
             REGELIDENTIFIKATOR,
-            evaluering.resultat == Resultat.JA,
-            createInntektPerioder(fakta)
+            evaluering.resultat == Resultat.JA
         )
+
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
+        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, createInntektPerioder(fakta)) { checkNotNull( jsonAdapterInntektPeriodeInfo.toJson(it)) }
         return packet
     }
 
-    fun createInntektPerioder(fakta: Fakta): List<InntektInfo> {
+    fun createInntektPerioder(fakta: Fakta): List<InntektPeriodeInfo> {
         val arbeidsInntekt = listOf(InntektKlasse.ARBEIDSINNTEKT)
         val medFangstOgFisk = listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE)
 
         return fakta.inntektsPerioder.toList().mapIndexed { index, list ->
-            InntektInfo(
+            InntektPeriodeInfo(
                 InntektsPeriode(
                     list.first().årMåned,
                     list.last().årMåned
@@ -93,7 +99,7 @@ fun main(args: Array<String>) {
     service.start()
 }
 
-data class InntektInfo(
+data class InntektPeriodeInfo(
     val inntektsPeriode: InntektsPeriode,
     val inntekt: BigDecimal,
     val periode: Int,

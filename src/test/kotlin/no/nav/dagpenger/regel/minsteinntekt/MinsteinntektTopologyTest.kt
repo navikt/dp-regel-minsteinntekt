@@ -76,7 +76,7 @@ class MinsteinntektTopologyTest {
             inntektsId = "12345",
             inntektsListe = listOf(
                 KlassifisertInntektMåned(
-                    årMåned = YearMonth.of(2019, 2),
+                    årMåned = YearMonth.of(2018, 2),
                     klassifiserteInntekter = listOf(
                         KlassifisertInntekt(
                             beløp = BigDecimal(25000),
@@ -116,9 +116,10 @@ class MinsteinntektTopologyTest {
             assertEquals("Minsteinntekt.v1", ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR])
 
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.INNTEKTSPERIODER] as List<InntektInfo>
+            val inntektsPerioder = ut.value().getNullableObjectValue(Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER, minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJson) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
-            assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.førsteMåned)
+            assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
+            assertEquals(BigDecimal(25000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
         }
     }
 }
