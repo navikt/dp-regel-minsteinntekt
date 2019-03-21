@@ -114,6 +114,7 @@ class MinsteinntektTopologyTest {
 
             assertTrue { ut.value().hasField(Minsteinntekt.MINSTEINNTEKT_RESULTAT) }
             assertEquals("Minsteinntekt.v1", ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR])
+            assertTrue((ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.INNTEKTSPERIODER] as List<*>).isNotEmpty())
         }
     }
 }

@@ -62,7 +62,8 @@ class Minsteinntekt(val env: Environment) : River() {
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
             REGELIDENTIFIKATOR,
-            evaluering.resultat == Resultat.JA
+            evaluering.resultat == Resultat.JA,
+            createInntektPerioder(fakta)
         )
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         return packet
