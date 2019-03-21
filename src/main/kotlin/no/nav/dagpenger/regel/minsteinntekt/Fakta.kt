@@ -15,7 +15,6 @@ data class Fakta(
     val fangstOgFisk: Boolean,
     val grunnbeløp: BigDecimal = BigDecimal(96883)
 ) {
-
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder(fraMåned)
 
     val inntektsPerioderUtenBruktInntekt = if (bruktInntektsPeriode == null) inntektsPerioder else inntekt.filterPeriod(
