@@ -114,7 +114,11 @@ class MinsteinntektTopologyTest {
 
             assertTrue { ut.value().hasField(Minsteinntekt.MINSTEINNTEKT_RESULTAT) }
             assertEquals("Minsteinntekt.v1", ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR])
-            assertTrue((ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.INNTEKTSPERIODER] as List<*>).isNotEmpty())
+
+            // test inntektsperioder are added to packet correctly
+            val inntektsPerioder = ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.INNTEKTSPERIODER] as List<InntektInfo>
+            assertEquals(3, inntektsPerioder.size)
+            assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.førsteMåned)
         }
     }
 }
