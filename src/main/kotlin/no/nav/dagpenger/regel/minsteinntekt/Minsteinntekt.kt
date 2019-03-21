@@ -1,10 +1,12 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
-import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.dagpenger.events.inntekt.v1.sumInntekt
 import no.nav.dagpenger.streams.KafkaCredential
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
@@ -12,7 +14,6 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
-import java.time.YearMonth
 
 class Minsteinntekt(val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
@@ -21,10 +22,13 @@ class Minsteinntekt(val env: Environment) : River() {
 
     val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
     val jsonAdapterInntektsPeriode = moshiInstance.adapter(InntektsPeriode::class.java)
+    val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
+        moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))
 
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
+        const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
         const val INNTEKT = "inntektV1"
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val SENESTE_INNTEKTSMÅNED = "senesteInntektsmåned"
@@ -47,12 +51,11 @@ class Minsteinntekt(val env: Environment) : River() {
     }
 
     override fun onPacket(packet: Packet): Packet {
-
         val inntekt: Inntekt =
             packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) }
         val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
         val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
-        val bruktInntektsPeriode: InntektsPeriode? =
+        val bruktInntektsPeriode =
             packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { jsonAdapterInntektsPeriode.fromJson(it) }
         val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
 
@@ -60,15 +63,34 @@ class Minsteinntekt(val env: Environment) : River() {
 
         val evaluering: Evaluering = inngangsVilkår.evaluer(fakta)
 
-        val resultat =
-            MinsteinntektSubsumsjon(
-                ulidGenerator.nextULID(),
-                ulidGenerator.nextULID(),
-                REGELIDENTIFIKATOR,
-                evaluering.resultat == Resultat.JA
-            )
+        val resultat = MinsteinntektSubsumsjon(
+            ulidGenerator.nextULID(),
+            ulidGenerator.nextULID(),
+            REGELIDENTIFIKATOR,
+            evaluering.resultat == Resultat.JA
+        )
+
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
+        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, createInntektPerioder(fakta)) { checkNotNull( jsonAdapterInntektPeriodeInfo.toJson(it)) }
         return packet
+    }
+
+    fun createInntektPerioder(fakta: Fakta): List<InntektPeriodeInfo> {
+        val arbeidsInntekt = listOf(InntektKlasse.ARBEIDSINNTEKT)
+        val medFangstOgFisk = listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE)
+
+        return fakta.inntektsPerioder.toList().mapIndexed { index, list ->
+            InntektPeriodeInfo(
+                InntektsPeriode(
+                    list.first().årMåned,
+                    list.last().årMåned
+                ),
+                list.sumInntekt(if (fakta.fangstOgFisk) medFangstOgFisk else arbeidsInntekt),
+                index + 1,
+                fakta.inntektsPerioderUtenBruktInntekt.toList()[index].any { it.klassifiserteInntekter.any { it.inntektKlasse == InntektKlasse.FANGST_FISKE } },
+                fakta.inntektsPerioderUtenBruktInntekt.toList()[index].sumInntekt(if (fakta.fangstOgFisk) medFangstOgFisk else arbeidsInntekt)
+            )
+        }
     }
 }
 
@@ -77,47 +99,10 @@ fun main(args: Array<String>) {
     service.start()
 }
 
-fun filterBruktInntekt(
-    inntektsListe: List<KlassifisertInntektMåned>,
-    bruktInntektsPeriode: InntektsPeriode
-): List<KlassifisertInntektMåned> {
-
-    return inntektsListe.filter {
-        it.årMåned.isBefore(bruktInntektsPeriode.førsteMåned) || it.årMåned.isAfter(bruktInntektsPeriode.sisteMåned)
-    }
-}
-
-fun sumArbeidsInntekt(inntektsListe: List<KlassifisertInntektMåned>, senesteMåned: YearMonth, lengde: Int): BigDecimal {
-    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
-
-    val gjeldendeMåneder = inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
-
-    val sumGjeldendeMåneder = gjeldendeMåneder
-        .flatMap {
-            it.klassifiserteInntekter
-                .filter { it.inntektKlasse == InntektKlasse.ARBEIDSINNTEKT }
-                .map { it.beløp }
-        }.fold(BigDecimal.ZERO, BigDecimal::add)
-
-    return sumGjeldendeMåneder
-}
-
-fun sumNæringsInntekt(inntektsListe: List<KlassifisertInntektMåned>, senesteMåned: YearMonth, lengde: Int): BigDecimal {
-    val tidligsteMåned = finnTidligsteMåned(senesteMåned, lengde)
-
-    val gjeldendeMåneder = inntektsListe.filter { it.årMåned <= senesteMåned && it.årMåned >= tidligsteMåned }
-
-    val sumGjeldendeMåneder = gjeldendeMåneder
-        .flatMap {
-            it.klassifiserteInntekter
-                .filter { it.inntektKlasse == InntektKlasse.FANGST_FISKE }
-                .map { it.beløp }
-        }.fold(BigDecimal.ZERO, BigDecimal::add)
-
-    return sumGjeldendeMåneder
-}
-
-fun finnTidligsteMåned(senesteMåned: YearMonth, lengde: Int): YearMonth {
-
-    return senesteMåned.minusMonths(lengde.toLong())
-}
+data class InntektPeriodeInfo(
+    val inntektsPeriode: InntektsPeriode,
+    val inntekt: BigDecimal,
+    val periode: Int,
+    val inneholderFangstOgFisk: Boolean,
+    val andel: BigDecimal
+)

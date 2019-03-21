@@ -21,7 +21,7 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
         )
 
         // når
-        val evaluering = minsteinntektEtterAvtjentVerneplikt.evaluer(fakta)
+        val evaluering = verneplikt.evaluer(fakta)
 
         // så
         assertEquals(Resultat.JA, evaluering.resultat)
@@ -40,7 +40,7 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
         )
 
         // når
-        val evaluering = minsteinntektEtterAvtjentVerneplikt.evaluer(fakta)
+        val evaluering = verneplikt.evaluer(fakta)
 
         // så
         assertEquals(Resultat.NEI, evaluering.resultat)
