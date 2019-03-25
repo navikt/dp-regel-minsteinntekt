@@ -98,9 +98,10 @@ class MinsteinntektTopologyTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", inntekt) { jsonAdapterInntekt.toJson(it) }
         packet.putValue(
-            "bruktInntektsPeriode",
-            InntektsPeriode(YearMonth.now(), YearMonth.now())
-        ) { jsonAdapterInntektsPeriode.toJson(it) }
+            "bruktInntektsPeriode", mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            ))
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
             val inputRecord = factory.create(packet)

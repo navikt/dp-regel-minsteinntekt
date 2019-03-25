@@ -14,6 +14,7 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
+import java.time.YearMonth
 
 class Minsteinntekt(val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
@@ -55,8 +56,7 @@ class Minsteinntekt(val env: Environment) : River() {
             packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) }
         val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
         val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
-        val bruktInntektsPeriode =
-            packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE) { jsonAdapterInntektsPeriode.fromJson(it) }
+        val bruktInntektsPeriode = getInntektsPeriode(packet)
         val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
 
         val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
@@ -71,8 +71,23 @@ class Minsteinntekt(val env: Environment) : River() {
         )
 
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
-        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, createInntektPerioder(fakta)) { checkNotNull( jsonAdapterInntektPeriodeInfo.toJson(it)) }
+        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, createInntektPerioder(fakta)) {
+            checkNotNull(
+                jsonAdapterInntektPeriodeInfo.toJson(it)
+            )
+        }
         return packet
+    }
+
+    private fun getInntektsPeriode(packet: Packet): InntektsPeriode? {
+        return if (packet.hasField(BRUKT_INNTEKTSPERIODE)) {
+            packet.getMapValue(BRUKT_INNTEKTSPERIODE).runCatching {
+                InntektsPeriode(
+                    førsteMåned = YearMonth.parse(this["førsteMåned"] as String),
+                    sisteMåned = YearMonth.parse(this["sisteMåned"] as String)
+                )
+            }.getOrNull()
+        } else null
     }
 
     fun createInntektPerioder(fakta: Fakta): List<InntektPeriodeInfo> {
