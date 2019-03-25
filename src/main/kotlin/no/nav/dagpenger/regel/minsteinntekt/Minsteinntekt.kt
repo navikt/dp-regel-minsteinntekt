@@ -62,7 +62,6 @@ class Minsteinntekt(val env: Environment) : River() {
         val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
 
         val evaluering: Evaluering = inngangsVilkår.evaluer(fakta)
-
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
