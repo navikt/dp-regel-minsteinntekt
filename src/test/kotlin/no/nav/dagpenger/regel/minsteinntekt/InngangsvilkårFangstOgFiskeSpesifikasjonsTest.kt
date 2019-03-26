@@ -14,7 +14,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList()),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true
@@ -32,7 +32,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
@@ -51,7 +51,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true
@@ -67,7 +67,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList()),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true
@@ -85,7 +85,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
@@ -104,7 +104,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true
@@ -122,7 +122,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true
@@ -140,7 +140,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false

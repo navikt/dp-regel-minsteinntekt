@@ -14,7 +14,7 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
         // gitt fakta
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList()),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
@@ -33,7 +33,7 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
         // gitt fakta
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList()),
-            fraMåned = YearMonth.of(2019, 4),
+            senesteInntektsMåned = YearMonth.of(2019, 4),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false

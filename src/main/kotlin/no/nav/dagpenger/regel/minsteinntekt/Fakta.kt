@@ -9,18 +9,18 @@ import java.time.YearMonth
 
 data class Fakta(
     val inntekt: Inntekt,
-    val fraMåned: YearMonth,
+    val senesteInntektsMåned: YearMonth,
     val bruktInntektsPeriode: InntektsPeriode? = null,
     val verneplikt: Boolean,
     val fangstOgFisk: Boolean,
     val grunnbeløp: BigDecimal = BigDecimal(96883)
 ) {
-    val inntektsPerioder = inntekt.splitIntoInntektsPerioder(fraMåned)
+    val inntektsPerioder = inntekt.splitIntoInntektsPerioder(senesteInntektsMåned)
 
     val inntektsPerioderUtenBruktInntekt = if (bruktInntektsPeriode == null) inntektsPerioder else inntekt.filterPeriod(
         bruktInntektsPeriode.førsteMåned,
         bruktInntektsPeriode.sisteMåned
-    ).splitIntoInntektsPerioder(fraMåned)
+    ).splitIntoInntektsPerioder(senesteInntektsMåned)
 
     val arbeidsinntektSiste12: BigDecimal = inntektsPerioderUtenBruktInntekt.first.sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
     val arbeidsinntektSiste36: BigDecimal = inntektsPerioderUtenBruktInntekt.all().sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
