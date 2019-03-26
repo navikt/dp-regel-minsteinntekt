@@ -22,7 +22,6 @@ class Minsteinntekt(val env: Environment) : River() {
     val ulidGenerator = ULID()
 
     val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
-    val jsonAdapterInntektsPeriode = moshiInstance.adapter(InntektsPeriode::class.java)
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
         moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))
 
@@ -56,7 +55,7 @@ class Minsteinntekt(val env: Environment) : River() {
             packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) }
         val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
         val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
-        val bruktInntektsPeriode = null // getInntektsPeriode(packet)
+        val bruktInntektsPeriode = getInntektsPeriode(packet)
         val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
 
         val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
