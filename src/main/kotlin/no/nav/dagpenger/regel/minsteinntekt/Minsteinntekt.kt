@@ -55,7 +55,7 @@ class Minsteinntekt(val env: Environment) : River() {
             packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) }
         val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
         val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
-        val bruktInntektsPeriode = getInntektsPeriode(packet)
+        val bruktInntektsPeriode = null // getInntektsPeriode(packet)
         val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
 
         val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
