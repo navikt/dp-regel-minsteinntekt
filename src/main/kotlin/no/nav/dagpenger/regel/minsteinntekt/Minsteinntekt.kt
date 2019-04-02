@@ -14,16 +14,17 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
-import java.time.YearMonth
 
 class Minsteinntekt(val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
     val ulidGenerator = ULID()
 
-    val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
+    private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
-        moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))
+        moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!
+
+    private val bruktInntektsPeriodeAdapter = moshiInstance.adapter<InntektsPeriode>(InntektsPeriode::class.java)
 
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
@@ -52,10 +53,11 @@ class Minsteinntekt(val env: Environment) : River() {
 
     override fun onPacket(packet: Packet): Packet {
         val inntekt: Inntekt =
-            packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJson(serialized)) }
+            packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJsonValue(serialized)) }
         val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
         val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
-        val bruktInntektsPeriode = null // getInntektsPeriode(packet)
+        val bruktInntektsPeriode =
+            packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE, bruktInntektsPeriodeAdapter::fromJsonValue)
         val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
 
         val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
@@ -69,23 +71,11 @@ class Minsteinntekt(val env: Environment) : River() {
         )
 
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
-        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, createInntektPerioder(fakta)) {
-            checkNotNull(
-                jsonAdapterInntektPeriodeInfo.toJson(it)
-            )
-        }
-        return packet
-    }
+        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
+            jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
+        ))
 
-    private fun getInntektsPeriode(packet: Packet): InntektsPeriode? {
-        return if (packet.hasField(BRUKT_INNTEKTSPERIODE)) {
-            packet.getMapValue(BRUKT_INNTEKTSPERIODE).runCatching {
-                InntektsPeriode(
-                    førsteMåned = YearMonth.parse(this["førsteMåned"] as String),
-                    sisteMåned = YearMonth.parse(this["sisteMåned"] as String)
-                )
-            }.getOrNull()
-        } else null
+        return packet
     }
 
     fun createInntektPerioder(fakta: Fakta): List<InntektPeriodeInfo> {

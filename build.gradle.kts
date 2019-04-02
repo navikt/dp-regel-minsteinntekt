@@ -55,8 +55,8 @@ val orgJsonVersion = "20180813"
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("no.nav.dagpenger:streams:0.3.1-SNAPSHOT")
-    implementation("no.nav.dagpenger:events:0.3.5-SNAPSHOT")
+    implementation("no.nav.dagpenger:streams:0.3.3-SNAPSHOT")
+    implementation("no.nav.dagpenger:events:0.3.8-SNAPSHOT")
 
     implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
 
