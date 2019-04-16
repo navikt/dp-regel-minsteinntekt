@@ -1,0 +1,9 @@
+bases:
+  - ../base
+
+commonLabels:
+  app: dp-regel-minsteinntekt
+  team: teamdagpenger
+
+patchesStrategicMerge:
+  - nais.yaml
