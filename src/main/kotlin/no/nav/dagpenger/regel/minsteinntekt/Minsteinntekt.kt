@@ -34,7 +34,7 @@ class Minsteinntekt(val env: Environment) : River() {
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val SENESTE_INNTEKTSMÅNED = "senesteInntektsmåned"
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
-        const val FANGST_OG_FISK = "fangstOgFisk"
+        const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
     }
 
     override fun getConfig() = streamConfig(

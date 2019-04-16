@@ -92,7 +92,7 @@ class MinsteinntektTopologyTest {
         {
             "senesteInntektsmåned":"2018-03",
             "harAvtjentVerneplikt": true,
-            "fangstOgFisk": false
+            "oppfyllerKravTilFangstOgFisk": false
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -121,6 +121,67 @@ class MinsteinntektTopologyTest {
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(25000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
+        }
+    }
+
+    @Test
+    fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
+        val minsteinntekt = Minsteinntekt(
+            Environment(
+                username = "bogus",
+                password = "bogus"
+            )
+        )
+
+        val inntekt: Inntekt = Inntekt(
+            inntektsId = "12345",
+            inntektsListe = listOf(
+                KlassifisertInntektMåned(
+                    årMåned = YearMonth.of(2018, 2),
+                    klassifiserteInntekter = listOf(
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(25000),
+                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                        ),
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(1000),
+                            inntektKlasse = InntektKlasse.FANGST_FISKE
+                        )
+                    )
+                )
+            )
+        )
+
+        val json = """
+        {
+            "senesteInntektsmåned":"2018-03",
+            "harAvtjentVerneplikt": true,
+            "oppfyllerKravTilFangstOgFisk": true
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
+        packet.putValue(
+            "bruktInntektsPeriode", mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            ))
+
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
+            val inputRecord = factory.create(packet)
+            topologyTestDriver.pipeInput(inputRecord)
+
+            val ut = topologyTestDriver.readOutput(
+                DAGPENGER_BEHOV_PACKET_EVENT.name,
+                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
+                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
+            )
+
+            // test inntektsperioder are added to packet correctly
+            val inntektsPerioder = ut.value().getNullableObjectValue(Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER, minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue) as List<InntektPeriodeInfo>
+            assertEquals(3, inntektsPerioder.size)
+            assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
+            assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
         }
     }
 }
