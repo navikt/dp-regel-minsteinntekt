@@ -4,7 +4,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
 import no.nav.dagpenger.events.Packet
-import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
 import no.nav.dagpenger.streams.KafkaCredential
@@ -20,11 +19,8 @@ class Minsteinntekt(val env: Environment) : River() {
     override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
     val ulidGenerator = ULID()
 
-    private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
         moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!
-
-    private val bruktInntektsPeriodeAdapter = moshiInstance.adapter<InntektsPeriode>(InntektsPeriode::class.java)
 
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
@@ -52,15 +48,7 @@ class Minsteinntekt(val env: Environment) : River() {
     }
 
     override fun onPacket(packet: Packet): Packet {
-        val inntekt: Inntekt =
-            packet.getObjectValue(INNTEKT) { serialized -> checkNotNull(jsonAdapterInntekt.fromJsonValue(serialized)) }
-        val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
-        val senesteInntektsMåned = packet.getYearMonth(SENESTE_INNTEKTSMÅNED)
-        val bruktInntektsPeriode =
-            packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE, bruktInntektsPeriodeAdapter::fromJsonValue)
-        val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
-
-        val fakta = Fakta(inntekt, senesteInntektsMåned, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk)
+        val fakta = packetToFakta(packet)
 
         val evaluering: Evaluering = inngangsVilkår.evaluer(fakta)
         val resultat = MinsteinntektSubsumsjon(
