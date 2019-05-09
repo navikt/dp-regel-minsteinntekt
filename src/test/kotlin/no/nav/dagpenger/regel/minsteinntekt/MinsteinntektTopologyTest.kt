@@ -34,7 +34,6 @@ class MinsteinntektTopologyTest {
         }
 
         val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
-        val jsonAdapterInntektsPeriode = moshiInstance.adapter(InntektsPeriode::class.java)
     }
 
     @Test
