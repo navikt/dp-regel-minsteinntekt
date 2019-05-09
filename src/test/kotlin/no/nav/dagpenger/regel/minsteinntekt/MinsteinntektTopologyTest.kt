@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.net.URI
 import java.time.YearMonth
 import java.util.Properties
 
@@ -181,6 +182,37 @@ class MinsteinntektTopologyTest {
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
+        }
+    }
+
+    @Test
+    fun ` should add problem on failure`() {
+        val minsteinntekt = Minsteinntekt(
+            Environment(
+                username = "bogus",
+                password = "bogus"
+            )
+        )
+
+        val inntekt = Inntekt(inntektsId = "12345", inntektsListe = emptyList())
+
+        val packet = Packet()
+        packet.putValue("senesteInntektsmåned", "ERROR")
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
+
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
+            val inputRecord = factory.create(packet)
+            topologyTestDriver.pipeInput(inputRecord)
+
+            val ut = topologyTestDriver.readOutput(
+                DAGPENGER_BEHOV_PACKET_EVENT.name,
+                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
+                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
+            )
+
+            assert(ut.value().hasProblem())
+            assertEquals(URI("urn:dp:error:regel"), ut.value().getProblem()!!.type)
+            assertEquals(URI("urn:dp:regel:minsteinntekt"), ut.value().getProblem()!!.instance)
         }
     }
 }

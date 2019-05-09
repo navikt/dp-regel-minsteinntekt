@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
 import no.nav.dagpenger.events.Packet
+import no.nav.dagpenger.events.Problem
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
 import no.nav.dagpenger.streams.KafkaCredential
@@ -13,6 +14,7 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
+import java.net.URI
 
 class Minsteinntekt(val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
@@ -63,6 +65,17 @@ class Minsteinntekt(val env: Environment) : River() {
             jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
         ))
 
+        return packet
+    }
+
+    override fun onFailure(packet: Packet): Packet {
+        packet.addProblem(
+            Problem(
+                type = URI("urn:dp:error:regel"),
+                title = "Ukjent feil ved bruk av minsteinntektregel",
+                instance = URI("urn:dp:regel:minsteinntekt")
+            )
+        )
         return packet
     }
 
