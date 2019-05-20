@@ -68,7 +68,7 @@ class Minsteinntekt(val env: Environment) : River() {
         return packet
     }
 
-    override fun onFailure(packet: Packet): Packet {
+    override fun onFailure(packet: Packet, error: Throwable?): Packet {
         packet.addProblem(
             Problem(
                 type = URI("urn:dp:error:regel"),
