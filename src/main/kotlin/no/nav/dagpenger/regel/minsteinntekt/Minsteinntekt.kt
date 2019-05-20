@@ -3,6 +3,8 @@ package no.nav.dagpenger.regel.minsteinntekt
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
+import io.prometheus.client.CollectorRegistry
+import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -15,10 +17,11 @@ import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.net.URI
-
-class Minsteinntekt(val env: Environment) : River() {
+private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
+class Minsteinntekt(private val env: Environment) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
+
     val ulidGenerator = ULID()
 
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
@@ -52,7 +55,7 @@ class Minsteinntekt(val env: Environment) : River() {
     override fun onPacket(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering = inngangsVilkår.evaluer(fakta)
+        val evaluering: Evaluering = narePrometheus.tellEvaluering { inngangsVilkår.evaluer(fakta) }
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
