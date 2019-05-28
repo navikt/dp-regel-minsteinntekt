@@ -47,8 +47,7 @@ class Minsteinntekt(private val env: Environment) : River() {
     override fun filterPredicates(): List<Predicate<String, Packet>> {
         return listOf(
             Predicate { _, packet -> !packet.hasField(MINSTEINNTEKT_RESULTAT) },
-            Predicate { _, packet -> packet.hasField(INNTEKT) },
-            Predicate { _, packet -> packet.hasField(SENESTE_INNTEKTSMÅNED) }
+            Predicate { _, packet -> packet.hasField(INNTEKT) }
         )
     }
 

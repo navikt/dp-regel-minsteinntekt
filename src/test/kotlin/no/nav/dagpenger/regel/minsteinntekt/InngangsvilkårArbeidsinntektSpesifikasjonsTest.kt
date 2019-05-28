@@ -16,8 +16,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 12 mnd`() {
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", emptyList()),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
@@ -34,8 +33,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
         val inntekt = generateArbeidsInntekt(1..3, BigDecimal(1))
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
@@ -53,8 +51,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
         val inntekt = generate12MånederArbeidsInntekt()
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
@@ -69,8 +66,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 36 mnd`() {
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", emptyList()),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
@@ -87,8 +83,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
         val inntekt = generateArbeidsInntekt(1..24, BigDecimal(1))
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
@@ -106,8 +101,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
         val inntekt = generate36MånederArbeidsInntekt()
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
@@ -124,8 +118,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
         val inntekt = generateFangstOgFiske(1..12, BigDecimal(50000))
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
@@ -142,8 +135,7 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
         val inntekt = generateFangstOgFiske(1..36, BigDecimal(50000))
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt),
-            senesteInntektsMåned = YearMonth.of(2019, 4),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false
