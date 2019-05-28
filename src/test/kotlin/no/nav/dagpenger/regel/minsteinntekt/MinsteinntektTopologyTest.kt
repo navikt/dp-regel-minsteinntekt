@@ -37,7 +37,7 @@ class MinsteinntektTopologyTest {
     }
 
     @Test
-    fun ` dagpengebehov without inntekt and senesteinntektsmåned should not be processed`() {
+    fun ` dagpengebehov without inntekt should not be processed`() {
         val minsteinntekt = Minsteinntekt(
             Environment(
                 username = "bogus",
@@ -91,7 +91,6 @@ class MinsteinntektTopologyTest {
 
         val json = """
         {
-            "senesteInntektsmåned":"2018-03",
             "harAvtjentVerneplikt": true,
             "oppfyllerKravTilFangstOgFisk": false
         }""".trimIndent()
