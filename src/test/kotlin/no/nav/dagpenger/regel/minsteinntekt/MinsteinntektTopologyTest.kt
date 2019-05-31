@@ -37,7 +37,7 @@ class MinsteinntektTopologyTest {
     }
 
     @Test
-    fun ` dagpengebehov without inntekt and senesteinntektsmåned should not be processed`() {
+    fun ` dagpengebehov without inntekt should not be processed`() {
         val minsteinntekt = Minsteinntekt(
             Environment(
                 username = "bogus",
@@ -85,12 +85,12 @@ class MinsteinntektTopologyTest {
                     )
 
                 )
-            )
+            ),
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
         )
 
         val json = """
         {
-            "senesteInntektsmåned":"2018-03",
             "harAvtjentVerneplikt": true,
             "oppfyllerKravTilFangstOgFisk": false
         }""".trimIndent()
@@ -101,7 +101,8 @@ class MinsteinntektTopologyTest {
             "bruktInntektsPeriode", mapOf(
                 "førsteMåned" to YearMonth.now().toString(),
                 "sisteMåned" to YearMonth.now().toString()
-            ))
+            )
+        )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
             val inputRecord = factory.create(packet)
@@ -114,12 +115,18 @@ class MinsteinntektTopologyTest {
             )
 
             assertTrue { ut.value().hasField(Minsteinntekt.MINSTEINNTEKT_RESULTAT) }
-            assertEquals("Minsteinntekt.v1", ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR])
+            assertEquals(
+                "Minsteinntekt.v1",
+                ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
+            )
 
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getNullableObjectValue(Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER, minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue) as List<InntektPeriodeInfo>
+            val inntektsPerioder = ut.value().getNullableObjectValue(
+                Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
+                minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
+            ) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
-            assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
+            assertEquals(YearMonth.of(2018, 2), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(25000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
         }
     }
@@ -149,12 +156,12 @@ class MinsteinntektTopologyTest {
                         )
                     )
                 )
-            )
+            ),
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3)
         )
 
         val json = """
         {
-            "senesteInntektsmåned":"2018-03",
             "harAvtjentVerneplikt": true,
             "oppfyllerKravTilFangstOgFisk": true
         }""".trimIndent()
@@ -165,7 +172,8 @@ class MinsteinntektTopologyTest {
             "bruktInntektsPeriode", mapOf(
                 "førsteMåned" to YearMonth.now().toString(),
                 "sisteMåned" to YearMonth.now().toString()
-            ))
+            )
+        )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
             val inputRecord = factory.create(packet)
@@ -178,7 +186,10 @@ class MinsteinntektTopologyTest {
             )
 
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getNullableObjectValue(Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER, minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue) as List<InntektPeriodeInfo>
+            val inntektsPerioder = ut.value().getNullableObjectValue(
+                Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
+                minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
+            ) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
@@ -194,10 +205,11 @@ class MinsteinntektTopologyTest {
             )
         )
 
-        val inntekt = Inntekt(inntektsId = "12345", inntektsListe = emptyList())
+        val inntekt =
+            Inntekt(inntektsId = "12345", inntektsListe = emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.now())
 
         val packet = Packet()
-        packet.putValue("senesteInntektsmåned", "ERROR")
+        packet.putValue("oppfyllerKravTilFangstOgFisk", "ERROR")
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->

@@ -13,11 +13,16 @@ class CreateInntektPerioderTest {
 
     @Test
     fun `createInntektPerioder correctly for no inntekt`() {
-        val senesteMåned = YearMonth.of(2019, 3)
-        val fakta = Fakta(Inntekt("id", emptyList()), senesteMåned, null, false, fangstOgFisk = false)
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 3)
+        val fakta = Fakta(
+            Inntekt("id", emptyList(), sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
+            null,
+            false,
+            fangstOgFisk = false
+        )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
-        assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
+        assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal.ZERO })
         assertTrue(inntektsPerioder.all { it.andel == BigDecimal.ZERO })
@@ -26,17 +31,21 @@ class CreateInntektPerioderTest {
 
     @Test
     fun `createInntektPerioder correctly for constant arbeidsinntekt`() {
-        val senesteMåned = YearMonth.of(2019, 1)
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
+        val inntektsListe = generateArbeidsinntekt(36, BigDecimal(1000), sisteAvsluttendeKalenderMåned)
         val fakta = Fakta(
-            Inntekt("id", generateArbeidsinntekt(36, BigDecimal(1000), senesteMåned)),
-            senesteMåned,
+            Inntekt(
+                "id",
+                inntektsListe,
+                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
+            ),
             null,
             false,
             fangstOgFisk = false
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
-        assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
+        assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(12000) })
         assertTrue(inntektsPerioder.all { it.andel == BigDecimal(12000) })
@@ -45,16 +54,23 @@ class CreateInntektPerioderTest {
 
     @Test
     fun `createInntektPerioder correctly for inntekt with both types when fangstOgFiske=false`() {
-        val senesteMåned = YearMonth.of(2019, 1)
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
+        val inntektsListe = generateArbeidsOgFangstOgFiskInntekt(
+            36,
+            BigDecimal(2000),
+            BigDecimal(2000),
+            sisteAvsluttendeKalenderMåned
+        )
         val fakta = Fakta(
             Inntekt(
                 "id",
-                generateArbeidsOgFangstOgFiskInntekt(36, BigDecimal(2000), BigDecimal(2000), senesteMåned)
-            ), senesteMåned, null, false, fangstOgFisk = false
+                inntektsListe,
+                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
+            ), null, false, fangstOgFisk = false
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
-        assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
+        assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
         assertTrue(inntektsPerioder.all { it.andel == BigDecimal(24000) })
@@ -63,16 +79,19 @@ class CreateInntektPerioderTest {
 
     @Test
     fun `createInntektPerioder correctly for inntekt with both types when fangstOgFiske=true`() {
-        val senesteMåned = YearMonth.of(2019, 1)
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
+        val inntektsListe =
+            generateArbeidsOgFangstOgFiskInntekt(36, BigDecimal(2000), BigDecimal(2000), sisteAvsluttendeKalenderMåned)
         val fakta = Fakta(
             Inntekt(
                 "id",
-                generateArbeidsOgFangstOgFiskInntekt(36, BigDecimal(2000), BigDecimal(2000), senesteMåned)
-            ), senesteMåned, null, false, fangstOgFisk = true
+                inntektsListe,
+                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
+            ), null, false, fangstOgFisk = true
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
-        assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
+        assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(48000) })
         assertTrue(inntektsPerioder.all { it.andel == BigDecimal(48000) })
@@ -81,17 +100,17 @@ class CreateInntektPerioderTest {
 
     @Test
     fun `createInntektPerioder correctly for constant fangstogfiskeinntekt`() {
-        val senesteMåned = YearMonth.of(2019, 1)
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
+        val inntektsListe = generateFangstOgFiskInntekt(36, BigDecimal(2000), sisteAvsluttendeKalenderMåned)
         val fakta = Fakta(
-            Inntekt("id", generateFangstOgFiskInntekt(36, BigDecimal(2000), senesteMåned)),
-            senesteMåned,
+            Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             null,
             false,
             fangstOgFisk = true
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
-        assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
+        assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
         assertTrue(inntektsPerioder.all { it.andel == BigDecimal(24000) })
@@ -100,18 +119,18 @@ class CreateInntektPerioderTest {
 
     @Test
     fun `createInntektPerioder correctly excludes brukt inntekt`() {
-        val senesteMåned = YearMonth.of(2019, 3)
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 3)
 
+        val inntektsListe = generateArbeidsinntekt(36, BigDecimal(2000), sisteAvsluttendeKalenderMåned)
         val fakta = Fakta(
-            Inntekt("id", generateArbeidsinntekt(36, BigDecimal(2000), senesteMåned)),
-            senesteMåned,
+            Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2017, 7)),
             false,
             fangstOgFisk = false
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
-        assertThreeCorrectPeriods(inntektsPerioder, senesteMåned)
+        assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
         assertEquals(BigDecimal(24000), inntektsPerioder.find { it.periode == 1 }?.andel)

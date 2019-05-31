@@ -11,14 +11,14 @@ class PacketToFaktaTest {
 
     val emptyInntekt: Inntekt = Inntekt(
         inntektsId = "12345",
-        inntektsListe = emptyList()
+        inntektsListe = emptyList(),
+        sisteAvsluttendeKalenderMåned = YearMonth.now()
     )
 
     @Test
     fun ` should map fangst_og_fisk from packet to Fakta `() {
         val json = """
         {
-            "senesteInntektsmåned":"2018-03",
             "oppfyllerKravTilFangstOgFisk": true
         }""".trimIndent()
 
@@ -34,7 +34,6 @@ class PacketToFaktaTest {
     fun ` should map avtjent_verneplikt from packet to Fakta `() {
         val json = """
         {
-            "senesteInntektsmåned":"2018-03",
             "harAvtjentVerneplikt": true
         }""".trimIndent()
 
@@ -50,7 +49,6 @@ class PacketToFaktaTest {
     fun ` should map brukt_inntektsperiode from packet to Fakta `() {
         val json = """
         {
-            "senesteInntektsmåned":"2018-03",
             "bruktInntektsPeriode": {"førsteMåned":"2019-02", "sisteMåned":"2019-03"}
         }""".trimIndent()
 
@@ -67,7 +65,6 @@ class PacketToFaktaTest {
     fun ` should map inntekt from packet to Fakta `() {
         val json = """
         {
-            "senesteInntektsmåned":"2018-03"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -76,20 +73,5 @@ class PacketToFaktaTest {
         val fakta = packetToFakta(packet)
 
         assertEquals("12345", fakta.inntekt.inntektsId)
-    }
-
-    @Test
-    fun ` should map seneste_inntektsmåned from packet to Fakta `() {
-        val json = """
-        {
-            "senesteInntektsmåned":"2018-03"
-        }""".trimIndent()
-
-        val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
-
-        val fakta = packetToFakta(packet)
-
-        assertEquals(YearMonth.of(2018, 3), fakta.senesteInntektsMåned)
     }
 }
