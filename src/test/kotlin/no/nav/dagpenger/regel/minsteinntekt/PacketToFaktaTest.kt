@@ -19,7 +19,8 @@ class PacketToFaktaTest {
     fun ` should map fangst_og_fisk from packet to Fakta `() {
         val json = """
         {
-            "oppfyllerKravTilFangstOgFisk": true
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2019-04-10"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -34,7 +35,8 @@ class PacketToFaktaTest {
     fun ` should map avtjent_verneplikt from packet to Fakta `() {
         val json = """
         {
-            "harAvtjentVerneplikt": true
+            "harAvtjentVerneplikt": true,
+            "beregningsDato": "2019-04-10"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -49,7 +51,8 @@ class PacketToFaktaTest {
     fun ` should map brukt_inntektsperiode from packet to Fakta `() {
         val json = """
         {
-            "bruktInntektsPeriode": {"førsteMåned":"2019-02", "sisteMåned":"2019-03"}
+            "bruktInntektsPeriode": {"førsteMåned":"2019-02", "sisteMåned":"2019-03"},
+            "beregningsDato": "2019-04-10"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -65,6 +68,7 @@ class PacketToFaktaTest {
     fun ` should map inntekt from packet to Fakta `() {
         val json = """
         {
+            "beregningsDato": "2019-04-10"
         }""".trimIndent()
 
         val packet = Packet(json)

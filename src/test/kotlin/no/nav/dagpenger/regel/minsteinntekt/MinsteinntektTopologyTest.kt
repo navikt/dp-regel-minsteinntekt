@@ -92,7 +92,8 @@ class MinsteinntektTopologyTest {
         val json = """
         {
             "harAvtjentVerneplikt": true,
-            "oppfyllerKravTilFangstOgFisk": false
+            "oppfyllerKravTilFangstOgFisk": false,
+            "beregningsDato": "2018-03-10"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -163,7 +164,8 @@ class MinsteinntektTopologyTest {
         val json = """
         {
             "harAvtjentVerneplikt": true,
-            "oppfyllerKravTilFangstOgFisk": true
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2018-04-10"
         }""".trimIndent()
 
         val packet = Packet(json)

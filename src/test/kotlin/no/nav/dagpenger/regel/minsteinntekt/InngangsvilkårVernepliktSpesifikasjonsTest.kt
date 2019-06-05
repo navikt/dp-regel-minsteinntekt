@@ -4,6 +4,7 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.YearMonth
 
 internal class InngangsvilkårVernepliktSpesifikasjonsTest {
@@ -16,7 +17,8 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = false
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         // når
@@ -34,7 +36,8 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = false,
-            fangstOgFisk = false
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         // når

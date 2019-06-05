@@ -13,7 +13,8 @@ data class Fakta(
     val bruktInntektsPeriode: InntektsPeriode? = null,
     val verneplikt: Boolean,
     val fangstOgFisk: Boolean,
-    val grunnbeløp: BigDecimal = getGrunnbeløpForDato(LocalDate.now()).verdi
+    val beregningsdato: LocalDate,
+    val grunnbeløp: BigDecimal = getGrunnbeløpForDato(beregningsdato).verdi
 ) {
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 
