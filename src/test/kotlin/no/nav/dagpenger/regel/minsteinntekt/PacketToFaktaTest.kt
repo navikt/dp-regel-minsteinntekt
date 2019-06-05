@@ -5,6 +5,7 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.YearMonth
 
 class PacketToFaktaTest {
@@ -29,6 +30,38 @@ class PacketToFaktaTest {
         val fakta = packetToFakta(packet)
 
         assertTrue(fakta.fangstOgFisk)
+    }
+
+    @Test
+    fun ` should map beregningsdato from packet to Fakta `() {
+        val json = """
+        {
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2019-04-10"
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+
+        val fakta = packetToFakta(packet)
+
+        assertEquals(LocalDate.of(2019, 4, 10), fakta.beregningsdato)
+    }
+
+    @Test
+    fun ` should have the right grunnbeløp `() {
+        val json = """
+        {
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2019-05-30"
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+
+        val fakta = packetToFakta(packet)
+
+        assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
     }
 
     @Test
