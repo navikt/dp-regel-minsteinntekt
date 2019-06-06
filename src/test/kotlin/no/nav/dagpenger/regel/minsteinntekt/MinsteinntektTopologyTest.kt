@@ -45,12 +45,61 @@ class MinsteinntektTopologyTest {
             )
         )
 
+        val json = """
+            {
+                "beregningsDato": "2019-05-20"
+            }
+            """.trimIndent()
+
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
+            val inputRecord = factory.create(Packet(json))
+            topologyTestDriver.pipeInput(inputRecord)
+
+            val ut = topologyTestDriver.readOutput(
+                DAGPENGER_BEHOV_PACKET_EVENT.name,
+                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
+                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
+            )
+
+            assertTrue { null == ut }
+        }
+    }
+
+    @Test
+    fun ` dagpengebehov without beregningsDato should not be processed`() {
+        val minsteinntekt = Minsteinntekt(
+            Environment(
+                username = "bogus",
+                password = "bogus"
+            )
+        )
+
+        val inntekt: Inntekt = Inntekt(
+            inntektsId = "12345",
+            inntektsListe = listOf(
+                KlassifisertInntektMåned(
+                    årMåned = YearMonth.of(2018, 2),
+                    klassifiserteInntekter = listOf(
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(25000),
+                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                        )
+                    )
+
+                )
+            ),
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
+        )
+
         val emptyjsonBehov = """
             {}
             """.trimIndent()
 
+        val packet = Packet(emptyjsonBehov)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
+
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(Packet(emptyjsonBehov))
+            val inputRecord = factory.create(packet)
             topologyTestDriver.pipeInput(inputRecord)
 
             val ut = topologyTestDriver.readOutput(
@@ -207,10 +256,16 @@ class MinsteinntektTopologyTest {
             )
         )
 
+        val json = """
+            {
+                "beregningsDato": "2019-05-20"
+            }
+            """.trimIndent()
+
         val inntekt =
             Inntekt(inntektsId = "12345", inntektsListe = emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.now())
 
-        val packet = Packet()
+        val packet = Packet(json)
         packet.putValue("oppfyllerKravTilFangstOgFisk", "ERROR")
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
 
