@@ -4,6 +4,7 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.assertEquals
 
@@ -16,7 +17,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = true
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -34,6 +36,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = BigDecimal(4)
         )
 
@@ -51,7 +54,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = true
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -66,7 +70,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = true
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)
@@ -84,6 +89,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = BigDecimal(23)
         )
 
@@ -101,7 +107,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = true
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)
@@ -118,7 +125,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = true
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -135,7 +143,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
-            fangstOgFisk = false
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)

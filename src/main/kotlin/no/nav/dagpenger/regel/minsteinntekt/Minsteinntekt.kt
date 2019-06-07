@@ -35,6 +35,7 @@ class Minsteinntekt(private val env: Environment) : River() {
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
         const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
+        const val BEREGNINGSDAGTO = "beregningsDato"
     }
 
     override fun getConfig() = streamConfig(
@@ -46,7 +47,8 @@ class Minsteinntekt(private val env: Environment) : River() {
     override fun filterPredicates(): List<Predicate<String, Packet>> {
         return listOf(
             Predicate { _, packet -> !packet.hasField(MINSTEINNTEKT_RESULTAT) },
-            Predicate { _, packet -> packet.hasField(INNTEKT) }
+            Predicate { _, packet -> packet.hasField(INNTEKT) },
+            Predicate { _, packet -> packet.hasField(BEREGNINGSDAGTO) }
         )
     }
 

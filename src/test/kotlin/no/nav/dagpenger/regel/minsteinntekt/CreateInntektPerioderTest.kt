@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.assertNotNull
 
@@ -18,7 +19,8 @@ class CreateInntektPerioderTest {
             Inntekt("id", emptyList(), sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             null,
             false,
-            fangstOgFisk = false
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 4, 10)
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
@@ -41,7 +43,8 @@ class CreateInntektPerioderTest {
             ),
             null,
             false,
-            fangstOgFisk = false
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
@@ -66,7 +69,11 @@ class CreateInntektPerioderTest {
                 "id",
                 inntektsListe,
                 sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
-            ), null, false, fangstOgFisk = false
+            ),
+            null,
+            false,
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
@@ -87,7 +94,11 @@ class CreateInntektPerioderTest {
                 "id",
                 inntektsListe,
                 sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
-            ), null, false, fangstOgFisk = true
+            ),
+            null,
+            false,
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
@@ -106,7 +117,8 @@ class CreateInntektPerioderTest {
             Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             null,
             false,
-            fangstOgFisk = true
+            fangstOgFisk = true,
+            beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
@@ -126,7 +138,8 @@ class CreateInntektPerioderTest {
             Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2017, 7)),
             false,
-            fangstOgFisk = false
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 4, 10)
         )
 
         val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
