@@ -181,6 +181,41 @@ internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
             beregningsdato = LocalDate.of(2019, 5, 10)
         )
 
+        assertEquals(50000.toBigDecimal(), fakta.arbeidsinntektSiste12)
+
+        val evaluering = ordinærSiste12Måneder.evaluer(fakta)
+
+        assertEquals(Resultat.NEI, evaluering.resultat)
+    }
+
+    @Test
+    fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom summen av inntekt blir negativ`() {
+
+        val inntekt = listOf(
+            KlassifisertInntektMåned(
+                YearMonth.of(2019, 3), klassifiserteInntekter = listOf(
+                    KlassifisertInntekt(
+                        beløp = BigDecimal(1000000),
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                    ),
+                    KlassifisertInntekt(
+                        beløp = BigDecimal(-1950000),
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                    )
+                )
+            )
+        )
+
+        val fakta = Fakta(
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
+            bruktInntektsPeriode = null,
+            verneplikt = false,
+            fangstOgFisk = false,
+            beregningsdato = LocalDate.of(2019, 5, 10)
+        )
+
+        assertEquals((-950000).toBigDecimal(), fakta.arbeidsinntektSiste12)
+
         val evaluering = ordinærSiste12Måneder.evaluer(fakta)
 
         assertEquals(Resultat.NEI, evaluering.resultat)
