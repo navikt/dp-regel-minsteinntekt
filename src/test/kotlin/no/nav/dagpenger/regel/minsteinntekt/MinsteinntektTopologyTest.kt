@@ -5,123 +5,56 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
-import no.nav.dagpenger.streams.Topics
-import no.nav.dagpenger.streams.Topics.DAGPENGER_BEHOV_PACKET_EVENT
-import org.apache.kafka.streams.StreamsConfig
-import org.apache.kafka.streams.TopologyTestDriver
-import org.apache.kafka.streams.test.ConsumerRecordFactory
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.net.URI
 import java.time.YearMonth
-import java.util.Properties
+import java.util.function.Predicate
 
 class MinsteinntektTopologyTest {
 
-    companion object {
+    private val testEnv = Environment(username = "test", password = "test")
+    private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
+    private fun List<Predicate<Packet>>.shouldProcess(packet: Packet) = this.all { it.test(packet) }
 
-        val factory = ConsumerRecordFactory<String, Packet>(
-            Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
-            Topics.DAGPENGER_BEHOV_PACKET_EVENT.keySerde.serializer(),
-            Topics.DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.serializer()
-        )
-
-        val config = Properties().apply {
-            this[StreamsConfig.APPLICATION_ID_CONFIG] = "test"
-            this[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = "dummy:1234"
-        }
-
-        val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
+    @Test
+    fun `dagpengebehov without inntekt should not be processed`() {
+        assertFalse(Minsteinntekt(testEnv).filterPredicates().shouldProcess(Packet().apply {
+            putValue(Minsteinntekt.BEREGNINGSDAGTO, "dato")
+        }))
     }
 
     @Test
-    fun ` dagpengebehov without inntekt should not be processed`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
-
-        val json = """
-            {
-                "beregningsDato": "2019-05-20"
-            }
-            """.trimIndent()
-
-        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(Packet(json))
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assertTrue { null == ut }
-        }
+    fun `dagpengebehov without beregningsDato should not be processed`() {
+        assertFalse(Minsteinntekt(testEnv).filterPredicates().shouldProcess(Packet().apply {
+            putValue(Minsteinntekt.INNTEKT, "inntekt")
+        }))
     }
 
     @Test
-    fun ` dagpengebehov without beregningsDato should not be processed`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
-
-        val inntekt: Inntekt = Inntekt(
-            inntektsId = "12345",
-            inntektsListe = listOf(
-                KlassifisertInntektMåned(
-                    årMåned = YearMonth.of(2018, 2),
-                    klassifiserteInntekter = listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(25000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
-                        )
-                    )
-
-                )
-            ),
-            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
-        )
-
-        val emptyjsonBehov = """
-            {}
-            """.trimIndent()
-
-        val packet = Packet(emptyjsonBehov)
-        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
-
-        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assertTrue { null == ut }
-        }
+    fun `dagpengebehov with beregningsDato, inntekt and  minsteinntekt result should not be processed`() {
+        assertFalse(Minsteinntekt(testEnv).filterPredicates().shouldProcess(Packet().apply {
+            putValue(Minsteinntekt.INNTEKT, "inntekt")
+            putValue(Minsteinntekt.BEREGNINGSDAGTO, "dato")
+            putValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT, "resultat")
+        }))
     }
 
     @Test
-    fun ` should add minsteinntektsubsumsjon`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+    fun `dagpengebehov with beregningsDato, inntekt and without minsteinntekt result should  be processed`() {
+        assertTrue(Minsteinntekt(testEnv).filterPredicates().shouldProcess(Packet().apply {
+            putValue(Minsteinntekt.INNTEKT, "inntekt")
+            putValue(Minsteinntekt.BEREGNINGSDAGTO, "dato")
+        }))
+    }
 
-        val inntekt: Inntekt = Inntekt(
+    @Test
+    fun `should add minsteinntektsubsumsjon`() {
+
+        val inntekt = Inntekt(
             inntektsId = "12345",
             inntektsListe = listOf(
                 KlassifisertInntektMåned(
@@ -149,48 +82,33 @@ class MinsteinntektTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
             "bruktInntektsPeriode", mapOf(
-                "førsteMåned" to YearMonth.now().toString(),
-                "sisteMåned" to YearMonth.now().toString()
-            )
+            "førsteMåned" to YearMonth.now().toString(),
+            "sisteMåned" to YearMonth.now().toString()))
+
+        val minsteinntekt = Minsteinntekt(testEnv)
+        val ut = minsteinntekt.onPacket(packet)
+
+        assertTrue { ut.hasField(Minsteinntekt.MINSTEINNTEKT_RESULTAT) }
+        assertEquals(
+            "Minsteinntekt.v1",
+            ut.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
         )
 
-        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assertTrue { ut.value().hasField(Minsteinntekt.MINSTEINNTEKT_RESULTAT) }
-            assertEquals(
-                "Minsteinntekt.v1",
-                ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
-            )
-
-            // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getNullableObjectValue(
-                Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
-                minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
-            ) as List<InntektPeriodeInfo>
-            assertEquals(3, inntektsPerioder.size)
-            assertEquals(YearMonth.of(2018, 2), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
-            assertEquals(BigDecimal(25000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
-        }
+        // test inntektsperioder are added to packet correctly
+        val inntektsPerioder = ut.getNullableObjectValue(
+            Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
+            minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
+        ) as List<InntektPeriodeInfo>
+        assertEquals(3, inntektsPerioder.size)
+        assertEquals(YearMonth.of(2018, 2), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
+        assertEquals(BigDecimal(25000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
     }
 
     @Test
     fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(testEnv)
 
-        val inntekt: Inntekt = Inntekt(
+        val inntekt = Inntekt(
             inntektsId = "12345",
             inntektsListe = listOf(
                 KlassifisertInntektMåned(
@@ -221,67 +139,24 @@ class MinsteinntektTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
             "bruktInntektsPeriode", mapOf(
-                "førsteMåned" to YearMonth.now().toString(),
-                "sisteMåned" to YearMonth.now().toString()
-            )
-        )
+            "førsteMåned" to YearMonth.now().toString(),
+            "sisteMåned" to YearMonth.now().toString()))
 
-        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getNullableObjectValue(
-                Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
-                minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
-            ) as List<InntektPeriodeInfo>
-            assertEquals(3, inntektsPerioder.size)
-            assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
-            assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
-        }
+        val ut = minsteinntekt.onPacket(packet)
+        // test inntektsperioder are added to packet correctly
+        val inntektsPerioder = ut.getNullableObjectValue(
+            Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
+            minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
+        ) as List<InntektPeriodeInfo>
+        assertEquals(3, inntektsPerioder.size)
+        assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
+        assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
     }
 
     @Test
     fun ` should add problem on failure`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
-
-        val json = """
-            {
-                "beregningsDato": "2019-05-20"
-            }
-            """.trimIndent()
-
-        val inntekt =
-            Inntekt(inntektsId = "12345", inntektsListe = emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.now())
-
-        val packet = Packet(json)
-        packet.putValue("oppfyllerKravTilFangstOgFisk", "ERROR")
-        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
-
-        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assert(ut.value().hasProblem())
-            assertEquals(URI("urn:dp:error:regel"), ut.value().getProblem()!!.type)
-            assertEquals(URI("urn:dp:regel:minsteinntekt"), ut.value().getProblem()!!.instance)
-        }
+        val ut = Minsteinntekt(testEnv).onFailure(Packet(), null)
+        assertEquals(URI("urn:dp:error:regel"), ut.getProblem()!!.type)
+        assertEquals(URI("urn:dp:regel:minsteinntekt"), ut.getProblem()!!.instance)
     }
 }

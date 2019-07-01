@@ -9,6 +9,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 class PacketToFaktaTest {
+    private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
     val emptyInntekt: Inntekt = Inntekt(
         inntektsId = "12345",
@@ -25,7 +26,7 @@ class PacketToFaktaTest {
         }""".trimIndent()
 
         val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
         val fakta = packetToFakta(packet)
 
@@ -41,7 +42,7 @@ class PacketToFaktaTest {
         }""".trimIndent()
 
         val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
         val fakta = packetToFakta(packet)
 
@@ -57,7 +58,7 @@ class PacketToFaktaTest {
         }""".trimIndent()
 
         val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
         val fakta = packetToFakta(packet)
 
@@ -73,7 +74,7 @@ class PacketToFaktaTest {
         }""".trimIndent()
 
         val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
         val fakta = packetToFakta(packet)
 
@@ -89,7 +90,7 @@ class PacketToFaktaTest {
         }""".trimIndent()
 
         val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
         val fakta = packetToFakta(packet)
 
@@ -105,7 +106,7 @@ class PacketToFaktaTest {
         }""".trimIndent()
 
         val packet = Packet(json)
-        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
         val fakta = packetToFakta(packet)
 

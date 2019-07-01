@@ -56,7 +56,7 @@ val orgJsonVersion = "20180813"
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.github.navikt:dagpenger-streams:2019.06.26-21.57.bdd7e296c753")
+    implementation("com.github.navikt:dagpenger-streams:049c0fa2a0")
     implementation("com.github.navikt.dp-biblioteker:grunnbelop:2019.06.04-12.10.8df531d0e3b3")
     implementation("com.github.navikt:dagpenger-events:2019.06.12-14.01.4b1e1a663635")
 
@@ -72,14 +72,13 @@ dependencies {
 
     implementation("de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.2.0")
 
-    compile("io.prometheus:simpleclient_common:$prometheusVersion")
-    compile("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation("io.prometheus:simpleclient_log4j2:$prometheusVersion")
 
-    compile("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
 
-    compile("org.apache.kafka:kafka-clients:$kafkaVersion")
-    compile("org.apache.kafka:kafka-streams:$kafkaVersion")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
 
     implementation("org.apache.logging.log4j:log4j-api:$log4j2Version")
     implementation("org.apache.logging.log4j:log4j-core:$log4j2Version")
@@ -92,7 +91,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
     testImplementation("no.nav:kafka-embedded-env:2.0.2")
-    testImplementation("org.apache.kafka:kafka-streams-test-utils:$kafkaVersion")
 }
 
 spotless {

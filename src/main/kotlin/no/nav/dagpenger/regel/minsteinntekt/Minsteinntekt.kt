@@ -9,20 +9,22 @@ import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
+import no.nav.dagpenger.plain.RiverConsumer
 import no.nav.dagpenger.streams.KafkaCredential
-import no.nav.dagpenger.streams.River
-import no.nav.dagpenger.streams.streamConfig
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
-import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.net.URI
+import java.util.Properties
+import java.util.function.Predicate
+
 private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
-class Minsteinntekt(private val env: Environment) : River() {
+
+class Minsteinntekt(env: Environment) : RiverConsumer(env.bootstrapServersUrl) {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
 
-    val ulidGenerator = ULID()
+    private val ulidGenerator = ULID()
 
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
         moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!
@@ -38,17 +40,21 @@ class Minsteinntekt(private val env: Environment) : River() {
         const val BEREGNINGSDAGTO = "beregningsDato"
     }
 
-    override fun getConfig() = streamConfig(
-        appId = SERVICE_APP_ID,
-        bootStapServerUrl = env.bootstrapServersUrl,
-        credential = KafkaCredential(env.username, env.password)
-    )
+    private val kafkaCredential = KafkaCredential(env.username, env.password)
 
-    override fun filterPredicates(): List<Predicate<String, Packet>> {
+    override fun getConsumerConfig(credential: KafkaCredential?): Properties {
+        return super.getConsumerConfig(kafkaCredential)
+    }
+
+    override fun getProducerConfig(credential: KafkaCredential?): Properties {
+        return super.getProducerConfig(kafkaCredential)
+    }
+
+    override fun filterPredicates(): List<Predicate<Packet>> {
         return listOf(
-            Predicate { _, packet -> !packet.hasField(MINSTEINNTEKT_RESULTAT) },
-            Predicate { _, packet -> packet.hasField(INNTEKT) },
-            Predicate { _, packet -> packet.hasField(BEREGNINGSDAGTO) }
+            Predicate { packet -> !packet.hasField(MINSTEINNTEKT_RESULTAT) },
+            Predicate { packet -> packet.hasField(INNTEKT) },
+            Predicate { packet -> packet.hasField(BEREGNINGSDAGTO) }
         )
     }
 
@@ -101,9 +107,13 @@ class Minsteinntekt(private val env: Environment) : River() {
     }
 }
 
-fun main(args: Array<String>) {
-    val service = Minsteinntekt(Environment())
-    service.start()
+fun main() {
+    Minsteinntekt(Environment()).apply {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            this.stop()
+        })
+        this.start()
+    }
 }
 
 data class InntektPeriodeInfo(
