@@ -8,70 +8,78 @@ import no.nav.nare.core.specifications.Spesifikasjon
 // https://www.nav.no/rettskildene/lov/L19970228-19_P4-4#L19970228-19_P4-19
 
 internal val verneplikt = Spesifikasjon<Fakta>(
-    beskrivelse = "§ 4-19 Dagpenger etter avtjent verneplikt",
-    identifikator = "§ 4-19",
+    beskrivelse = "Krav til minsteinntekt etter § 4-19 - dagpenger etter avtjent verneplikt",
+    identifikator = "Krav til minsteinntekt etter § 4-19",
     children = emptyList(),
     implementasjon = {
         when {
-            verneplikt -> Evaluering.ja("Oppfylt etter § 4-19 Dagpenger etter avtjent verneplikt")
-            else -> Evaluering.nei("Ikke oppfylt etter § 4-19 Dagpenger etter avtjent verneplikt")
+            verneplikt -> Evaluering.ja("Verneplikt er avtjent i henhold til kravet")
+            else -> Evaluering.nei("Verneplikt er ikke avtjent i henhold til kravet")
         }
     }
 )
 
 internal val ordinærSiste12Måneder = Spesifikasjon<Fakta>(
-    beskrivelse = "§ 4-4. Krav til minsteinntekt, minst 1,5 ganger grunnbeløp siste 12 måneder",
-    identifikator = "§ 4-4 12mnd",
+    beskrivelse = "Krav til minsteinntekt etter § 4-4 første ledd bokstav a - minst 1,5 ganger grunnbeløp siste 12 måneder",
+    identifikator = "Krav til minsteinntekt etter § 4-4 første ledd bokstav a",
     implementasjon = {
         when {
             arbeidsinntektSiste12 >= (grunnbeløp.times(1.5.toBigDecimal())) -> Evaluering.ja(
-                "Oppfylt etter § 4-4. Krav til minsteinntekt - minst 1,5 ganger grunnbeløp siste 12 måneder"
+                "Inntekt siste 12 måneder er lik eller større enn 1,5 ganger grunnbeløp"
             )
-            else -> Evaluering.nei("Ikke Oppfylt etter § 4-4. Krav til minsteinntekt - minst 1,5 ganger grunnbeløp siste 12 måneder")
+            else -> Evaluering.nei("Inntekt siste 12 måneder er mindre enn 1,5 ganger grunnbeløp")
         }
     }
 )
 
 internal val ordinærSiste36Måneder = Spesifikasjon<Fakta>(
-    beskrivelse = "§ 4-4. Krav til minsteinntekt, minst 3 ganger grunnbeløpet siste 36 måneder",
-    identifikator = "§ 4-4 36mnd",
+    beskrivelse = "Krav til minsteinntekt etter § 4-4 første ledd bokstav b - minst 3 ganger grunnbeløpet siste 36 måneder",
+    identifikator = "Krav til minsteinntekt etter § 4-4 første ledd bokstav b",
     implementasjon = {
         when {
             arbeidsinntektSiste36 >= (grunnbeløp.times(3.toBigDecimal())) -> Evaluering.ja(
-                "Oppfylt etter § 4-4. Minsteinntekt - minst 3 ganger grunnbeløpet siste 36 måneder"
+                "Inntekt siste 36 måneder er lik eller større enn 3 ganger grunnbeløp"
             )
-            else -> Evaluering.nei("Ikke oppfylt etter § 4-4. Minsteinntekt - minst 3 ganger grunnbeløpet siste 36 måneder")
+            else -> Evaluering.nei("Inntekt siste 36 måneder er mindre enn 3 ganger grunnbeløp")
         }
     }
 )
 
 internal val ordinærSiste12MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
-    beskrivelse = "§ 4-18 - Fangs og Fiske - minst 1,5 ganger grunnbeløp siste 12 måneder",
-    identifikator = "§ 4-18 12mnd",
+    beskrivelse = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav a - minst 1,5 ganger grunnbeløp siste 12 måneder",
+    identifikator = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav a",
     implementasjon = {
         when {
             fangstOgFisk && inntektSiste12inkludertFangstOgFiske >= (grunnbeløp.times(1.5.toBigDecimal())) -> Evaluering.ja(
-                "Oppfylt etter § 4-18 - Fangs og Fiske - minst 1,5 ganger grunnbeløp siste 12 måneder"
+                "Inntekt inkludert inntekt fra fangst og fisk siste 12 måneder er lik eller større enn 1,5 ganger grunnbeløp"
             )
-            else -> Evaluering.nei("Ikke oppfylt etter § 4-18 - Fangs og Fiske - minst 1,5 ganger grunnbeløp siste 12 måneder")
+            else -> Evaluering.nei("Inntekt inkludert inntekt fra fangst og fisk siste 12 måneder er mindre enn 1,5 ganger grunnbeløp")
         }
     }
 )
 
 internal val ordinærSiste36MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
-    beskrivelse = "§ 4-18 - Fangs og Fiske -, minst 3 ganger grunnbeløpet siste 36 måneder",
-    identifikator = "§ 4-18 36mnd",
+    beskrivelse = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b - minst 3 ganger grunnbeløp siste 36 måneder",
+    identifikator = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b",
     implementasjon = {
         when {
             fangstOgFisk && inntektSiste36inkludertFangstOgFiske >= (grunnbeløp.times(3.toBigDecimal())) -> Evaluering.ja(
-                "Oppfylt etter § 4-18 - Fangs og Fiske - minst 3 ganger grunnbeløpet siste 36 måneder"
+                "Inntekt inkludert inntekt fra fangst og fisk siste 36 måneder er lik eller større enn 3 ganger grunnbeløp"
             )
-            else -> Evaluering.nei("Ikke oppfylt etter § 4-18 - Fangs og Fiske - minst 3 ganger grunnbeløpet siste 36 måneder")
+            else -> Evaluering.nei("Inntekt inkludert inntekt fra fangst og fisk siste 36 måneder er mindre enn 3 ganger grunnbeløp")
         }
     }
 )
 
 internal val ordinær: Spesifikasjon<Fakta> =
     (ordinærSiste12Måneder eller ordinærSiste36Måneder).eller(ordinærSiste12MånederMedFangstOgFiske eller ordinærSiste36MånederMedFangstOgFiske)
+        .med(
+            identifikator = "Krav til minsteinntekt etter § 4-4",
+            beskrivelse = "Krav til minsteinntekt etter ordinære regler"
+        )
 
-internal val inngangsVilkår: Spesifikasjon<Fakta> = (ordinær eller verneplikt)
+internal val kravTilMinsteinntekt: Spesifikasjon<Fakta> = (ordinær eller verneplikt)
+    .med(
+        identifikator = "Krav til minsteinntekt",
+        beskrivelse = "Krav til minsteinntekt"
+    )

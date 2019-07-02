@@ -1,19 +1,45 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import no.nav.dagpenger.events.inntekt.v1.Inntekt
+import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
+import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
+import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.nare.core.evaluations.Evaluering
+import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.YearMonth
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 internal class InngangsvilkårTest {
 
     @Test
-    fun `Inngångsvilkår består av Rett § 4-19 Dagpenger etter avtjent verneplikt  og § 4-4 minsteinntekt `() {
-        assertEquals("§ 4-4 12mnd, § 4-4 36mnd, § 4-18 12mnd, § 4-18 36mnd, § 4-19", inngangsVilkår.children.joinToString { it.identifikator })
+    fun `Minsteinntekt inneholder alle krav etter § 4-4`() {
+        assertEquals(
+            "Krav til minsteinntekt etter § 4-4 første ledd bokstav a, Krav til minsteinntekt etter § 4-4 første ledd bokstav b, Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav a, Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b",
+            ordinær.children.joinToString { it.identifikator })
     }
 
     @Test
-    fun ` Minsteinntekt ordinær består § 4-4 minsteinntekt `() {
+    fun `Minsteinntekt gir JA til verneplikt`() {
+        var evaluering = kravTilMinsteinntekt.evaluer(
+            Fakta(
+                inntekt = Inntekt(
+                    inntektsId = "test-inntekt",
+                    inntektsListe = listOf(),
+                    manueltRedigert = false,
+                    sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11)
+                ),
+                beregningsdato = LocalDate.now(),
+                fangstOgFisk = false,
+                verneplikt = true
+            )
+        )
+
+        assertSame(Resultat.JA, evaluering.resultat)
         assertEquals(
-            "§ 4-4 12mnd, § 4-4 36mnd, § 4-18 12mnd, § 4-18 36mnd",
-            ordinær.children.joinToString { it.identifikator })
+            "Krav til minsteinntekt etter § 4-4, Krav til minsteinntekt etter § 4-19",
+            evaluering.children.joinToString { it.identifikator })
     }
 }

@@ -55,7 +55,7 @@ class Minsteinntekt(private val env: Environment) : River() {
     override fun onPacket(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering = narePrometheus.tellEvaluering { inngangsVilkår.evaluer(fakta) }
+        val evaluering: Evaluering = narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
