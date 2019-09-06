@@ -4,7 +4,9 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.all
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
-import no.nav.dagpenger.grunnbelop.getGrunnbeløpForDato
+import no.nav.dagpenger.grunnbelop.Regel
+import no.nav.dagpenger.grunnbelop.forDato
+import no.nav.dagpenger.grunnbelop.getGrunnbeløpForRegel
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -14,7 +16,7 @@ data class Fakta(
     val verneplikt: Boolean,
     val fangstOgFisk: Boolean,
     val beregningsdato: LocalDate,
-    val grunnbeløp: BigDecimal = getGrunnbeløpForDato(beregningsdato).verdi
+    val grunnbeløp: BigDecimal = getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(beregningsdato).verdi
 ) {
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 
@@ -23,9 +25,17 @@ data class Fakta(
         bruktInntektsPeriode.sisteMåned
     ).splitIntoInntektsPerioder()
 
-    val arbeidsinntektSiste12: BigDecimal = inntektsPerioderUtenBruktInntekt.first.sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
-    val arbeidsinntektSiste36: BigDecimal = inntektsPerioderUtenBruktInntekt.all().sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
+    val arbeidsinntektSiste12: BigDecimal =
+        inntektsPerioderUtenBruktInntekt.first.sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
+    val arbeidsinntektSiste36: BigDecimal =
+        inntektsPerioderUtenBruktInntekt.all().sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
 
-    val inntektSiste12inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.first.sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
-    val inntektSiste36inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.all().sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
+    val inntektSiste12inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.first.sumInntekt(
+        listOf(
+            InntektKlasse.ARBEIDSINNTEKT,
+            InntektKlasse.FANGST_FISKE
+        )
+    )
+    val inntektSiste36inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.all()
+        .sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
 }
