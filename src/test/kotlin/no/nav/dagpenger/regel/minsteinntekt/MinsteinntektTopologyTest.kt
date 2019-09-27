@@ -7,7 +7,6 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.streams.Topics
 import no.nav.dagpenger.streams.Topics.DAGPENGER_BEHOV_PACKET_EVENT
-import no.nav.nare.core.evaluations.Evaluering
 import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.TopologyTestDriver
 import org.apache.kafka.streams.test.ConsumerRecordFactory
@@ -249,7 +248,7 @@ class MinsteinntektTopologyTest {
     }
 
     @Test
-    fun `should add nare evaluation`() {
+    fun ` should add nare evaluation`() {
         val minsteinntekt = Minsteinntekt(
             Environment(
                 username = "bogus",

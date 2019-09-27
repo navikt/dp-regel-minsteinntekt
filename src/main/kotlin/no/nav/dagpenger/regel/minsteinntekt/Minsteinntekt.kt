@@ -1,6 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import com.ryanharter.ktor.moshi.MoshiConverter
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
