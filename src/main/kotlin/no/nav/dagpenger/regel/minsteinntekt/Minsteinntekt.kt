@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.ryanharter.ktor.moshi.MoshiConverter
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
@@ -27,10 +28,13 @@ class Minsteinntekt(private val env: Environment) : River() {
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
         moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!
 
+    val jsonAdapterEvaluering: JsonAdapter<Evaluering> = moshiInstance.adapter(Evaluering::class.java)
+
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
         const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
+        const val MINSTEINNTEKT_NARE_EVALUERING = "minsteinntektNareEvaluering"
         const val INNTEKT = "inntektV1"
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
@@ -56,13 +60,17 @@ class Minsteinntekt(private val env: Environment) : River() {
         val fakta = packetToFakta(packet)
 
         val evaluering: Evaluering = narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+        val json = jsonAdapterEvaluering.toJson(evaluering)
+
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
             REGELIDENTIFIKATOR,
             evaluering.resultat == Resultat.JA
         )
-
+        // INSPIRER AV TEST DEMO NARE GJØRE TIL JSON VIA GSON
+        // DET ER EVALUERING SOM SKAL GJØRES TIL JSON OG HIVES PÅ PACKET
+        packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, json)
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
             jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
