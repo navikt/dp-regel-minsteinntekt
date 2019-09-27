@@ -59,7 +59,6 @@ class Minsteinntekt(private val env: Environment) : River() {
         val fakta = packetToFakta(packet)
 
         val evaluering: Evaluering = narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
-        val json = jsonAdapterEvaluering.toJson(evaluering)
 
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
@@ -68,7 +67,7 @@ class Minsteinntekt(private val env: Environment) : River() {
             evaluering.resultat == Resultat.JA
         )
 
-        packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, json)
+        packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, jsonAdapterEvaluering.toJson(evaluering))
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
             jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
