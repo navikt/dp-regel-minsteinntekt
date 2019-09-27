@@ -248,6 +248,71 @@ class MinsteinntektTopologyTest {
     }
 
     @Test
+    fun ` should add nare evaluation`() {
+        val minsteinntekt = Minsteinntekt(
+            Environment(
+                username = "bogus",
+                password = "bogus"
+            )
+        )
+
+        val inntekt: Inntekt = Inntekt(
+            inntektsId = "12345",
+            inntektsListe = listOf(
+                KlassifisertInntektMåned(
+                    årMåned = YearMonth.of(2018, 2),
+                    klassifiserteInntekter = listOf(
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(25000),
+                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                        ),
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(1000),
+                            inntektKlasse = InntektKlasse.FANGST_FISKE
+                        )
+                    )
+                )
+            ),
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3)
+        )
+
+        val json = """
+        {
+            "harAvtjentVerneplikt": true,
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2018-04-10"
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
+        packet.putValue(
+            "bruktInntektsPeriode", mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            )
+        )
+
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
+            val inputRecord = factory.create(packet)
+            topologyTestDriver.pipeInput(inputRecord)
+
+            val ut = topologyTestDriver.readOutput(
+                DAGPENGER_BEHOV_PACKET_EVENT.name,
+                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
+                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
+            )
+
+            val nareEvaluering = minsteinntekt.jsonAdapterEvaluering.fromJson(ut.value().getStringValue(
+                Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING
+            ))
+
+            val expectedNareEvaluering = kravTilMinsteinntekt.evaluer(packetToFakta(packet))
+
+            assertEquals(expectedNareEvaluering, nareEvaluering)
+        }
+    }
+
+    @Test
     fun ` should add problem on failure`() {
         val minsteinntekt = Minsteinntekt(
             Environment(

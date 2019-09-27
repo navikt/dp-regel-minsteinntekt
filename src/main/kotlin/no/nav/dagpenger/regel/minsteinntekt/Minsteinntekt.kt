@@ -27,10 +27,13 @@ class Minsteinntekt(private val env: Environment) : River() {
     val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
         moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!
 
+    val jsonAdapterEvaluering: JsonAdapter<Evaluering> = moshiInstance.adapter(Evaluering::class.java)
+
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
         const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
+        const val MINSTEINNTEKT_NARE_EVALUERING = "minsteinntektNareEvaluering"
         const val INNTEKT = "inntektV1"
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
@@ -56,6 +59,7 @@ class Minsteinntekt(private val env: Environment) : River() {
         val fakta = packetToFakta(packet)
 
         val evaluering: Evaluering = narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
@@ -63,6 +67,7 @@ class Minsteinntekt(private val env: Environment) : River() {
             evaluering.resultat == Resultat.JA
         )
 
+        packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, jsonAdapterEvaluering.toJson(evaluering))
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
             jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
