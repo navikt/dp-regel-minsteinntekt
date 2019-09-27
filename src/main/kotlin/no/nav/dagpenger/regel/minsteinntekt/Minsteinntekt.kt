@@ -67,8 +67,7 @@ class Minsteinntekt(private val env: Environment) : River() {
             REGELIDENTIFIKATOR,
             evaluering.resultat == Resultat.JA
         )
-        // INSPIRER AV TEST DEMO NARE GJØRE TIL JSON VIA GSON
-        // DET ER EVALUERING SOM SKAL GJØRES TIL JSON OG HIVES PÅ PACKET
+
         packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, json)
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
