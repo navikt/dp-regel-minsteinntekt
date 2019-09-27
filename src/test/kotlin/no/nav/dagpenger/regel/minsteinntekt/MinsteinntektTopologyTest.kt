@@ -7,6 +7,7 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.streams.Topics
 import no.nav.dagpenger.streams.Topics.DAGPENGER_BEHOV_PACKET_EVENT
+import no.nav.nare.core.evaluations.Evaluering
 import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.TopologyTestDriver
 import org.apache.kafka.streams.test.ConsumerRecordFactory
@@ -244,6 +245,71 @@ class MinsteinntektTopologyTest {
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
+        }
+    }
+
+    @Test
+    fun `should add nare evaluation`() {
+        val minsteinntekt = Minsteinntekt(
+            Environment(
+                username = "bogus",
+                password = "bogus"
+            )
+        )
+
+        val inntekt: Inntekt = Inntekt(
+            inntektsId = "12345",
+            inntektsListe = listOf(
+                KlassifisertInntektMåned(
+                    årMåned = YearMonth.of(2018, 2),
+                    klassifiserteInntekter = listOf(
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(25000),
+                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                        ),
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(1000),
+                            inntektKlasse = InntektKlasse.FANGST_FISKE
+                        )
+                    )
+                )
+            ),
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3)
+        )
+
+        val json = """
+        {
+            "harAvtjentVerneplikt": true,
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2018-04-10"
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
+        packet.putValue(
+            "bruktInntektsPeriode", mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            )
+        )
+
+        TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
+            val inputRecord = factory.create(packet)
+            topologyTestDriver.pipeInput(inputRecord)
+
+            val ut = topologyTestDriver.readOutput(
+                DAGPENGER_BEHOV_PACKET_EVENT.name,
+                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
+                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
+            )
+
+            val nareEvaluering = minsteinntekt.jsonAdapterEvaluering.fromJson(ut.value().getStringValue(
+                Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING
+            ))
+
+            val expectedNareEvaluering = kravTilMinsteinntekt.evaluer(packetToFakta(packet))
+
+            assertEquals(expectedNareEvaluering, nareEvaluering)
         }
     }
 
