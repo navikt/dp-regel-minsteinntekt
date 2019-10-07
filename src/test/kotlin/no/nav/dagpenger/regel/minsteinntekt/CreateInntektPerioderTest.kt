@@ -10,7 +10,7 @@ import java.time.YearMonth
 import kotlin.test.assertNotNull
 
 class CreateInntektPerioderTest {
-    val minsteinntekt = Minsteinntekt(Environment("bogus", "bogus"))
+    val minsteinntekt = Minsteinntekt(Configuration())
 
     @Test
     fun `createInntektPerioder correctly for no inntekt`() {

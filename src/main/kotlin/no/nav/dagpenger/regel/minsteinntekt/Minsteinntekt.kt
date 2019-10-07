@@ -9,7 +9,6 @@ import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
-import no.nav.dagpenger.streams.KafkaCredential
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
 import no.nav.nare.core.evaluations.Evaluering
@@ -17,10 +16,12 @@ import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.net.URI
+
 private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
-class Minsteinntekt(private val env: Environment) : River() {
+
+class Minsteinntekt(private val configuration: Configuration) : River() {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
-    override val HTTP_PORT: Int = env.httpPort ?: super.HTTP_PORT
+    override val HTTP_PORT: Int = configuration.application.httpPort
 
     val ulidGenerator = ULID()
 
@@ -43,8 +44,8 @@ class Minsteinntekt(private val env: Environment) : River() {
 
     override fun getConfig() = streamConfig(
         appId = SERVICE_APP_ID,
-        bootStapServerUrl = env.bootstrapServersUrl,
-        credential = KafkaCredential(env.username, env.password)
+        bootStapServerUrl = configuration.kafka.brokers,
+        credential = configuration.kafka.credential()
     )
 
     override fun filterPredicates(): List<Predicate<String, Packet>> {
@@ -107,7 +108,7 @@ class Minsteinntekt(private val env: Environment) : River() {
 }
 
 fun main(args: Array<String>) {
-    val service = Minsteinntekt(Environment())
+    val service = Minsteinntekt(Configuration())
     service.start()
 }
 

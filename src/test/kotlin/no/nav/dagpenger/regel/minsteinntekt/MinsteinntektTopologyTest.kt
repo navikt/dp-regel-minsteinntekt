@@ -5,7 +5,6 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
-import no.nav.dagpenger.streams.Topics
 import no.nav.dagpenger.streams.Topics.DAGPENGER_BEHOV_PACKET_EVENT
 import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.TopologyTestDriver
@@ -19,13 +18,14 @@ import java.time.YearMonth
 import java.util.Properties
 
 class MinsteinntektTopologyTest {
+    private val configuration = Configuration()
 
     companion object {
 
         val factory = ConsumerRecordFactory<String, Packet>(
-            Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
-            Topics.DAGPENGER_BEHOV_PACKET_EVENT.keySerde.serializer(),
-            Topics.DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.serializer()
+            DAGPENGER_BEHOV_PACKET_EVENT.name,
+            DAGPENGER_BEHOV_PACKET_EVENT.keySerde.serializer(),
+            DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.serializer()
         )
 
         val config = Properties().apply {
@@ -38,12 +38,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` dagpengebehov without inntekt should not be processed`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(configuration)
 
         val json = """
             {
@@ -67,12 +62,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` dagpengebehov without beregningsDato should not be processed`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -114,12 +104,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -149,9 +134,9 @@ class MinsteinntektTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
             "bruktInntektsPeriode", mapOf(
-                "førsteMåned" to YearMonth.now().toString(),
-                "sisteMåned" to YearMonth.now().toString()
-            )
+            "førsteMåned" to YearMonth.now().toString(),
+            "sisteMåned" to YearMonth.now().toString()
+        )
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -183,12 +168,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -221,9 +201,9 @@ class MinsteinntektTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
             "bruktInntektsPeriode", mapOf(
-                "førsteMåned" to YearMonth.now().toString(),
-                "sisteMåned" to YearMonth.now().toString()
-            )
+            "førsteMåned" to YearMonth.now().toString(),
+            "sisteMåned" to YearMonth.now().toString()
+        )
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -249,12 +229,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add nare evaluation`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -287,9 +262,9 @@ class MinsteinntektTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
             "bruktInntektsPeriode", mapOf(
-                "førsteMåned" to YearMonth.now().toString(),
-                "sisteMåned" to YearMonth.now().toString()
-            )
+            "førsteMåned" to YearMonth.now().toString(),
+            "sisteMåned" to YearMonth.now().toString()
+        )
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -314,12 +289,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add problem on failure`() {
-        val minsteinntekt = Minsteinntekt(
-            Environment(
-                username = "bogus",
-                password = "bogus"
-            )
-        )
+        val minsteinntekt = Minsteinntekt(configuration)
 
         val json = """
             {
