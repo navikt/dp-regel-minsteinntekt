@@ -22,7 +22,7 @@ private val devProperties = ConfigurationMap(
         "kafka.bootstrap.servers" to "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8095",
-        "feature.gjustering" to true.toString()
+        "feature.gjustering" to false.toString()
     )
 )
 private val prodProperties = ConfigurationMap(
