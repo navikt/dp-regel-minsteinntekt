@@ -64,7 +64,7 @@ data class Configuration(
     )
 
     class Features {
-        val gjustering: Boolean by lazy { config().getOrElse(Key("feature.gjustering", booleanType), false) }
+        fun gjustering() = config().getOrElse(Key("feature.gjustering", booleanType), false)
     }
 }
 

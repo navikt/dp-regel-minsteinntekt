@@ -48,5 +48,5 @@ internal fun isThisGjusteringTest(
     beregningsdato: LocalDate
 ): Boolean {
     val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(LocalDate.of(2019, 9, 1).minusDays(1))
-    return configuration.features.gjustering && isBeregningsDatoAfterGjustering
+    return configuration.features.gjustering() && isBeregningsDatoAfterGjustering
 }

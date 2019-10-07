@@ -24,7 +24,7 @@ class PacketToFaktaGjusteringTest {
     )
 
     @Test
-    fun ` should have the right grunnbeløp gjustert when beregningsdato is before justering date and featureflag is on `() {
+    fun ` should have the grunnbeløp without "gjustering" when beregningsdato is before justering date and featureflag is on `() {
         withGjustering {
             val json = """
         {
@@ -42,7 +42,7 @@ class PacketToFaktaGjusteringTest {
     }
 
     @Test
-    fun ` should have the right grunnbeløp gjustert when beregningsdato is after justering date and featureflag is on`() {
+    fun ` should have grunnbeløp with "gjustering" when beregningsdato is after justering date and featureflag is on`() {
         withGjustering {
             val adapter = moshiInstance.adapter(Inntekt::class.java)
 
@@ -59,5 +59,23 @@ class PacketToFaktaGjusteringTest {
 
             assertEquals(102000.toBigDecimal(), fakta.grunnbeløp)
         }
+    }
+
+    @Test
+    fun ` should have grunnbeløp without "gjustering" when beregningsdato is after justering date and featureflag is off`() {
+        val adapter = moshiInstance.adapter(Inntekt::class.java)
+
+        val json = """
+        {
+            "oppfyllerKravTilFangstOgFisk": true,
+            "beregningsDato": "2019-09-02"
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
+
+        val fakta = packetToFakta(packet)
+
+        assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
     }
 }
