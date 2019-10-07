@@ -83,6 +83,7 @@ dependencies {
     implementation(Log4j2.core)
     implementation(Log4j2.slf4j)
     implementation(Log4j2.Logstash.logstashLayout)
+    implementation(Konfig.konfig)
     implementation(Kotlin.Logging.kotlinLogging)
 
     testImplementation(kotlin("test"))
