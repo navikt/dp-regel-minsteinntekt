@@ -107,8 +107,9 @@ class Minsteinntekt(private val configuration: Configuration) : River() {
     }
 }
 
-fun main(args: Array<String>) {
-    val service = Minsteinntekt(Configuration())
+val configuration = Configuration()
+fun main() {
+    val service = Minsteinntekt(configuration)
     service.start()
 }
 

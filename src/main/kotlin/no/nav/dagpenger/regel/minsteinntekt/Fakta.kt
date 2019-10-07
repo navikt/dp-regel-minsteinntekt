@@ -4,6 +4,7 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.all
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
+import no.nav.dagpenger.grunnbelop.Grunnbeløp
 import no.nav.dagpenger.grunnbelop.Regel
 import no.nav.dagpenger.grunnbelop.forDato
 import no.nav.dagpenger.grunnbelop.getGrunnbeløpForRegel
@@ -16,7 +17,10 @@ data class Fakta(
     val verneplikt: Boolean,
     val fangstOgFisk: Boolean,
     val beregningsdato: LocalDate,
-    val grunnbeløp: BigDecimal = getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(beregningsdato).verdi
+    val grunnbeløp: BigDecimal = when {
+        isThisGjusteringTest(beregningsdato) -> Grunnbeløp.GjusteringsTest.verdi
+        else -> getGrunnbeløpForRegel(Regel.Grunnlag).forDato(beregningsdato).verdi
+    }
 ) {
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 
@@ -38,4 +42,11 @@ data class Fakta(
     )
     val inntektSiste36inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.all()
         .sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
+}
+
+internal fun isThisGjusteringTest(
+    beregningsdato: LocalDate
+): Boolean {
+    val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(LocalDate.of(2019, 9, 1).minusDays(1))
+    return configuration.features.gjustering && isBeregningsDatoAfterGjustering
 }
