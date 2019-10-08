@@ -1,6 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import com.natpryce.konfig.ConfigurationMap
+mport com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties.Companion.systemProperties
 import com.natpryce.konfig.EnvironmentVariables
 import com.natpryce.konfig.Key
@@ -22,7 +22,7 @@ private val devProperties = ConfigurationMap(
         "kafka.bootstrap.servers" to "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443",
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8095",
-        "feature.gjustering" to false.toString()
+        "feature.gjustering" to true.toString()
     )
 )
 private val prodProperties = ConfigurationMap(
