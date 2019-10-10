@@ -1,6 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-mport com.natpryce.konfig.ConfigurationMap
+import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties.Companion.systemProperties
 import com.natpryce.konfig.EnvironmentVariables
 import com.natpryce.konfig.Key
