@@ -10,6 +10,7 @@ import no.nav.dagpenger.events.Problem
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
 import no.nav.dagpenger.streams.River
+import no.nav.dagpenger.streams.Topics
 import no.nav.dagpenger.streams.streamConfig
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
@@ -19,7 +20,7 @@ import java.net.URI
 
 private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 
-class Minsteinntekt(private val configuration: Configuration) : River() {
+class Minsteinntekt(private val configuration: Configuration) : River(Topics.DAGPENGER_BEHOV_PACKET_EVENT) {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = configuration.application.httpPort
 
