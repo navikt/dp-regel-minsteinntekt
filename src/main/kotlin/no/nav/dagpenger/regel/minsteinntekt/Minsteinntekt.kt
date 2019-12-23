@@ -20,7 +20,7 @@ import java.net.URI
 
 private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 
-class Minsteinntekt(private val configuration: Configuration) : River(Topics.DAGPENGER_BEHOV_PACKET_EVENT) {
+class Minsteinntekt(private val configuration: Configuration) : River(configuration.behovTopic) {
     override val SERVICE_APP_ID: String = "dagpenger-regel-minsteinntekt"
     override val HTTP_PORT: Int = configuration.application.httpPort
 
