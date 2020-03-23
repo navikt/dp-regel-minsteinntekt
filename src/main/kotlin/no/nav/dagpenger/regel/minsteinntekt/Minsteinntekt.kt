@@ -61,7 +61,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
     override fun onPacket(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode() && packet.getBoolean(KORONA_TOGGLE)) {
+        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode() && packet.getNullableBoolean(KORONA_TOGGLE) == true) {
             narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
         } else {
             narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
