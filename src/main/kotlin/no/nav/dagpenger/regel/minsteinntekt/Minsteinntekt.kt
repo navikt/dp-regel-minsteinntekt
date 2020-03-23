@@ -85,7 +85,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
         return packet
     }
 
-    private fun LocalDate.erKoronaPeriode() = this >= LocalDate.of(2020, 3, 20)
+    private fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.MAX)
 
     override fun onFailure(packet: Packet, error: Throwable?): Packet {
         packet.addProblem(
