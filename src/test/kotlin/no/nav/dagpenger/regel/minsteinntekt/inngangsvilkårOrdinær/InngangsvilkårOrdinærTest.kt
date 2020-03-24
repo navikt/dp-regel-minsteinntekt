@@ -1,9 +1,12 @@
-package no.nav.dagpenger.regel.minsteinntekt
+package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårOrdinær
 
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.dagpenger.regel.minsteinntekt.Fakta
+import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12Måneder
+import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste36Måneder
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -11,7 +14,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.assertEquals
 
-internal class InngangsvilkårArbeidsinntektSpesifikasjonsTest {
+internal class InngangsvilkårOrdinærTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 12 mnd`() {

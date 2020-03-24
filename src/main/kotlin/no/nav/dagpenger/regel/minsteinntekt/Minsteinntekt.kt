@@ -16,6 +16,7 @@ import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.net.URI
+import java.time.LocalDate
 
 private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 
@@ -40,6 +41,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
         const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
         const val BEREGNINGSDAGTO = "beregningsDato"
+        const val KORONA_TOGGLE = "koronaToggle"
     }
 
     override fun getConfig() = streamConfig(
@@ -59,23 +61,32 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
     override fun onPacket(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering = narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode() && packet.getNullableBoolean(KORONA_TOGGLE) == true) {
+            narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+        } else {
+            narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+        }
 
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
             REGELIDENTIFIKATOR,
-            evaluering.resultat == Resultat.JA
+            evaluering.resultat == Resultat.JA,
+            evaluering.koronaRegelBrukt()
         )
 
         packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, jsonAdapterEvaluering.toJson(evaluering))
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
-        packet.putValue(MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
-            jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
-        ))
+        packet.putValue(
+            MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
+                jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
+            )
+        )
 
         return packet
     }
+
+    private fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 12, 31))
 
     override fun onFailure(packet: Packet, error: Throwable?): Packet {
         packet.addProblem(
