@@ -30,3 +30,8 @@ internal val kravTilMinsteinntektKorona: Spesifikasjon<Fakta> = (koronaOrdinær 
         identifikator = "Krav til minsteinntekt",
         beskrivelse = "Krav til minsteinntekt"
     )
+
+fun Evaluering.koronaRegelBrukt() =
+    if (this.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+        Beregningsregel.KORONA
+    else Beregningsregel.ORDINAER

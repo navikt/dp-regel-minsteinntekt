@@ -8,6 +8,7 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_NARE_EVALUERING
 import no.nav.nare.core.evaluations.Evaluering
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -57,6 +58,7 @@ class KoronaBeregningTest {
             jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
         assertTrue(evaluering.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+        assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
     @Test
@@ -79,6 +81,7 @@ class KoronaBeregningTest {
             jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
         assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
     @Test
@@ -101,5 +104,6 @@ class KoronaBeregningTest {
             jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
         assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 }
