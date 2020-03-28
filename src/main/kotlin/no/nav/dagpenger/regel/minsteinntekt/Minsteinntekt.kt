@@ -13,7 +13,6 @@ import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
-import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.kstream.Predicate
 import java.math.BigDecimal
 import java.net.URI
@@ -49,10 +48,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
         appId = SERVICE_APP_ID,
         bootStapServerUrl = configuration.kafka.brokers,
         credential = configuration.kafka.credential()
-    ).apply {
-        this[StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG] =
-            configuration.kafka.deserializationExceptionHandler
-    }
+    )
 
     override fun filterPredicates(): List<Predicate<String, Packet>> {
         return listOf(
@@ -65,12 +61,11 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
     override fun onPacket(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering =
-            if (fakta.beregningsdato.erKoronaPeriode() && packet.getNullableBoolean(KORONA_TOGGLE) == true) {
-                narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-            } else {
-                narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
-            }
+        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode() && packet.getNullableBoolean(KORONA_TOGGLE) == true) {
+            narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+        } else {
+            narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+        }
 
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
