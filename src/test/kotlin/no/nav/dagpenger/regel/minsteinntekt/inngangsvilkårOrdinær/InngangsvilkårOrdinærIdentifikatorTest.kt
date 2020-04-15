@@ -30,9 +30,9 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
                     manueltRedigert = false,
                     sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11)
                 ),
-                beregningsdato = LocalDate.now(),
+                verneplikt = true,
                 fangstOgFisk = false,
-                verneplikt = true
+                beregningsdato = LocalDate.now()
             )
         )
 

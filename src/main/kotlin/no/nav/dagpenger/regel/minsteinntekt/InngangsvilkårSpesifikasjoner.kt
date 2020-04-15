@@ -25,13 +25,13 @@ internal val kravTilMinsteinntekt: Spesifikasjon<Fakta> = (ordinær eller vernep
         beskrivelse = "Krav til minsteinntekt"
     )
 
-internal val kravTilMinsteinntektKorona: Spesifikasjon<Fakta> = (koronaOrdinær eller verneplikt)
+internal val kravTilMinsteinntektKorona: Spesifikasjon<Fakta> = (koronaOrdinær eller verneplikt eller lærling)
     .med(
         identifikator = "Krav til minsteinntekt",
         beskrivelse = "Krav til minsteinntekt"
     )
 
 fun Evaluering.koronaRegelBrukt() =
-    if (this.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+    if (this.children.any { it.identifikator == koronaOrdinær.identifikator || it.identifikator == lærling.identifikator })
         Beregningsregel.KORONA
     else Beregningsregel.ORDINAER
