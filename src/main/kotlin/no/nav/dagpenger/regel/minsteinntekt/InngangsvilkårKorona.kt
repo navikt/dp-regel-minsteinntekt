@@ -62,6 +62,8 @@ internal val koronaOrdinær: Spesifikasjon<Fakta> =
             beskrivelse = "Krav til minsteinntekt etter ordinære regler"
         )
 
+// https://lovdata.no/forskrift/2020-03-20-368/§2-6 - Unntak Folketrygdloven § 4-4 (krav til minsteinntekt)
+
 internal val lærling = Spesifikasjon<Fakta>(
     beskrivelse = "§ 2-6.Midlertidig inntekssikringsordning for lærlinger – unntak fra folketrygdloven § 4-4",
     identifikator = "§ 2-6.Midlertidig inntekssikringsordning for lærlinger",
