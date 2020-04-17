@@ -31,7 +31,7 @@ internal val kravTilMinsteinntektKorona: Spesifikasjon<Fakta> = (koronaOrdinær 
         beskrivelse = "Krav til minsteinntekt"
     )
 
-fun Evaluering.koronaRegelBrukt() =
+fun Evaluering.finnRegelBrukt() =
     if (this.children.any { it.identifikator == koronaOrdinær.identifikator || it.identifikator == lærling.identifikator })
         Beregningsregel.KORONA
     else Beregningsregel.ORDINAER

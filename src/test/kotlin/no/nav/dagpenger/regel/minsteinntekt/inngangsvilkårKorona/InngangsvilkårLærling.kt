@@ -4,7 +4,7 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
-import no.nav.dagpenger.regel.minsteinntekt.koronaRegelBrukt
+import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.dagpenger.regel.minsteinntekt.lærling
 import no.nav.nare.core.evaluations.Resultat
@@ -45,6 +45,6 @@ internal class InngangsvilkårLærling {
     @Test
     fun ` Forskrift 2-6 Midlertidig inntekssikringsordning for lærlinger er en beregningsregel KORONA `() {
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
-        assertEquals(Beregningsregel.KORONA, evaluering.koronaRegelBrukt())
+        assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 }

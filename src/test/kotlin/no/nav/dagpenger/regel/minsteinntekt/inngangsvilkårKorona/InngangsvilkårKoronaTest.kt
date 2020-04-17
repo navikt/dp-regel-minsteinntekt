@@ -4,7 +4,9 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
+import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
@@ -50,6 +52,7 @@ class InngangsvilkårKoronaTest {
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
         assertEquals(Resultat.NEI, riktigRegel.resultat)
+        assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
     @Test
@@ -75,6 +78,7 @@ class InngangsvilkårKoronaTest {
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
         assertEquals(Resultat.JA, riktigRegel.resultat)
+        assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
     @Test
@@ -109,6 +113,7 @@ class InngangsvilkårKoronaTest {
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
         assertEquals(Resultat.NEI, riktigRegel.resultat)
+        assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
     @Test
@@ -139,6 +144,7 @@ class InngangsvilkårKoronaTest {
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
         assertEquals(Resultat.JA, riktigRegel.resultat)
+        assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
     fun generateArbeidsInntekt(range: IntRange, beløpPerMnd: BigDecimal): List<KlassifisertInntektMåned> {
