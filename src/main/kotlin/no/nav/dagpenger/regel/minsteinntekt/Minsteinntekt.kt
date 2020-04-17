@@ -42,6 +42,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
         const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
         const val BEREGNINGSDAGTO = "beregningsDato"
         const val KORONA_TOGGLE = "koronaToggle"
+        const val LÆRLING: String = "lærling"
     }
 
     override fun getConfig() = streamConfig(
@@ -72,7 +73,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
             ulidGenerator.nextULID(),
             REGELIDENTIFIKATOR,
             evaluering.resultat == Resultat.JA,
-            evaluering.koronaRegelBrukt()
+            evaluering.finnRegelBrukt()
         )
 
         packet.putValue(MINSTEINNTEKT_NARE_EVALUERING, jsonAdapterEvaluering.toJson(evaluering))

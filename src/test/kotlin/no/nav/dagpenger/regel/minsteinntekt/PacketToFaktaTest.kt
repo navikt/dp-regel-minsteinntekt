@@ -111,4 +111,20 @@ class PacketToFaktaTest {
 
         assertEquals("12345", fakta.inntekt.inntektsId)
     }
+
+    @Test
+    fun ` should map lærling from packet to Fakta `() {
+        val json = """
+        {
+            "lærling": true,
+            "beregningsDato": "2019-04-10"
+        }""".trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", MinsteinntektTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+
+        val fakta = packetToFakta(packet)
+
+        assertTrue(fakta.lærling)
+    }
 }

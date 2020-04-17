@@ -61,3 +61,16 @@ internal val koronaOrdinær: Spesifikasjon<Fakta> =
             identifikator = "Krav til minsteinntekt etter midlertidig korona-endret § 4-4",
             beskrivelse = "Krav til minsteinntekt etter ordinære regler"
         )
+
+// https://lovdata.no/forskrift/2020-03-20-368/§2-6 - Unntak Folketrygdloven § 4-4 (krav til minsteinntekt)
+
+internal val lærling = Spesifikasjon<Fakta>(
+    beskrivelse = "§ 2-6.Midlertidig inntekssikringsordning for lærlinger – unntak fra folketrygdloven § 4-4",
+    identifikator = "§ 2-6.Midlertidig inntekssikringsordning for lærlinger",
+    implementasjon = {
+        when {
+            lærling -> Evaluering.ja("Lærling gis unntak fra unntak fra folketrygdloven § 4-4 ")
+            else -> Evaluering.nei("Kun lærling gis unntak fra folketrygdloven § 4-4")
+        }
+    }
+)

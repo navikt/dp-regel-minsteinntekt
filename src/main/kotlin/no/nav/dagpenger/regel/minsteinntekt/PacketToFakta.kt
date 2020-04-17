@@ -15,6 +15,14 @@ internal fun packetToFakta(packet: Packet): Fakta {
         packet.getNullableObjectValue(Minsteinntekt.BRUKT_INNTEKTSPERIODE, bruktInntektsPeriodeAdapter::fromJsonValue)
     val fangstOgFisk = packet.getNullableBoolean(Minsteinntekt.FANGST_OG_FISK) ?: false
     val beregningsDato = packet.getLocalDate(Minsteinntekt.BEREGNINGSDAGTO)
+    val lærling = packet.getNullableBoolean(Minsteinntekt.LÆRLING) ?: false
 
-    return Fakta(inntekt, bruktInntektsPeriode, avtjentVernePlikt, fangstOgFisk, beregningsDato)
+    return Fakta(
+        inntekt = inntekt,
+        bruktInntektsPeriode = bruktInntektsPeriode,
+        verneplikt = avtjentVernePlikt,
+        fangstOgFisk = fangstOgFisk,
+        beregningsdato = beregningsDato,
+        lærling = lærling
+    )
 }
