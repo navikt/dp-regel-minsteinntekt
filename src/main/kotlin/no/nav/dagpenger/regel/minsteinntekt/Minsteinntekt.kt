@@ -41,7 +41,6 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
         const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
         const val BEREGNINGSDAGTO = "beregningsDato"
-        const val KORONA_TOGGLE = "koronaToggle"
         const val LÆRLING: String = "lærling"
     }
 
@@ -62,7 +61,7 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
     override fun onPacket(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode() && packet.getNullableBoolean(KORONA_TOGGLE) == true) {
+        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode()) {
             narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
         } else {
             narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
