@@ -46,8 +46,7 @@ class KoronaBeregningTest {
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
-            "beregningsDato": "2020-03-20",
-            "koronaToggle": true
+            "beregningsDato": "2020-03-20"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -69,8 +68,7 @@ class KoronaBeregningTest {
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
-            "beregningsDato": "2020-03-19",
-            "koronaToggle": true
+            "beregningsDato": "2020-03-19"
         }""".trimIndent()
 
         val packet = Packet(json)
@@ -92,8 +90,7 @@ class KoronaBeregningTest {
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
-            "beregningsDato": "2020-03-19",
-            "koronaToggle": false
+            "beregningsDato": "2020-03-19"
         }""".trimIndent()
 
         val packet = Packet(json)
