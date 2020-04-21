@@ -1,5 +1,9 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import java.math.BigDecimal
+import java.net.URI
+import java.time.YearMonth
+import java.util.Properties
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -12,10 +16,6 @@ import org.apache.kafka.streams.test.ConsumerRecordFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
-import java.net.URI
-import java.time.YearMonth
-import java.util.Properties
 
 class MinsteinntektTopologyTest {
     private val configuration = Configuration()

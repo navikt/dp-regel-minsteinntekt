@@ -1,5 +1,8 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårKorona
 
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.test.assertEquals
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
@@ -9,9 +12,6 @@ import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.dagpenger.regel.minsteinntekt.lærling
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlin.test.assertEquals
 
 internal class InngangsvilkårLærling {
     private val inntekt = emptyList<KlassifisertInntektMåned>()

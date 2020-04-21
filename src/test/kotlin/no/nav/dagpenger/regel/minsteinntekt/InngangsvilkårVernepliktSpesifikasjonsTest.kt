@@ -1,11 +1,11 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import java.time.LocalDate
+import java.time.YearMonth
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.YearMonth
 
 internal class InngangsvilkårVernepliktSpesifikasjonsTest {
 

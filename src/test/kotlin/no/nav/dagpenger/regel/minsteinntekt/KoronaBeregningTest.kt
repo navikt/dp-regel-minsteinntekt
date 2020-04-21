@@ -1,6 +1,9 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import com.squareup.moshi.JsonAdapter
+import java.math.BigDecimal
+import java.time.YearMonth
+import kotlin.test.assertTrue
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -11,9 +14,6 @@ import no.nav.nare.core.evaluations.Evaluering
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
-import java.time.YearMonth
-import kotlin.test.assertTrue
 
 class KoronaBeregningTest {
     private val configuration = Configuration()

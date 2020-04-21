@@ -1,15 +1,15 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårOrdinær
 
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntekt
 import no.nav.dagpenger.regel.minsteinntekt.ordinær
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlin.test.assertEquals
-import kotlin.test.assertSame
 
 internal class InngangsvilkårOrdinærIdentifikatorTest {
 

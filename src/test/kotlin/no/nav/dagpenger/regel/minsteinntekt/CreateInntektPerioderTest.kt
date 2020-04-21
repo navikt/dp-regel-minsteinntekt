@@ -1,13 +1,13 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import no.nav.dagpenger.events.inntekt.v1.Inntekt
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.assertNotNull
+import no.nav.dagpenger.events.inntekt.v1.Inntekt
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class CreateInntektPerioderTest {
     val minsteinntekt = Minsteinntekt(Configuration())

@@ -4,6 +4,9 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Types
 import de.huxhorn.sulky.ulid.ULID
 import io.prometheus.client.CollectorRegistry
+import java.math.BigDecimal
+import java.net.URI
+import java.time.LocalDate
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
@@ -14,9 +17,6 @@ import no.nav.dagpenger.streams.streamConfig
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
-import java.math.BigDecimal
-import java.net.URI
-import java.time.LocalDate
 
 private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 
