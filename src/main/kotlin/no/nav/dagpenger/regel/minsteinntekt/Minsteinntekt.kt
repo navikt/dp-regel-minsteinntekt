@@ -6,7 +6,6 @@ import de.huxhorn.sulky.ulid.ULID
 import io.prometheus.client.CollectorRegistry
 import java.math.BigDecimal
 import java.net.URI
-import java.time.LocalDate
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
@@ -18,7 +17,7 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 
-private val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
+internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 
 class Minsteinntekt(private val configuration: Configuration) : River(configuration.behovTopic) {
     override val SERVICE_APP_ID: String = configuration.application.id
@@ -85,8 +84,6 @@ class Minsteinntekt(private val configuration: Configuration) : River(configurat
 
         return packet
     }
-
-    private fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 12, 31))
 
     override fun onFailure(packet: Packet, error: Throwable?): Packet {
         packet.addProblem(

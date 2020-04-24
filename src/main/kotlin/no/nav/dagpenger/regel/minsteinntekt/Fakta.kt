@@ -51,3 +51,5 @@ internal fun isThisGjusteringTest(
     val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(LocalDate.of(2019, 9, 1).minusDays(1))
     return configuration.features.gjustering() && isBeregningsDatoAfterGjustering
 }
+
+fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 12, 31))
