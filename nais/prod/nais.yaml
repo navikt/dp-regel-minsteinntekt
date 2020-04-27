@@ -6,4 +6,4 @@ spec:
   vault:
     paths:
       - mountPath: /var/run/secrets/nais.io/service_user
-        kvPath: /serviceuser/data/prod/srvdp-regel-minsteinntekt
+        kvPath: /serviceuser/data/prod/srvdp-regel-minste
