@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class CreateInntektPerioderTest {
-    val minsteinntekt = Minsteinntekt(Configuration())
-
     @Test
     fun `createInntektPerioder correctly for no inntekt`() {
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 3)
@@ -23,7 +21,7 @@ class CreateInntektPerioderTest {
             beregningsdato = LocalDate.of(2019, 4, 10)
         )
 
-        val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
+        val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal.ZERO })
@@ -47,7 +45,7 @@ class CreateInntektPerioderTest {
             beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
-        val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
+        val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(12000) })
@@ -76,7 +74,7 @@ class CreateInntektPerioderTest {
             beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
-        val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
+        val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
@@ -101,7 +99,7 @@ class CreateInntektPerioderTest {
             beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
-        val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
+        val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(48000) })
@@ -121,7 +119,7 @@ class CreateInntektPerioderTest {
             beregningsdato = LocalDate.of(2019, 2, 10)
         )
 
-        val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
+        val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
@@ -142,7 +140,7 @@ class CreateInntektPerioderTest {
             beregningsdato = LocalDate.of(2019, 4, 10)
         )
 
-        val inntektsPerioder = minsteinntekt.createInntektPerioder(fakta)
+        val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
 
         assertTrue(inntektsPerioder.all { it.inntekt == BigDecimal(24000) })
