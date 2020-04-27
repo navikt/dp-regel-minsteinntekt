@@ -26,7 +26,7 @@ repositories {
 
 application {
     applicationName = "dp-regel-minsteinntekt"
-    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.MinsteinntektKt"
+    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.ApplicationKt"
 }
 
 java {
