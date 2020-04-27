@@ -66,7 +66,7 @@ data class Configuration(
     ),
     val rapidApplication: Map<String, String> = mapOf(
         "KAFKA_BOOTSTRAP_SERVERS" to config()[Key("kafka.bootstrap.servers", stringType)],
-        "KAFKA_CONSUMER_GROUP_ID" to "dp-regel-sats-rapid",
+        "KAFKA_CONSUMER_GROUP_ID" to "dp-regel-minsteinntekt-rapid",
         "KAFKA_RAPID_TOPIC" to config()[Key("kafka.topic", stringType)],
         "KAFKA_RESET_POLICY" to config()[Key("kafka.reset.policy", stringType)],
         "NAV_TRUSTSTORE_PATH" to config()[Key("nav.truststore.path", stringType)],
