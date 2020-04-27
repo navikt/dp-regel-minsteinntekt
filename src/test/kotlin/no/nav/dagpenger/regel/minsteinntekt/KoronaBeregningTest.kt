@@ -3,13 +3,13 @@ package no.nav.dagpenger.regel.minsteinntekt
 import com.squareup.moshi.JsonAdapter
 import java.math.BigDecimal
 import java.time.YearMonth
-import kotlin.test.assertTrue
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_NARE_EVALUERING
+import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.nare.core.evaluations.Evaluering
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -40,7 +40,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal bruke korona-regler når beregningsdato er etter 20 mars 2020`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val json = """
         {
@@ -57,12 +57,12 @@ class KoronaBeregningTest {
             jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
         assertTrue(evaluering.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
-        assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+        assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
     @Test
     fun `Skal ikke bruke korona-regler når beregningsdato er før 20 mars 2020`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val json = """
         {
@@ -79,12 +79,12 @@ class KoronaBeregningTest {
             jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
         assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
-        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
     @Test
     fun `Skal ikke bruke korona-regler når koronatoggle er av`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val json = """
         {
@@ -101,6 +101,6 @@ class KoronaBeregningTest {
             jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
         assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
-        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 }

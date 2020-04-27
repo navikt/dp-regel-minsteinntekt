@@ -9,6 +9,10 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_INNTEKTSPERIODER
+import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_NARE_EVALUERING
+import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
+import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.jsonAdapterInntektPeriodeInfo
 import no.nav.dagpenger.streams.Topics.DAGPENGER_BEHOV_PACKET_EVENT
 import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.TopologyTestDriver
@@ -17,7 +21,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class MinsteinntektTopologyTest {
+class ApplicationTopologyTest {
     private val configuration = Configuration()
 
     companion object {
@@ -38,7 +42,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` dagpengebehov without inntekt should not be processed`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val json = """
             {
@@ -62,7 +66,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` dagpengebehov without beregningsDato should not be processed`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -104,7 +108,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -149,16 +153,16 @@ class MinsteinntektTopologyTest {
                 DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
             )
 
-            assertTrue { ut.value().hasField(Minsteinntekt.MINSTEINNTEKT_RESULTAT) }
+            assertTrue { ut.value().hasField(MINSTEINNTEKT_RESULTAT) }
             assertEquals(
                 "Minsteinntekt.v1",
-                ut.value().getMapValue(Minsteinntekt.MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
+                ut.value().getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
             )
 
             // test inntektsperioder are added to packet correctly
             val inntektsPerioder = ut.value().getNullableObjectValue(
-                Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
-                minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
+                MINSTEINNTEKT_INNTEKTSPERIODER,
+                jsonAdapterInntektPeriodeInfo::fromJsonValue
             ) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 2), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
@@ -168,7 +172,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -218,8 +222,8 @@ class MinsteinntektTopologyTest {
 
             // test inntektsperioder are added to packet correctly
             val inntektsPerioder = ut.value().getNullableObjectValue(
-                Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
-                minsteinntekt.jsonAdapterInntektPeriodeInfo::fromJsonValue
+                MINSTEINNTEKT_INNTEKTSPERIODER,
+                jsonAdapterInntektPeriodeInfo::fromJsonValue
             ) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
@@ -229,7 +233,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add nare evaluation`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -277,8 +281,8 @@ class MinsteinntektTopologyTest {
                 DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
             )
 
-            val nareEvaluering = minsteinntekt.jsonAdapterEvaluering.fromJson(ut.value().getStringValue(
-                Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING
+            val nareEvaluering = Minsteinntekt.jsonAdapterEvaluering.fromJson(ut.value().getStringValue(
+                MINSTEINNTEKT_NARE_EVALUERING
             ))
 
             val expectedNareEvaluering = kravTilMinsteinntekt.evaluer(packetToFakta(packet))
@@ -289,7 +293,7 @@ class MinsteinntektTopologyTest {
 
     @Test
     fun ` should add problem on failure`() {
-        val minsteinntekt = Minsteinntekt(configuration)
+        val minsteinntekt = Application(configuration)
 
         val json = """
             {
