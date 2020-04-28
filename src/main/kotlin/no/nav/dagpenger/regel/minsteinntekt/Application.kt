@@ -21,6 +21,9 @@ internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
 
 fun main() {
+    val service = Application(config)
+    service.start()
+
     RapidApplication.create(
         Configuration().rapidApplication
     ).apply {
@@ -30,9 +33,6 @@ fun main() {
     }.also {
         it.register(RapidHealthCheck)
     }.start()
-
-    val service = Application(config)
-    service.start()
 }
 
 class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
