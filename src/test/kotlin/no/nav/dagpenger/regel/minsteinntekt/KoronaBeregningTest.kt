@@ -1,6 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import com.squareup.moshi.JsonAdapter
+import io.mockk.mockk
 import java.math.BigDecimal
 import java.time.YearMonth
 import no.nav.dagpenger.events.Packet
@@ -40,7 +41,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal bruke korona-regler når beregningsdato er etter 20 mars 2020`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val json = """
         {
@@ -62,7 +63,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal ikke bruke korona-regler når beregningsdato er før 20 mars 2020`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val json = """
         {
@@ -84,7 +85,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal ikke bruke korona-regler når koronatoggle er av`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val json = """
         {

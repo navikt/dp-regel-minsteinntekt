@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldNotBe
 import java.math.BigDecimal
 import java.time.YearMonth
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
@@ -15,8 +16,7 @@ import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.LøsningService.Companion.MINSTEINNTEKT
-import no.nav.helse.rapids_rivers.InMemoryRapid
-import no.nav.helse.rapids_rivers.inMemoryRapid
+import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -29,42 +29,32 @@ internal class LøsningServiceTest {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     }
 
-    private lateinit var rapid: InMemoryRapid
+    private val rapid = TestRapid().apply {
+        LøsningService(rapidsConnection = this)
+    }
 
     @BeforeEach
     fun setUp() {
-        rapid = createRapid {
-            LøsningService(rapidsConnection = it)
-        }
+        rapid.reset()
     }
 
     @Test
     fun ` Skal innhente løsning for minsteinntekt`() {
-        rapid.sendToListeners(
+        rapid.sendTestMessage(
             packetJson
         )
 
         assertSoftly {
-            validateMessages(rapid) { messages ->
-                messages.size shouldBeExactly 1
 
-                messages.first().also { message ->
-                    message["@behov"].map(JsonNode::asText) shouldContain MINSTEINNTEKT
-                    message.hasNonNull("@løsning")
-                    message["@løsning"].hasNonNull("minsteinntektNareEvaluering")
-                    message["@løsning"].hasNonNull("minsteinntektInntektsPerioder")
-                    message["@løsning"].hasNonNull("minsteinntektResultat")
-                }
-            }
+            val inspektør = rapid.inspektør
+            inspektør.size shouldBeExactly 1
+
+            inspektør.field(0, "@behov").map(JsonNode::asText) shouldContain MINSTEINNTEKT
+            inspektør.field(0, "@løsning") shouldNotBe null
+            inspektør.field(0, "@løsning").hasNonNull("minsteinntektNareEvaluering")
+            inspektør.field(0, "@løsning").hasNonNull("minsteinntektInntektsPerioder")
+            inspektør.field(0, "@løsning").hasNonNull("minsteinntektResultat")
         }
-    }
-
-    private fun validateMessages(rapid: InMemoryRapid, assertions: (messages: List<JsonNode>) -> Any) {
-        rapid.outgoingMessages.map { jacksonObjectMapper().readTree(it.value) }.also { assertions(it) }
-    }
-
-    private fun createRapid(service: (InMemoryRapid) -> Any): InMemoryRapid {
-        return inMemoryRapid { }.also { service(it) }
     }
 
     private val inntekt = Inntekt(

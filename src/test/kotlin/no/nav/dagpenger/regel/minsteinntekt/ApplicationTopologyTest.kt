@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import io.mockk.mockk
 import java.math.BigDecimal
 import java.net.URI
 import java.time.YearMonth
@@ -42,7 +43,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` dagpengebehov without inntekt should not be processed`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val json = """
             {
@@ -66,7 +67,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` dagpengebehov without beregningsDato should not be processed`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -108,7 +109,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -172,7 +173,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -233,7 +234,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add nare evaluation`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -293,7 +294,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add problem on failure`() {
-        val minsteinntekt = Application(configuration)
+        val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
         val json = """
             {

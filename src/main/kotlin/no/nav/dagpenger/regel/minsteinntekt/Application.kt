@@ -21,7 +21,7 @@ internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
 
 fun main() {
-    val service = Application(config)
+    val service = Application(config, RapidHealthCheck as HealthCheck)
     service.start()
 
     RapidApplication.create(
@@ -35,9 +35,10 @@ fun main() {
     }.start()
 }
 
-class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
+class Application(private val configuration: Configuration, private val healthCheck: HealthCheck) : River(configuration.behovTopic) {
     override val SERVICE_APP_ID: String = configuration.application.id
     override val HTTP_PORT: Int = configuration.application.httpPort
+    override val healthChecks: List<HealthCheck> = listOf(healthCheck)
 
     companion object {
         const val BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE = "beregningsDato"
