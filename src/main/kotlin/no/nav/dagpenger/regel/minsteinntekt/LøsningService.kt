@@ -60,10 +60,8 @@ class LøsningService(
             evaluering.finnRegelBrukt()
         )
 
-        packet["@løsning"] = mapOf(Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING to evaluering)
-        packet["@løsning"] = mapOf(Minsteinntekt.MINSTEINNTEKT_RESULTAT to resultat)
-        packet["@løsning"] = mapOf(Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER to createInntektPerioder(fakta))
-
+        packet["@løsning"] = mapOf(MINSTEINNTEKT to mapOf(Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING to evaluering,
+            Minsteinntekt.MINSTEINNTEKT_RESULTAT to resultat, Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER to createInntektPerioder(fakta)))
         return packet
     }
 }

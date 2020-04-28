@@ -51,9 +51,10 @@ internal class LøsningServiceTest {
 
             inspektør.field(0, "@behov").map(JsonNode::asText) shouldContain MINSTEINNTEKT
             inspektør.field(0, "@løsning") shouldNotBe null
-            inspektør.field(0, "@løsning").hasNonNull("minsteinntektNareEvaluering")
-            inspektør.field(0, "@løsning").hasNonNull("minsteinntektInntektsPerioder")
-            inspektør.field(0, "@løsning").hasNonNull("minsteinntektResultat")
+            inspektør.field(0, "@løsning")[MINSTEINNTEKT] shouldNotBe null
+            inspektør.field(0, "@løsning")[MINSTEINNTEKT]["minsteinntektNareEvaluering"] shouldNotBe null
+            inspektør.field(0, "@løsning")[MINSTEINNTEKT]["minsteinntektInntektsPerioder"] shouldNotBe null
+            inspektør.field(0, "@løsning")[MINSTEINNTEKT]["minsteinntektResultat"] shouldNotBe null
         }
     }
 
