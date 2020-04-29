@@ -21,8 +21,8 @@ class LøsningService(
 
     init {
         River(rapidsConnection).apply {
-            validate { it.requireAll("@behov", listOf(MINSTEINNTEKT)) }
-            validate { it.forbid("@løsning") }
+            validate { it.demandAll("@behov", listOf(MINSTEINNTEKT)) }
+            validate { it.rejectKey("@løsning") }
             validate { it.requireKey("@id", INNTEKT, BEREGNINGSDATO_NY_SRKIVEMÅTE) }
             validate { it.interestedIn(LÆRLING, FANGST_OG_FISK, AVTJENT_VERNEPLIKT, BRUKT_INNTEKTSPERIODE) }
         }.register(this)
@@ -45,13 +45,11 @@ class LøsningService(
 
     private fun løsFor(packet: JsonMessage): JsonMessage {
         val fakta = packet.toFakta()
-
         val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode()) {
             kravTilMinsteinntektKorona.evaluer(fakta)
         } else {
             kravTilMinsteinntekt.evaluer(fakta)
         }
-
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
             ulidGenerator.nextULID(),
