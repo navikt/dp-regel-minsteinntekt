@@ -40,6 +40,7 @@ class LøsningService(
         ) {
             val packetMedLøsning = løsFor(packet)
             context.send(packetMedLøsning.toJson())
+            log.info { "løser behov for ${packet["@id"].asText()}" }
         }
     }
 
