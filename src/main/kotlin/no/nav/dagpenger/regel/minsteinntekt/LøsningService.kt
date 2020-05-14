@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import de.huxhorn.sulky.ulid.ULID
 import mu.KotlinLogging
 import no.nav.dagpenger.inntekt.rpc.InntektHenter
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.AVTJENT_VERNEPLIKT
@@ -24,7 +25,8 @@ class LøsningService(
         River(rapidsConnection).apply {
             validate { it.demandAll("@behov", listOf(MINSTEINNTEKT)) }
             validate { it.rejectKey("@løsning") }
-            validate { it.requireKey("@id", INNTEKT_ID, BEREGNINGSDATO_NY_SRKIVEMÅTE) }
+            validate { it.requireKey("@id", BEREGNINGSDATO_NY_SRKIVEMÅTE) }
+            validate { it.require(INNTEKT_ID) { inntektid -> ULID.parseULID(inntektid.asText()) } }
             validate { it.interestedIn(LÆRLING, FANGST_OG_FISK, AVTJENT_VERNEPLIKT, BRUKT_INNTEKTSPERIODE) }
         }.register(this)
     }

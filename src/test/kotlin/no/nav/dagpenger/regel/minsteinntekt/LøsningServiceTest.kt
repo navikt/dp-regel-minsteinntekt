@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import de.huxhorn.sulky.ulid.ULID
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.ints.shouldBeExactly
@@ -84,6 +85,18 @@ internal class LøsningServiceTest {
         }
     }
 
+    @Test
+    fun ` Skal håndtere feil i inntekthenting `() {
+        rapid.sendTestMessage(
+            medFeilInntektId
+        )
+
+        assertSoftly {
+            val inspektør = rapid.inspektør
+            inspektør.size shouldBeExactly 0
+        }
+    }
+
     @Language("JSON")
     private val packetJson =
         """
@@ -94,7 +107,25 @@ internal class LøsningServiceTest {
                 "beregningsdato": "2020-04-21",
                 "harAvtjentVerneplikt": true,
                 "oppfyllerKravTilFangstOgFisk": false,
-                "Inntekt": "12345",
+                "Inntekt": "${ULID().nextULID()}",
+                "bruktInntektsPeriode": {
+                    "førsteMåned": "2020-01",
+                    "sisteMåned": "2020-04"
+                }
+             }
+            """.trimIndent()
+
+    @Language("JSON")
+    private val medFeilInntektId =
+        """
+             {
+                "@behov": ["$MINSTEINNTEKT"],
+                "@id": "12345", 
+                "aktørId": "1234",
+                "beregningsdato": "2020-04-21",
+                "harAvtjentVerneplikt": true,
+                "oppfyllerKravTilFangstOgFisk": false,
+                "Inntekt": "blabla",
                 "bruktInntektsPeriode": {
                     "førsteMåned": "2020-01",
                     "sisteMåned": "2020-04"
