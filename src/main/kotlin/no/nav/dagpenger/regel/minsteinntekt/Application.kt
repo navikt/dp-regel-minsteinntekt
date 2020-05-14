@@ -5,6 +5,8 @@ import java.net.URI
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
+import no.nav.dagpenger.inntekt.rpc.InntektHenterWrapper
+import no.nav.dagpenger.ktor.auth.ApiKeyVerifier
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.dagpenger.streams.HealthCheck
@@ -24,11 +26,19 @@ fun main() {
     val service = Application(config, RapidHealthCheck as HealthCheck)
     service.start()
 
+    val apiKeyVerifier = ApiKeyVerifier(config.application.inntektGprcApiSecret)
+    val apiKey = apiKeyVerifier.generate(config.application.inntektGprcApiKey)
+    val inntektClient = InntektHenterWrapper(
+        serveraddress = config.application.inntektGprcAddress,
+        apiKey = apiKey
+    )
+
     RapidApplication.create(
         Configuration().rapidApplication
     ).apply {
         LøsningService(
-            this
+            rapidsConnection = this,
+            inntektHenter = inntektClient
         )
     }.also {
         it.register(RapidHealthCheck)

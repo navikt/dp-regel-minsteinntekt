@@ -56,6 +56,10 @@ val orgJsonVersion = "20180813"
 dependencies {
     implementation(kotlin("stdlib"))
 
+    // gPrc client and api key generation (ktorUtils)
+    implementation("com.github.navikt:dp-inntekt:2020.05.14-11.18.58cca42efd41")
+    implementation(Dagpenger.Biblioteker.ktorUtils)
+
     implementation(Dagpenger.Streams)
     implementation(Dagpenger.Events)
     implementation(Dagpenger.Biblioteker.grunnbeløp)

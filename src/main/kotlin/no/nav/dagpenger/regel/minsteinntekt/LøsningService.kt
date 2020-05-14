@@ -1,10 +1,10 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import mu.KotlinLogging
+import no.nav.dagpenger.inntekt.rpc.InntektHenter
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.AVTJENT_VERNEPLIKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.BRUKT_INNTEKTSPERIODE
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.FANGST_OG_FISK
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.LÆRLING
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageProblems
@@ -14,7 +14,8 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 
 class LøsningService(
-    rapidsConnection: RapidsConnection
+    rapidsConnection: RapidsConnection,
+    private val inntektHenter: InntektHenter
 ) : River.PacketListener {
     private val log = KotlinLogging.logger {}
     private val sikkerlogg = KotlinLogging.logger("tjenestekall")
@@ -23,13 +24,14 @@ class LøsningService(
         River(rapidsConnection).apply {
             validate { it.demandAll("@behov", listOf(MINSTEINNTEKT)) }
             validate { it.rejectKey("@løsning") }
-            validate { it.requireKey("@id", INNTEKT, BEREGNINGSDATO_NY_SRKIVEMÅTE) }
+            validate { it.requireKey("@id", INNTEKT_ID, BEREGNINGSDATO_NY_SRKIVEMÅTE) }
             validate { it.interestedIn(LÆRLING, FANGST_OG_FISK, AVTJENT_VERNEPLIKT, BRUKT_INNTEKTSPERIODE) }
         }.register(this)
     }
 
     companion object {
         const val MINSTEINNTEKT = "Minsteinntekt"
+        const val INNTEKT_ID = "Inntekt"
         const val BEREGNINGSDATO_NY_SRKIVEMÅTE = "beregningsdato"
     }
 
@@ -44,7 +46,7 @@ class LøsningService(
     }
 
     private fun løsFor(packet: JsonMessage): JsonMessage {
-        val fakta = packet.toFakta()
+        val fakta = packet.toFakta(inntektHenter)
         val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode()) {
             kravTilMinsteinntektKorona.evaluer(fakta)
         } else {

@@ -9,14 +9,19 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldNotBe
+import io.mockk.every
+import io.mockk.mockk
 import java.math.BigDecimal
 import java.time.YearMonth
+import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
+import no.nav.dagpenger.inntekt.rpc.InntektHenter
 import no.nav.dagpenger.regel.minsteinntekt.LøsningService.Companion.MINSTEINNTEKT
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -29,8 +34,29 @@ internal class LøsningServiceTest {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     }
 
+    private val inntekt = Inntekt(
+        inntektsId = "12345",
+        inntektsListe = listOf(
+            KlassifisertInntektMåned(
+                årMåned = YearMonth.of(2018, 2),
+                klassifiserteInntekter = listOf(
+                    KlassifisertInntekt(
+                        beløp = BigDecimal(25000),
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
+                    )
+                )
+
+            )
+        ),
+        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
+    )
+
+    private val inntektHenter = mockk<InntektHenter>().also {
+        every { runBlocking { it.hentKlassifisertInntekt(any()) } } returns inntekt
+    }
+
     private val rapid = TestRapid().apply {
-        LøsningService(rapidsConnection = this)
+        LøsningService(rapidsConnection = this, inntektHenter = inntektHenter)
     }
 
     @BeforeEach
@@ -58,23 +84,7 @@ internal class LøsningServiceTest {
         }
     }
 
-    private val inntekt = Inntekt(
-        inntektsId = "12345",
-        inntektsListe = listOf(
-            KlassifisertInntektMåned(
-                årMåned = YearMonth.of(2018, 2),
-                klassifiserteInntekter = listOf(
-                    KlassifisertInntekt(
-                        beløp = BigDecimal(25000),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-
-            )
-        ),
-        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
-    )
-
+    @Language("JSON")
     private val packetJson =
         """
              {
@@ -84,18 +94,7 @@ internal class LøsningServiceTest {
                 "beregningsdato": "2020-04-21",
                 "harAvtjentVerneplikt": true,
                 "oppfyllerKravTilFangstOgFisk": false,
-                "inntektV1": {
-                    "inntektsId": "12345",
-                    "manueltRedigert": false,
-                    "sisteAvsluttendeKalenderMåned": "2018-02",
-                    "inntektsListe": [{
-                        "årMåned": "2018-02",
-                        "klassifiserteInntekter": [{
-                            "beløp": 25000,
-                            "inntektKlasse": "ARBEIDSINNTEKT"
-                        }]
-                    }]
-                },
+                "Inntekt": "12345",
                 "bruktInntektsPeriode": {
                     "førsteMåned": "2020-01",
                     "sisteMåned": "2020-04"
