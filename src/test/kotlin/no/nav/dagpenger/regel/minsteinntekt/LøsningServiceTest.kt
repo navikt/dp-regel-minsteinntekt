@@ -20,7 +20,6 @@ import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.inntekt.rpc.InntektHenter
-import no.nav.dagpenger.regel.minsteinntekt.LøsningService.Companion.MINSTEINNTEKT
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
@@ -76,12 +75,11 @@ internal class LøsningServiceTest {
             val inspektør = rapid.inspektør
             inspektør.size shouldBeExactly 1
 
-            inspektør.field(0, "@behov").map(JsonNode::asText) shouldContain MINSTEINNTEKT
+            inspektør.field(0, "@behov").map(JsonNode::asText) shouldContain "Minsteinntekt"
             inspektør.field(0, "@løsning") shouldNotBe null
-            inspektør.field(0, "@løsning")[MINSTEINNTEKT] shouldNotBe null
-            inspektør.field(0, "@løsning")[MINSTEINNTEKT]["minsteinntektNareEvaluering"] shouldNotBe null
-            inspektør.field(0, "@løsning")[MINSTEINNTEKT]["minsteinntektInntektsPerioder"] shouldNotBe null
-            inspektør.field(0, "@løsning")[MINSTEINNTEKT]["minsteinntektResultat"] shouldNotBe null
+            inspektør.field(0, "@løsning")["Minsteinntekt"] shouldNotBe null
+            inspektør.field(0, "@løsning")["Minsteinntekt"]["inntektsperioder"] shouldNotBe null
+            inspektør.field(0, "@løsning")["Minsteinntekt"]["resultat"] shouldNotBe null
         }
     }
 
@@ -101,13 +99,14 @@ internal class LøsningServiceTest {
     private val packetJson =
         """
              {
-                "@behov": ["$MINSTEINNTEKT"],
+                "@behov": ["Minsteinntekt"],
                 "@id": "12345", 
                 "aktørId": "1234",
                 "beregningsdato": "2020-04-21",
+                "vedtakId" : "12122",
                 "harAvtjentVerneplikt": true,
                 "oppfyllerKravTilFangstOgFisk": false,
-                "Inntekt": "${ULID().nextULID()}",
+                "InntektId": "${ULID().nextULID()}",
                 "bruktInntektsPeriode": {
                     "førsteMåned": "2020-01",
                     "sisteMåned": "2020-04"
@@ -119,13 +118,14 @@ internal class LøsningServiceTest {
     private val medFeilInntektId =
         """
              {
-                "@behov": ["$MINSTEINNTEKT"],
+                "@behov": ["Minsteinntekt"],
                 "@id": "12345", 
                 "aktørId": "1234",
+                "vedtakId" : "12122"
                 "beregningsdato": "2020-04-21",
                 "harAvtjentVerneplikt": true,
                 "oppfyllerKravTilFangstOgFisk": false,
-                "Inntekt": "blabla",
+                "InntektId": "blabla",
                 "bruktInntektsPeriode": {
                     "førsteMåned": "2020-01",
                     "sisteMåned": "2020-04"

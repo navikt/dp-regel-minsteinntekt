@@ -1,17 +1,17 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.fasterxml.jackson.databind.JsonNode
 import de.huxhorn.sulky.ulid.ULID
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import mu.withLoggingContext
 import no.nav.dagpenger.inntekt.rpc.InntektHenter
-import no.nav.dagpenger.regel.minsteinntekt.LøsningService.Companion.INNTEKT_ID
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.AVTJENT_VERNEPLIKT
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.BRUKT_INNTEKTSPERIODE
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.FANGST_OG_FISK
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.LÆRLING
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageProblems
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.helse.rapids_rivers.asLocalDate
+import no.nav.helse.rapids_rivers.asYearMonth
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 
@@ -24,23 +24,23 @@ class LøsningService(
 
     init {
         River(rapidsConnection).apply {
-            validate { it.demandAll("@behov", listOf(MINSTEINNTEKT)) }
+            validate { it.demandAll("@behov", listOf("Minsteinntekt")) }
             validate { it.rejectKey("@løsning") }
-            validate { it.requireKey("@id", INNTEKT_ID, BEREGNINGSDATO_NY_SRKIVEMÅTE) }
-            validate { it.hasValidInntektId() }
-            validate { it.interestedIn(LÆRLING, FANGST_OG_FISK, AVTJENT_VERNEPLIKT, BRUKT_INNTEKTSPERIODE) }
+            validate { it.requireKey("@id", "vedtakId") }
+            validate { it.requireKey("InntektId", "beregningsdato") }
+            validate { it.require("InntektId") { id -> id.asULID() } }
+            validate { it.interestedIn("lærling", "oppfyllerKravTilFangstOgFisk", "harAvtjentVerneplikt", "bruktInntektsPeriode") }
         }.register(this)
     }
 
-    companion object {
-        const val MINSTEINNTEKT = "Minsteinntekt"
-        const val INNTEKT_ID = "Inntekt"
-        const val BEREGNINGSDATO_NY_SRKIVEMÅTE = "beregningsdato"
-    }
-
     override fun onPacket(packet: JsonMessage, context: RapidsConnection.MessageContext) {
-        val packetMedLøsning = løsFor(packet)
-        context.send(packetMedLøsning.toJson())
+        withLoggingContext(
+            "behovId" to packet["@id"].asText(),
+            "vedtakId" to packet["vedtakId"].asText()
+        ) {
+            val packetMedLøsning = løsFor(packet)
+            context.send(packetMedLøsning.toJson())
+        }
     }
 
     override fun onError(problems: MessageProblems, context: RapidsConnection.MessageContext) {
@@ -63,10 +63,29 @@ class LøsningService(
             evaluering.finnRegelBrukt()
         )
 
-        packet["@løsning"] = mapOf(MINSTEINNTEKT to mapOf(Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING to evaluering,
-            Minsteinntekt.MINSTEINNTEKT_RESULTAT to resultat, Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER to createInntektPerioder(fakta)))
+        packet["@løsning"] = mapOf("Minsteinntekt" to mapOf("resultat" to resultat, "inntektsperioder" to createInntektPerioder(fakta)))
         return packet
     }
 }
 
-fun JsonMessage.hasValidInntektId() = this.require(INNTEKT_ID) { inntektid -> ULID.parseULID(inntektid.asText()) }
+fun JsonNode.asULID(): ULID.Value = asText().let { ULID.parseULID(it) }
+
+internal fun JsonMessage.toFakta(inntektHenter: InntektHenter): Fakta {
+    val inntekt = this["InntektId"].asULID().let { runBlocking { inntektHenter.hentKlassifisertInntekt(it.toString()) } }
+    val avtjentVerneplikt = this["harAvtjentVerneplikt"].asBoolean(false)
+    val bruktInntektsPeriode =
+        this["bruktInntektsPeriode"].takeIf(JsonNode::isObject)
+            ?.let { InntektsPeriode(it["førsteMåned"].asYearMonth(), it["sisteMåned"].asYearMonth()) }
+    val fangstOgFisk = this["oppfyllerKravTilFangstOgFisk"].asBoolean(false)
+    val beregningsDato = this["beregningsdato"].asLocalDate()
+    val lærling = this["lærling"].asBoolean(false)
+
+    return Fakta(
+        inntekt = inntekt,
+        bruktInntektsPeriode = bruktInntektsPeriode,
+        verneplikt = avtjentVerneplikt,
+        fangstOgFisk = fangstOgFisk,
+        beregningsdato = beregningsDato,
+        lærling = lærling
+    )
+}
