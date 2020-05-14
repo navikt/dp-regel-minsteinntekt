@@ -7,7 +7,7 @@ data class MinsteinntektSubsumsjon(
     val subsumsjonsId: String,
     val regelidentifikator: String,
     val oppfyllerMinsteinntekt: Boolean,
-    val beregninsregel: Beregningsregel
+    val beregningsregel: Beregningsregel
 ) {
 
     companion object {
@@ -24,7 +24,7 @@ data class MinsteinntektSubsumsjon(
             SUBSUMSJONSID to subsumsjonsId,
             REGELIDENTIFIKATOR to regelidentifikator,
             OPPFYLLER_MINSTEINNTEKT to oppfyllerMinsteinntekt,
-            BEREGNINGSREGEL to beregninsregel
+            BEREGNINGSREGEL to beregningsregel
         )
     }
 }
