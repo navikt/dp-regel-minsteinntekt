@@ -33,6 +33,10 @@ fun main() {
         apiKey = apiKey
     )
 
+    Runtime.getRuntime().addShutdownHook(Thread {
+        inntektClient.close()
+    })
+
     RapidApplication.create(
         Configuration().rapidApplication
     ).apply {
