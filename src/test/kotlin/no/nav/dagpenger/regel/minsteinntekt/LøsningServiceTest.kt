@@ -1,10 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.huxhorn.sulky.ulid.ULID
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.collections.shouldContain
