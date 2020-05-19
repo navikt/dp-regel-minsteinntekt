@@ -27,13 +27,6 @@ import org.junit.jupiter.api.Test
 
 internal class LøsningServiceTest {
 
-    companion object {
-        private val objectMapper = jacksonObjectMapper()
-            .registerModule(JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-    }
-
     private val inntekt = Inntekt(
         inntektsId = "12345",
         inntektsListe = listOf(
@@ -106,7 +99,7 @@ internal class LøsningServiceTest {
                 "vedtakId" : "12122",
                 "harAvtjentVerneplikt": true,
                 "oppfyllerKravTilFangstOgFisk": false,
-                "InntektId": "${ULID().nextULID()}",
+                "inntektId": "${ULID().nextULID()}",
                 "bruktInntektsPeriode": {
                     "førsteMåned": "2020-01",
                     "sisteMåned": "2020-04"
@@ -125,7 +118,7 @@ internal class LøsningServiceTest {
                 "beregningsdato": "2020-04-21",
                 "harAvtjentVerneplikt": true,
                 "oppfyllerKravTilFangstOgFisk": false,
-                "InntektId": "blabla",
+                "inntektId": "blabla",
                 "bruktInntektsPeriode": {
                     "førsteMåned": "2020-01",
                     "sisteMåned": "2020-04"

@@ -27,7 +27,7 @@ class LøsningService(
             validate { it.demandAll("@behov", listOf("Minsteinntekt")) }
             validate { it.rejectKey("@løsning") }
             validate { it.requireKey("@id", "vedtakId") }
-            validate { it.require("InntektId") { id -> id.asULID() } }
+            validate { it.require("inntektId") { id -> id.asULID() } }
             validate { it.requireKey("beregningsdato") }
             validate { it.interestedIn("lærling", "oppfyllerKravTilFangstOgFisk", "harAvtjentVerneplikt", "bruktInntektsPeriode") }
         }.register(this)
@@ -72,7 +72,7 @@ class LøsningService(
 fun JsonNode.asULID(): ULID.Value = asText().let { ULID.parseULID(it) }
 
 internal fun JsonMessage.toFakta(inntektHenter: InntektHenter): Fakta {
-    val inntekt = this["InntektId"].asULID().let { runBlocking { inntektHenter.hentKlassifisertInntekt(it.toString()) } }
+    val inntekt = this["inntektId"].asULID().let { runBlocking { inntektHenter.hentKlassifisertInntekt(it.toString()) } }
     val avtjentVerneplikt = this["harAvtjentVerneplikt"].asBoolean(false)
     val bruktInntektsPeriode =
         this["bruktInntektsPeriode"].takeIf(JsonNode::isObject)
