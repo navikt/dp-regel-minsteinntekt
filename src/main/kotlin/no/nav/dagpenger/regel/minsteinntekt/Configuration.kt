@@ -70,6 +70,7 @@ data class Configuration(
         name = config()[Key("behov.topic", stringType)]
     ),
     val rapidApplication: Map<String, String> = mapOf(
+        "RAPID_APP_NAME" to application.id,
         "KAFKA_BOOTSTRAP_SERVERS" to config()[Key("kafka.bootstrap.servers", stringType)],
         "KAFKA_CONSUMER_GROUP_ID" to "dp-regel-minsteinntekt-rapid",
         "KAFKA_RAPID_TOPIC" to config()[Key("kafka.topic", stringType)],
