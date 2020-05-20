@@ -27,9 +27,21 @@ class LøsningService(
             validate { it.demandAll("@behov", listOf("Minsteinntekt")) }
             validate { it.rejectKey("@løsning") }
             validate { it.requireKey("@id", "vedtakId") }
-            validate { it.require("inntektId") { id -> id.asULID() } }
+            validate { it.require("inntektId", JsonNode::asULID) }
             validate { it.requireKey("beregningsdato") }
-            validate { it.interestedIn("lærling", "oppfyllerKravTilFangstOgFisk", "harAvtjentVerneplikt", "bruktInntektsPeriode") }
+            validate {
+                it.interestedIn(
+                    "lærling",
+                    "oppfyllerKravTilFangstOgFisk",
+                    "harAvtjentVerneplikt"
+                )
+            }
+            validate {
+                it.interestedIn("bruktInntektsPeriode") { periode ->
+                    periode["førsteMåned"].asYearMonth()
+                    periode["sisteMåned"].asYearMonth()
+                }
+            }
         }.register(this)
     }
 
@@ -64,7 +76,8 @@ class LøsningService(
             evaluering.finnRegelBrukt()
         )
 
-        packet["@løsning"] = mapOf("Minsteinntekt" to mapOf("resultat" to resultat, "inntektsperioder" to createInntektPerioder(fakta)))
+        packet["@løsning"] =
+            mapOf("Minsteinntekt" to mapOf("resultat" to resultat, "inntektsperioder" to createInntektPerioder(fakta)))
         return packet
     }
 }
@@ -72,7 +85,8 @@ class LøsningService(
 fun JsonNode.asULID(): ULID.Value = asText().let { ULID.parseULID(it) }
 
 internal fun JsonMessage.toFakta(inntektHenter: InntektHenter): Fakta {
-    val inntekt = this["inntektId"].asULID().let { runBlocking { inntektHenter.hentKlassifisertInntekt(it.toString()) } }
+    val inntekt =
+        this["inntektId"].asULID().let { runBlocking { inntektHenter.hentKlassifisertInntekt(it.toString()) } }
     val avtjentVerneplikt = this["harAvtjentVerneplikt"].asBoolean(false)
     val bruktInntektsPeriode =
         this["bruktInntektsPeriode"].takeIf(JsonNode::isObject)

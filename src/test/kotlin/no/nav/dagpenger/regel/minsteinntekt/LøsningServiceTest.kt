@@ -55,70 +55,85 @@ internal class LøsningServiceTest {
 
     @Test
     fun ` Skal innhente løsning for minsteinntekt`() {
-        rapid.sendTestMessage(
-            packetJson
-        )
+        rapid.sendTestMessage(packetJson)
 
         assertSoftly {
+            with(rapid.inspektør) {
+                size shouldBeExactly 1
 
-            val inspektør = rapid.inspektør
-            inspektør.size shouldBeExactly 1
-
-            inspektør.field(0, "@behov").map(JsonNode::asText) shouldContain "Minsteinntekt"
-            inspektør.field(0, "@løsning") shouldNotBe null
-            inspektør.field(0, "@løsning")["Minsteinntekt"] shouldNotBe null
-            inspektør.field(0, "@løsning")["Minsteinntekt"]["inntektsperioder"] shouldNotBe null
-            inspektør.field(0, "@løsning")["Minsteinntekt"]["resultat"] shouldNotBe null
+                field(0, "@behov").map(JsonNode::asText) shouldContain "Minsteinntekt"
+                field(0, "@løsning") shouldNotBe null
+                field(0, "@løsning")["Minsteinntekt"] shouldNotBe null
+                field(0, "@løsning")["Minsteinntekt"]["inntektsperioder"] shouldNotBe null
+                field(0, "@løsning")["Minsteinntekt"]["resultat"] shouldNotBe null
+            }
         }
     }
 
     @Test
     fun ` Skal håndtere feil i inntekthenting `() {
-        rapid.sendTestMessage(
-            medFeilInntektId
-        )
+        rapid.sendTestMessage(medFeilInntektId)
 
-        assertSoftly {
-            val inspektør = rapid.inspektør
-            inspektør.size shouldBeExactly 0
-        }
+        rapid.inspektør.size shouldBeExactly 0
     }
 
-    @Language("JSON")
-    private val packetJson =
-        """
-             {
-                "@behov": ["Minsteinntekt"],
-                "@id": "12345", 
-                "aktørId": "1234",
-                "beregningsdato": "2020-04-21",
-                "vedtakId" : "12122",
-                "harAvtjentVerneplikt": true,
-                "oppfyllerKravTilFangstOgFisk": false,
-                "inntektId": "${ULID().nextULID()}",
-                "bruktInntektsPeriode": {
-                    "førsteMåned": "2020-01",
-                    "sisteMåned": "2020-04"
-                }
-             }
-            """.trimIndent()
+    @Test
+    fun `skal validere bruktInntektPeriode`() {
+        rapid.sendTestMessage(brokenPacketJson)
 
-    @Language("JSON")
-    private val medFeilInntektId =
-        """
-             {
-                "@behov": ["Minsteinntekt"],
-                "@id": "12345", 
-                "aktørId": "1234",
-                "vedtakId" : "12122"
-                "beregningsdato": "2020-04-21",
-                "harAvtjentVerneplikt": true,
-                "oppfyllerKravTilFangstOgFisk": false,
-                "inntektId": "blabla",
-                "bruktInntektsPeriode": {
-                    "førsteMåned": "2020-01",
-                    "sisteMåned": "2020-04"
-                }
-             }
-            """.trimIndent()
+        rapid.inspektør.size shouldBeExactly 0
+    }
 }
+
+@Language("JSON")
+private val packetJson =
+    """{
+  "@behov": [
+    "Minsteinntekt"
+  ],
+  "@id": "12345",
+  "aktørId": "1234",
+  "beregningsdato": "2020-04-21",
+  "vedtakId": "12122",
+  "harAvtjentVerneplikt": true,
+  "oppfyllerKravTilFangstOgFisk": false,
+  "inntektId": "${ULID().nextULID()}",
+  "bruktInntektsPeriode": {
+    "førsteMåned": "2020-01",
+    "sisteMåned": "2020-04"
+  }
+}""".trimIndent()
+
+@Language("JSON")
+private val medFeilInntektId =
+    """{
+  "@behov": [
+    "Minsteinntekt"
+  ],
+  "@id": "12345",
+  "aktørId": "1234",
+  "vedtakId": "12122"
+  "beregningsdato": "2020-04-21",
+  "harAvtjentVerneplikt": true,
+  "oppfyllerKravTilFangstOgFisk": false,
+  "inntektId": "blabla",
+  "bruktInntektsPeriode": {
+    "førsteMåned": "2020-01",
+    "sisteMåned": "2020-04"
+  }
+}""".trimIndent()
+
+@Language("JSON")
+private val brokenPacketJson =
+    """{
+  "@behov": [
+    "Minsteinntekt"
+  ],
+  "@id": "12345",
+  "aktørId": "1234",
+  "beregningsdato": "2020-04-21",
+  "harAvtjentVerneplikt": true,
+  "oppfyllerKravTilFangstOgFisk": false,
+  "inntektId": "${ULID().nextULID()}",
+  "bruktInntektsPeriode": {}
+}""".trimIndent()
