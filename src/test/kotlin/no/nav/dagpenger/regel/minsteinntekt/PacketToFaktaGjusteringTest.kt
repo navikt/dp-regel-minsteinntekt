@@ -49,7 +49,7 @@ class PacketToFaktaGjusteringTest {
             val json = """
         {
             "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2019-09-02"
+            "beregningsDato": "2020-09-02"
         }""".trimIndent()
 
             val packet = Packet(json)
@@ -68,7 +68,7 @@ class PacketToFaktaGjusteringTest {
         val json = """
         {
             "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2019-09-02"
+            "beregningsDato": "2020-09-02"
         }""".trimIndent()
 
         val packet = Packet(json)
