@@ -3,6 +3,9 @@ kind: "Application"
 metadata:
   name: dp-regel-minsteinntekt
 spec:
+  env:
+    - name: FEATURE_GJUSTERING
+      value: true
   vault:
     paths:
       - mountPath: /var/run/secrets/nais.io/service_user
