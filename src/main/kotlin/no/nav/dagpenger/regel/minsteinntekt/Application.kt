@@ -1,7 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import io.prometheus.client.CollectorRegistry
-import java.net.URI
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
@@ -18,6 +17,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
+import java.net.URI
 
 internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
@@ -33,9 +33,11 @@ fun main() {
         apiKey = apiKey
     )
 
-    Runtime.getRuntime().addShutdownHook(Thread {
-        inntektClient.close()
-    })
+    Runtime.getRuntime().addShutdownHook(
+        Thread {
+            inntektClient.close()
+        }
+    )
 
     RapidApplication.create(
         Configuration().rapidApplication
@@ -97,7 +99,8 @@ class Application(private val configuration: Configuration, private val healthCh
         packet.putValue(Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING, Minsteinntekt.jsonAdapterEvaluering.toJson(evaluering))
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(
-            Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER, checkNotNull(
+            Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
+            checkNotNull(
                 Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
             )
         )

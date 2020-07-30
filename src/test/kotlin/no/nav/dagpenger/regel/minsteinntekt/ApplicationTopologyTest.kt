@@ -1,10 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import io.mockk.mockk
-import java.math.BigDecimal
-import java.net.URI
-import java.time.YearMonth
-import java.util.Properties
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -21,6 +17,10 @@ import org.apache.kafka.streams.test.ConsumerRecordFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.net.URI
+import java.time.YearMonth
+import java.util.Properties
 
 class ApplicationTopologyTest {
     private val configuration = Configuration()
@@ -45,7 +45,8 @@ class ApplicationTopologyTest {
     fun ` dagpengebehov without inntekt should not be processed`() {
         val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
-        val json = """
+        val json =
+            """
             {
                 "beregningsDato": "2019-05-20"
             }
@@ -86,7 +87,8 @@ class ApplicationTopologyTest {
             sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
         )
 
-        val emptyjsonBehov = """
+        val emptyjsonBehov =
+            """
             {}
             """.trimIndent()
 
@@ -128,20 +130,23 @@ class ApplicationTopologyTest {
             sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
         )
 
-        val json = """
+        val json =
+            """
         {
             "harAvtjentVerneplikt": true,
             "oppfyllerKravTilFangstOgFisk": false,
             "beregningsDato": "2018-03-10"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
-            "bruktInntektsPeriode", mapOf(
-            "førsteMåned" to YearMonth.now().toString(),
-            "sisteMåned" to YearMonth.now().toString()
-        )
+            "bruktInntektsPeriode",
+            mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            )
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -195,20 +200,23 @@ class ApplicationTopologyTest {
             sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3)
         )
 
-        val json = """
+        val json =
+            """
         {
             "harAvtjentVerneplikt": true,
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2018-04-10"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
-            "bruktInntektsPeriode", mapOf(
-            "førsteMåned" to YearMonth.now().toString(),
-            "sisteMåned" to YearMonth.now().toString()
-        )
+            "bruktInntektsPeriode",
+            mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            )
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -256,20 +264,23 @@ class ApplicationTopologyTest {
             sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3)
         )
 
-        val json = """
+        val json =
+            """
         {
             "harAvtjentVerneplikt": true,
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2018-04-10"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
         packet.putValue(
-            "bruktInntektsPeriode", mapOf(
-            "førsteMåned" to YearMonth.now().toString(),
-            "sisteMåned" to YearMonth.now().toString()
-        )
+            "bruktInntektsPeriode",
+            mapOf(
+                "førsteMåned" to YearMonth.now().toString(),
+                "sisteMåned" to YearMonth.now().toString()
+            )
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
@@ -282,9 +293,11 @@ class ApplicationTopologyTest {
                 DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
             )
 
-            val nareEvaluering = Minsteinntekt.jsonAdapterEvaluering.fromJson(ut.value().getStringValue(
-                MINSTEINNTEKT_NARE_EVALUERING
-            ))
+            val nareEvaluering = Minsteinntekt.jsonAdapterEvaluering.fromJson(
+                ut.value().getStringValue(
+                    MINSTEINNTEKT_NARE_EVALUERING
+                )
+            )
 
             val expectedNareEvaluering = kravTilMinsteinntekt.evaluer(packetToFakta(packet))
 
@@ -296,7 +309,8 @@ class ApplicationTopologyTest {
     fun ` should add problem on failure`() {
         val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
-        val json = """
+        val json =
+            """
             {
                 "beregningsDato": "2019-05-20"
             }

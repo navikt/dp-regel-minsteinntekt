@@ -1,10 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårKorona
 
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
@@ -15,6 +10,11 @@ import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class InngangsvilkårKoronaTest {
 
@@ -27,7 +27,8 @@ class InngangsvilkårKoronaTest {
             KlassifisertInntektMåned(
                 YearMonth.of(2019, 4),
                 listOf(
-                    KlassifisertInntekt(G2019 * BigDecimal(1), InntektKlasse.FANGST_FISKE), KlassifisertInntekt(
+                    KlassifisertInntekt(G2019 * BigDecimal(1), InntektKlasse.FANGST_FISKE),
+                    KlassifisertInntekt(
                         BigDecimal(20), InntektKlasse.ARBEIDSINNTEKT
                     )
                 )
@@ -88,7 +89,8 @@ class InngangsvilkårKoronaTest {
             KlassifisertInntektMåned(
                 YearMonth.of(2018, 4),
                 listOf(
-                    KlassifisertInntekt(G2019 * BigDecimal(2), InntektKlasse.FANGST_FISKE), KlassifisertInntekt(
+                    KlassifisertInntekt(G2019 * BigDecimal(2), InntektKlasse.FANGST_FISKE),
+                    KlassifisertInntekt(
                         G2019 * BigDecimal(2), InntektKlasse.ARBEIDSINNTEKT
                     )
                 )
@@ -150,7 +152,8 @@ class InngangsvilkårKoronaTest {
     fun generateArbeidsInntekt(range: IntRange, beløpPerMnd: BigDecimal): List<KlassifisertInntektMåned> {
         return (range).toList().map {
             KlassifisertInntektMåned(
-                YearMonth.of(2020, 2).minusMonths(it.toLong()), listOf(
+                YearMonth.of(2020, 2).minusMonths(it.toLong()),
+                listOf(
                     KlassifisertInntekt(
                         beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT
                     )

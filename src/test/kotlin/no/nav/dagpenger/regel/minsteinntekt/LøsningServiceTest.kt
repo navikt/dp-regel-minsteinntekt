@@ -8,8 +8,6 @@ import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
-import java.math.BigDecimal
-import java.time.YearMonth
 import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -20,6 +18,8 @@ import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.YearMonth
 
 internal class LøsningServiceTest {
 
@@ -102,7 +102,8 @@ private val packetJson =
     "førsteMåned": "2020-01",
     "sisteMåned": "2020-04"
   }
-}""".trimIndent()
+}
+    """.trimIndent()
 
 @Language("JSON")
 private val medFeilInntektId =
@@ -121,7 +122,8 @@ private val medFeilInntektId =
     "førsteMåned": "2020-01",
     "sisteMåned": "2020-04"
   }
-}""".trimIndent()
+}
+    """.trimIndent()
 
 @Language("JSON")
 private val brokenPacketJson =
@@ -136,4 +138,5 @@ private val brokenPacketJson =
   "oppfyllerKravTilFangstOgFisk": false,
   "inntektId": "${ULID().nextULID()}",
   "bruktInntektsPeriode": {}
-}""".trimIndent()
+}
+    """.trimIndent()
