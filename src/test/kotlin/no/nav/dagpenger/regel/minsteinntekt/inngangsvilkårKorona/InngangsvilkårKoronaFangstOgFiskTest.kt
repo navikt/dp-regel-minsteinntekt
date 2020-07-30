@@ -1,10 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårKorona
 
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
@@ -15,6 +10,11 @@ import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class InngangsvilkårKoronaFangstOgFiskTest() {
     val G2019 = BigDecimal(99858)

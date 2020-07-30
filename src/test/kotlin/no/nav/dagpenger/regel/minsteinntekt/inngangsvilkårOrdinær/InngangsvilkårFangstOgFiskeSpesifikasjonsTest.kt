@@ -1,9 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårOrdinær
 
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlin.test.assertEquals
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
@@ -18,6 +14,10 @@ import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12MånederMedFangstOgFi
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste36MånederMedFangstOgFiske
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.test.assertEquals
 
 internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
@@ -62,7 +62,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val inntekt = listOf(
             KlassifisertInntektMåned(
-                YearMonth.of(2019, 3), klassifiserteInntekter = listOf(
+                YearMonth.of(2019, 3),
+                klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(1000000),
                         inntektKlasse = InntektKlasse.FANGST_FISKE
@@ -95,7 +96,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val inntekt = listOf(
             KlassifisertInntektMåned(
-                YearMonth.of(2019, 3), klassifiserteInntekter = listOf(
+                YearMonth.of(2019, 3),
+                klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(1000000),
                         inntektKlasse = InntektKlasse.FANGST_FISKE

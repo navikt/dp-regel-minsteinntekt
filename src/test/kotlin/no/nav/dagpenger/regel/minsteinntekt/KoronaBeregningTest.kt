@@ -2,8 +2,6 @@ package no.nav.dagpenger.regel.minsteinntekt
 
 import com.squareup.moshi.JsonAdapter
 import io.mockk.mockk
-import java.math.BigDecimal
-import java.time.YearMonth
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -15,6 +13,8 @@ import no.nav.nare.core.evaluations.Evaluering
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.YearMonth
 
 class KoronaBeregningTest {
     private val configuration = Configuration()
@@ -43,12 +43,14 @@ class KoronaBeregningTest {
     fun `Skal bruke korona-regler når beregningsdato er etter 20 mars 2020`() {
         val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
-        val json = """
+        val json =
+            """
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
             "beregningsDato": "2020-03-20"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
@@ -65,12 +67,14 @@ class KoronaBeregningTest {
     fun `Skal ikke bruke korona-regler når beregningsdato er før 20 mars 2020`() {
         val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
-        val json = """
+        val json =
+            """
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
             "beregningsDato": "2020-03-19"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
@@ -87,12 +91,14 @@ class KoronaBeregningTest {
     fun `Skal ikke bruke korona-regler når koronatoggle er av`() {
         val minsteinntekt = Application(configuration, mockk(relaxed = true))
 
-        val json = """
+        val json =
+            """
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
             "beregningsDato": "2020-03-19"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)

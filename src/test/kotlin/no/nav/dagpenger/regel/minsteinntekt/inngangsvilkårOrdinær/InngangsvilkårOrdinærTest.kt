@@ -1,9 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårOrdinær
 
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlin.test.assertEquals
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
@@ -13,6 +9,10 @@ import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12Måneder
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste36Måneder
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.test.assertEquals
 
 internal class InngangsvilkårOrdinærTest {
 
@@ -163,7 +163,8 @@ internal class InngangsvilkårOrdinærTest {
 
         val inntekt = listOf(
             KlassifisertInntektMåned(
-                YearMonth.of(2019, 3), klassifiserteInntekter = listOf(
+                YearMonth.of(2019, 3),
+                klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(1000000),
                         inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
@@ -196,7 +197,8 @@ internal class InngangsvilkårOrdinærTest {
 
         val inntekt = listOf(
             KlassifisertInntektMåned(
-                YearMonth.of(2019, 3), klassifiserteInntekter = listOf(
+                YearMonth.of(2019, 3),
+                klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(1000000),
                         inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
@@ -226,15 +228,27 @@ internal class InngangsvilkårOrdinærTest {
 
     fun generateFangstOgFiske(range: IntRange, beløpPerMnd: BigDecimal): List<KlassifisertInntektMåned> {
         return (range).toList().map {
-            KlassifisertInntektMåned(YearMonth.of(2019, 1).minusMonths(it.toLong()), listOf(KlassifisertInntekt(
-                beløpPerMnd, InntektKlasse.FANGST_FISKE)))
+            KlassifisertInntektMåned(
+                YearMonth.of(2019, 1).minusMonths(it.toLong()),
+                listOf(
+                    KlassifisertInntekt(
+                        beløpPerMnd, InntektKlasse.FANGST_FISKE
+                    )
+                )
+            )
         }
     }
 
     fun generateArbeidsInntekt(range: IntRange, beløpPerMnd: BigDecimal): List<KlassifisertInntektMåned> {
         return (range).toList().map {
-            KlassifisertInntektMåned(YearMonth.of(2019, 1).minusMonths(it.toLong()), listOf(KlassifisertInntekt(
-                beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT)))
+            KlassifisertInntektMåned(
+                YearMonth.of(2019, 1).minusMonths(it.toLong()),
+                listOf(
+                    KlassifisertInntekt(
+                        beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT
+                    )
+                )
+            )
         }
     }
 

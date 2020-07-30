@@ -1,10 +1,10 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import java.time.YearMonth
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.YearMonth
 
 class PacketToFaktaGjusteringTest {
 
@@ -26,11 +26,13 @@ class PacketToFaktaGjusteringTest {
     @Test
     fun ` should have the grunnbeløp without "gjustering" when beregningsdato is before justering date and featureflag is on `() {
         withGjustering {
-            val json = """
+            val json =
+                """
         {
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2019-05-30"
-        }""".trimIndent()
+        }
+                """.trimIndent()
 
             val packet = Packet(json)
             packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
@@ -46,11 +48,13 @@ class PacketToFaktaGjusteringTest {
         withGjustering {
             val adapter = moshiInstance.adapter(Inntekt::class.java)
 
-            val json = """
+            val json =
+                """
         {
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2020-09-02"
-        }""".trimIndent()
+        }
+                """.trimIndent()
 
             val packet = Packet(json)
             packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
@@ -65,11 +69,13 @@ class PacketToFaktaGjusteringTest {
     fun ` should have grunnbeløp without "gjustering" when beregningsdato is after justering date and featureflag is off`() {
         val adapter = moshiInstance.adapter(Inntekt::class.java)
 
-        val json = """
+        val json =
+            """
         {
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2020-09-02"
-        }""".trimIndent()
+        }
+            """.trimIndent()
 
         val packet = Packet(json)
         packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
