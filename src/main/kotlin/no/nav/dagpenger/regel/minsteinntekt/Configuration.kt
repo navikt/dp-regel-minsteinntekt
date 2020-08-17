@@ -23,7 +23,7 @@ private val localProperties = ConfigurationMap(
         "nav.truststore.path" to "",
         "nav.truststore.password" to "changeme",
         "application.profile" to Profile.LOCAL.toString(),
-        "application.httpPort" to "8095",
+        "application.httpPort" to "8080",
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "localhost",
         "inntekt.gprc.api.key" to "apikey",
@@ -36,7 +36,7 @@ private val devProperties = ConfigurationMap(
         "kafka.topic" to TOPIC,
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.DEV.toString(),
-        "application.httpPort" to "8095",
+        "application.httpPort" to "8080",
         "feature.gjustering" to false.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.default.svc.nais.local"
@@ -48,7 +48,7 @@ private val prodProperties = ConfigurationMap(
         "kafka.topic" to TOPIC, // Used for Behov v2 / rapids-and-rivers
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.PROD.toString(),
-        "application.httpPort" to "8095",
+        "application.httpPort" to "8080",
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.default.svc.nais.local"
     )
@@ -76,7 +76,8 @@ data class Configuration(
         "KAFKA_RAPID_TOPIC" to config()[Key("kafka.topic", stringType)],
         "KAFKA_RESET_POLICY" to config()[Key("kafka.reset.policy", stringType)],
         "NAV_TRUSTSTORE_PATH" to config()[Key("nav.truststore.path", stringType)],
-        "NAV_TRUSTSTORE_PASSWORD" to config()[Key("nav.truststore.password", stringType)]
+        "NAV_TRUSTSTORE_PASSWORD" to config()[Key("nav.truststore.password", stringType)],
+        "HTTP_PORT" to "8099"
     ) + System.getenv().filter { it.key.startsWith("NAIS_") }
 ) {
     data class Kafka(
