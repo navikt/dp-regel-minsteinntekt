@@ -39,7 +39,7 @@ private val devProperties = ConfigurationMap(
         "application.httpPort" to "8080",
         "feature.gjustering" to false.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
-        "inntekt.gprc.address" to "dp-inntekt-api-grpc.default.svc.nais.local"
+        "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
     )
 )
 private val prodProperties = ConfigurationMap(
@@ -50,7 +50,7 @@ private val prodProperties = ConfigurationMap(
         "application.profile" to Profile.PROD.toString(),
         "application.httpPort" to "8080",
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
-        "inntekt.gprc.address" to "dp-inntekt-api-grpc.default.svc.nais.local"
+        "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
     )
 )
 
