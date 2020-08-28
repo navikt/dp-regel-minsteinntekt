@@ -12,7 +12,8 @@ fun generateArbeidsinntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, senest
             senesteMåned.minusMonths(it.toLong()),
             listOf(
                 KlassifisertInntekt(
-                    beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT
+                    beløpPerMnd,
+                    InntektKlasse.ARBEIDSINNTEKT
                 )
             )
         )
@@ -25,7 +26,8 @@ fun generateFangstOgFiskInntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, s
             senesteMåned.minusMonths(it.toLong()),
             listOf(
                 KlassifisertInntekt(
-                    beløpPerMnd, InntektKlasse.FANGST_FISKE
+                    beløpPerMnd,
+                    InntektKlasse.FANGST_FISKE
                 )
             )
         )

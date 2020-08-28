@@ -29,7 +29,8 @@ class InngangsvilkårKoronaTest {
                 listOf(
                     KlassifisertInntekt(G2019 * BigDecimal(1), InntektKlasse.FANGST_FISKE),
                     KlassifisertInntekt(
-                        BigDecimal(20), InntektKlasse.ARBEIDSINNTEKT
+                        BigDecimal(20),
+                        InntektKlasse.ARBEIDSINNTEKT
                     )
                 )
             )
@@ -91,7 +92,8 @@ class InngangsvilkårKoronaTest {
                 listOf(
                     KlassifisertInntekt(G2019 * BigDecimal(2), InntektKlasse.FANGST_FISKE),
                     KlassifisertInntekt(
-                        G2019 * BigDecimal(2), InntektKlasse.ARBEIDSINNTEKT
+                        G2019 * BigDecimal(2),
+                        InntektKlasse.ARBEIDSINNTEKT
                     )
                 )
             )
@@ -155,7 +157,8 @@ class InngangsvilkårKoronaTest {
                 YearMonth.of(2020, 2).minusMonths(it.toLong()),
                 listOf(
                     KlassifisertInntekt(
-                        beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT
+                        beløpPerMnd,
+                        InntektKlasse.ARBEIDSINNTEKT
                     )
                 )
             )
