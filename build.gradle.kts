@@ -73,7 +73,6 @@ dependencies {
 
     implementation(Prometheus.common)
     implementation(Prometheus.hotspot)
-    implementation(Prometheus.log4j2)
     implementation(Prometheus.Nare.prometheus)
 
     implementation(RapidAndRivers)
