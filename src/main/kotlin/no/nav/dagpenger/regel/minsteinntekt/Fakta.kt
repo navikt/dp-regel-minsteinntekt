@@ -52,4 +52,4 @@ internal fun isThisGjusteringTest(
     return config.features.gjustering() && isBeregningsDatoAfterGjustering
 }
 
-fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 12, 31))
+fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 10, 31))
