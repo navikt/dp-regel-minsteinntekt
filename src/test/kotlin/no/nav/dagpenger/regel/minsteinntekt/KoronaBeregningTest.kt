@@ -1,7 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import com.squareup.moshi.JsonAdapter
-import io.mockk.mockk
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -41,7 +40,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal bruke korona-regler når beregningsdato er etter 20 mars 2020`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val json =
             """
@@ -65,7 +64,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal ikke bruke korona-regler når beregningsdato er før 20 mars 2020`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val json =
             """
@@ -89,7 +88,7 @@ class KoronaBeregningTest {
 
     @Test
     fun `Skal ikke bruke korona-regler når koronatoggle er av`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val json =
             """

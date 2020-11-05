@@ -12,7 +12,6 @@ import no.nav.dagpenger.streams.HealthCheck
 import no.nav.dagpenger.streams.HealthStatus
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
-import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
@@ -23,7 +22,7 @@ internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
 
 fun main() {
-    val service = Application(config, RapidHealthCheck as HealthCheck)
+    val service = Application(config)
     service.start()
 
     val apiKeyVerifier = ApiKeyVerifier(config.application.inntektGprcApiSecret)
@@ -38,23 +37,11 @@ fun main() {
             inntektClient.close()
         }
     )
-
-    RapidApplication.create(
-        Configuration().rapidApplication
-    ).apply {
-        LøsningService(
-            rapidsConnection = this,
-            inntektHenter = inntektClient
-        )
-    }.also {
-        it.register(RapidHealthCheck)
-    }.start()
 }
 
-class Application(private val configuration: Configuration, private val healthCheck: HealthCheck) : River(configuration.behovTopic) {
+class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
     override val SERVICE_APP_ID: String = configuration.application.id
     override val HTTP_PORT: Int = configuration.application.httpPort
-    override val healthChecks: List<HealthCheck> = listOf(healthCheck)
 
     companion object {
         const val BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE = "beregningsDato"

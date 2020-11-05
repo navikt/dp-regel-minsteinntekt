@@ -1,6 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import io.mockk.mockk
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
@@ -43,7 +42,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` dagpengebehov without inntekt should not be processed`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val json =
             """
@@ -68,7 +67,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` dagpengebehov without beregningsDato should not be processed`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -111,7 +110,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -178,7 +177,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -242,7 +241,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add nare evaluation`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val inntekt: Inntekt = Inntekt(
             inntektsId = "12345",
@@ -307,7 +306,7 @@ class ApplicationTopologyTest {
 
     @Test
     fun ` should add problem on failure`() {
-        val minsteinntekt = Application(configuration, mockk(relaxed = true))
+        val minsteinntekt = Application(configuration)
 
         val json =
             """
