@@ -69,13 +69,14 @@ class Application(private val configuration: Configuration) : River(configuratio
     private fun løsFor(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
-        val evaluering: Evaluering = if (fakta.beregningsdato.erKoronaPeriode()) {
-            narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-        } else if (fakta.lærling && fakta.beregningsdato.erKoronaLærlingPeriode()) {
-            narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-        } else {
-            narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
-        }
+        val evaluering: Evaluering =
+            if (fakta.beregningsdato.erKoronaPeriode() && !fakta.lærling) {
+                narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+            } else if (fakta.beregningsdato.erKoronaLærlingPeriode() && fakta.lærling) {
+                narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+            } else {
+                narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+            }
 
         val resultat = MinsteinntektSubsumsjon(
             ulidGenerator.nextULID(),
