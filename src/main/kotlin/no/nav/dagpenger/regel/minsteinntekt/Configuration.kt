@@ -37,7 +37,6 @@ private val devProperties = ConfigurationMap(
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8080",
-        "feature.gjustering" to false.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
     )
