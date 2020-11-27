@@ -72,7 +72,7 @@ class Application(private val configuration: Configuration) : River(configuratio
         val evaluering: Evaluering =
             if (fakta.beregningsdato.erKoronaPeriode() && !fakta.lærling) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-            } else if (fakta.beregningsdato.erKoronaLærlingPeriode() && fakta.lærling) {
+            } else if (config.features.koronalærling() && fakta.beregningsdato.erKoronaLærlingPeriode() && fakta.lærling) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
             } else {
                 narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }

@@ -38,6 +38,7 @@ private val devProperties = ConfigurationMap(
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8080",
         "feature.gjustering" to false.toString(),
+        "feature.koronalaerling" to true.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
     )
@@ -103,6 +104,7 @@ data class Configuration(
 
     class Features {
         fun gjustering() = config().getOrElse(Key("feature.gjustering", booleanType), false)
+        fun koronalærling() = config().getOrElse(Key("feature.koronalaerling", booleanType), false)
     }
 }
 
