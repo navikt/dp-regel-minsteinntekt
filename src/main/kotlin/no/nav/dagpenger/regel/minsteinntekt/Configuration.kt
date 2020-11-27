@@ -40,6 +40,7 @@ private val devProperties = ConfigurationMap(
         "feature.gjustering" to false.toString(),
         "feature.koronalærling" to true.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
+        "feature.gjustering" to false.toString(),
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
     )
 )
