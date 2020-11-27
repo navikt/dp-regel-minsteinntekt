@@ -70,7 +70,7 @@ class Application(private val configuration: Configuration) : River(configuratio
         val fakta = packetToFakta(packet)
 
         val evaluering: Evaluering =
-            if (fakta.beregningsdato.erKoronaPeriode() && !fakta.lærling) {
+            if (fakta.beregningsdato.erKoronaPeriode()) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
             } else if (config.features.koronalærling() && fakta.beregningsdato.erKoronaLærlingPeriode() && fakta.lærling) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
