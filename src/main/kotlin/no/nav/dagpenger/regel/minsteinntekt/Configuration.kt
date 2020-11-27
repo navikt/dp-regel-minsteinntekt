@@ -37,6 +37,8 @@ private val devProperties = ConfigurationMap(
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8080",
+        "feature.gjustering" to false.toString(),
+        "feature.koronalærling" to true.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "feature.gjustering" to false.toString(),
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
@@ -103,6 +105,7 @@ data class Configuration(
 
     class Features {
         fun gjustering() = config().getOrElse(Key("feature.gjustering", booleanType), false)
+        fun koronalærling() = config().getOrElse(Key("feature.koronalærling", booleanType), false)
     }
 }
 
