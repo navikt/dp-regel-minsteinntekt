@@ -30,6 +30,14 @@ class KoronaLærlingBeregningTest {
             System.clearProperty("feature.koronalærling")
         }
     }
+    fun withoutKoronalærling(test: () -> Unit) {
+        try {
+            System.setProperty("feature.koronalærling", "false")
+            test()
+        } finally {
+            System.clearProperty("feature.koronalærling")
+        }
+    }
     private val jsonAdapterEvaluering: JsonAdapter<Evaluering> = moshiInstance.adapter(Evaluering::class.java)
 
     val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
@@ -106,26 +114,28 @@ class KoronaLærlingBeregningTest {
 
     @Test
     fun `Skal ikke bruke korona-regler når lærlingtoggle er av og søker er lærling`() {
-        val minsteinntekt = Application(configuration)
+        withoutKoronalærling {
+            val minsteinntekt = Application(configuration)
 
-        val json =
-            """
+            val json =
+                """
         {
             "lærling": true,
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
             "beregningsDato": "2020-11-19"
         }
-            """.trimIndent()
+                """.trimIndent()
 
-        val packet = Packet(json)
-        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
+            val packet = Packet(json)
+            packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
 
-        val outPacket = minsteinntekt.onPacket(packet)
-        val evaluering =
-            jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
+            val outPacket = minsteinntekt.onPacket(packet)
+            val evaluering =
+                jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
 
-        assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
-        assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+            assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+            assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+        }
     }
 }
