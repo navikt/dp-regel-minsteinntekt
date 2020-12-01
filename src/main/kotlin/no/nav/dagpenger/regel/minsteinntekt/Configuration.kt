@@ -50,6 +50,7 @@ private val prodProperties = ConfigurationMap(
         "kafka.topic" to TOPIC, // Used for Behov v2 / rapids-and-rivers
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.PROD.toString(),
+        "feature.koronalærling" to true.toString(),
         "application.httpPort" to "8080",
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
