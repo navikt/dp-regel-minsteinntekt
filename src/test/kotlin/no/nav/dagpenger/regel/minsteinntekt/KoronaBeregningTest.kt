@@ -39,7 +39,7 @@ class KoronaBeregningTest {
     )
 
     @Test
-    fun `Skal bruke korona-regler når beregningsdato er etter 20 mars 2020`() {
+    fun `Skal bruke korona-regler når beregningsdato er etter 20 mars 2020 men før 31 oktober 2020`() {
         val minsteinntekt = Application(configuration)
 
         val json =
@@ -108,5 +108,30 @@ class KoronaBeregningTest {
 
         assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
         assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+    }
+
+    @Test
+    // NB! tilfeldig valgte datoer
+    fun `Skal bruke korona-regler når beregningsdato er etter 1 februar 2021 men før 30 juni 2021`() {
+        val minsteinntekt = Application(configuration)
+
+        val json =
+            """
+        {
+            "harAvtjentVerneplikt": false,
+            "oppfyllerKravTilFangstOgFisk": false,
+            "beregningsDato": "2021-02-01"
+        }
+            """.trimIndent()
+
+        val packet = Packet(json)
+        packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
+
+        val outPacket = minsteinntekt.onPacket(packet)
+        val evaluering =
+            jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
+
+        assertTrue(evaluering.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+        assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 }
