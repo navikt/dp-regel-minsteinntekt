@@ -53,6 +53,6 @@ internal fun isThisGjusteringTest(
 }
 
 fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 10, 31))
-//NB! tilfeldig valgte datoer
+// NB! tilfeldig valgte datoer
 fun LocalDate.erKoronaPeriode2() = this in (LocalDate.of(2021, 2, 1)..LocalDate.of(2021, 6, 30))
 fun LocalDate.erKoronaLærlingPeriode() = this in (LocalDate.of(2020, 11, 1)..LocalDate.of(2021, 3, 31))
