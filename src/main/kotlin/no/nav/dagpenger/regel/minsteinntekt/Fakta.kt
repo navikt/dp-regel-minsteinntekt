@@ -51,6 +51,13 @@ internal fun isThisGjusteringTest(
     val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(LocalDate.of(2020, 9, 1).minusDays(1))
     return config.features.gjustering() && isBeregningsDatoAfterGjustering
 }
+// NB! tilfeldig valgte datoer for den andre perioden!
+fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode()
 
-fun LocalDate.erKoronaPeriode() = this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 10, 31))
+private fun LocalDate.førsteKoronaperiode() =
+    (this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 10, 31)))
+
+private fun LocalDate.andreKoronaperiode() =
+    (this in (LocalDate.of(2021, 2, 1)..LocalDate.of(2021, 6, 30)) && config.features.koronaperiode2())
+
 fun LocalDate.erKoronaLærlingPeriode() = this in (LocalDate.of(2020, 11, 1)..LocalDate.of(2021, 3, 31))
