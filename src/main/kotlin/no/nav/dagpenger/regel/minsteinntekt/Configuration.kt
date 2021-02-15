@@ -25,7 +25,6 @@ private val localProperties = ConfigurationMap(
         "application.profile" to Profile.LOCAL.toString(),
         "application.httpPort" to "8080",
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
-        "feature.koronaperiode2" to true.toString(),
         "inntekt.gprc.address" to "localhost",
         "inntekt.gprc.api.key" to "apikey",
         "inntekt.gprc.api.secret" to "secret"
@@ -39,7 +38,6 @@ private val devProperties = ConfigurationMap(
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8080",
         "feature.gjustering" to false.toString(),
-        "feature.koronalærling" to true.toString(),
         "feature.koronaperiode2" to true.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "feature.gjustering" to false.toString(),
@@ -52,7 +50,6 @@ private val prodProperties = ConfigurationMap(
         "kafka.topic" to TOPIC, // Used for Behov v2 / rapids-and-rivers
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.PROD.toString(),
-        "feature.koronalærling" to true.toString(),
         "application.httpPort" to "8080",
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
@@ -108,7 +105,6 @@ data class Configuration(
 
     class Features {
         fun gjustering() = config().getOrElse(Key("feature.gjustering", booleanType), false)
-        fun koronalærling() = config().getOrElse(Key("feature.koronalærling", booleanType), false)
         fun koronaperiode2() = config().getOrElse(Key("feature.koronaperiode2", booleanType), false)
     }
 }
