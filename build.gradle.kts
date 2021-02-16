@@ -95,6 +95,7 @@ dependencies {
 
     testImplementation(KoTest.runner)
     testImplementation(KoTest.assertions)
+    testImplementation(KoTest.property)
 
     testImplementation(Kafka.streamTestUtils)
     testImplementation(KafkaEmbedded.env)

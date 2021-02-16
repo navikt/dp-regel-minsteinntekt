@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.assertEquals
 
-internal class InngangsvilkårLærling {
+internal class InngangsvilkårLærlingTest {
     private val inntekt = emptyList<KlassifisertInntektMåned>()
 
     private val fakta = Fakta(

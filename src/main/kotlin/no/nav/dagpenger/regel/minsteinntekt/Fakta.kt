@@ -10,6 +10,7 @@ import no.nav.dagpenger.grunnbelop.forDato
 import no.nav.dagpenger.grunnbelop.getGrunnbeløpForRegel
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.Month
 
 data class Fakta(
     val inntekt: Inntekt,
@@ -48,16 +49,16 @@ data class Fakta(
 internal fun isThisGjusteringTest(
     beregningsdato: LocalDate
 ): Boolean {
-    val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(LocalDate.of(2020, 9, 1).minusDays(1))
+    val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(LocalDate.of(2020, Month.SEPTEMBER, 1).minusDays(1))
     return config.features.gjustering() && isBeregningsDatoAfterGjustering
 }
 // NB! tilfeldig valgte datoer for den andre perioden!
 fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode()
 
 private fun LocalDate.førsteKoronaperiode() =
-    (this in (LocalDate.of(2020, 3, 20)..LocalDate.of(2020, 10, 31)))
+    (this in (LocalDate.of(2020, Month.MARCH, 20)..LocalDate.of(2020, Month.OCTOBER, 31)))
 
 private fun LocalDate.andreKoronaperiode() =
-    (this in (LocalDate.of(2021, 2, 1)..LocalDate.of(2021, 6, 30)) && config.features.koronaperiode2())
+    (this in (LocalDate.of(2021, 2, 1)..LocalDate.of(2021, Month.SEPTEMBER, 30)) && config.features.koronaperiode2())
 
-fun LocalDate.erKoronaLærlingPeriode() = this in (LocalDate.of(2020, 11, 1)..LocalDate.of(2021, 3, 31))
+fun LocalDate.erKoronaLærlingPeriode() = this in (LocalDate.of(2020, Month.NOVEMBER, 1)..LocalDate.of(2021, Month.SEPTEMBER, 30))
