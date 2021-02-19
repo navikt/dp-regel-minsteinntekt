@@ -128,8 +128,7 @@ class KoronaBeregningTest {
     }
 
     @Test
-    // NB! tilfeldig valgte datoer
-    fun `Skal bruke korona-regler når beregningsdato er etter 1 februar 2021 men før 30 juni 2021`() {
+    fun `Skal bruke korona-regler når beregningsdato er etter 19 februar 2021 men før 30 juni 2021`() {
         withKoronaperiode {
             val minsteinntekt = Application(configuration)
 
@@ -138,7 +137,7 @@ class KoronaBeregningTest {
         {
             "harAvtjentVerneplikt": false,
             "oppfyllerKravTilFangstOgFisk": false,
-            "beregningsDato": "2021-02-01"
+            "beregningsDato": "2021-02-19"
         }
                 """.trimIndent()
 
