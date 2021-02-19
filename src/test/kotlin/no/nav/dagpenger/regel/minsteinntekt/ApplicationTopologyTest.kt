@@ -11,8 +11,9 @@ import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEK
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.jsonAdapterInntektPeriodeInfo
 import no.nav.dagpenger.streams.Topics.DAGPENGER_BEHOV_PACKET_EVENT
 import org.apache.kafka.streams.StreamsConfig
+import org.apache.kafka.streams.TestInputTopic
+import org.apache.kafka.streams.TestOutputTopic
 import org.apache.kafka.streams.TopologyTestDriver
-import org.apache.kafka.streams.test.ConsumerRecordFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -21,17 +22,10 @@ import java.net.URI
 import java.time.YearMonth
 import java.util.Properties
 
-class ApplicationTopologyTest {
+internal class ApplicationTopologyTest {
     private val configuration = Configuration()
 
     companion object {
-
-        val factory = ConsumerRecordFactory<String, Packet>(
-            DAGPENGER_BEHOV_PACKET_EVENT.name,
-            DAGPENGER_BEHOV_PACKET_EVENT.keySerde.serializer(),
-            DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.serializer()
-        )
-
         val config = Properties().apply {
             this[StreamsConfig.APPLICATION_ID_CONFIG] = "test"
             this[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = "dummy:1234"
@@ -52,16 +46,8 @@ class ApplicationTopologyTest {
             """.trimIndent()
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(Packet(json))
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assertTrue { null == ut }
+            topologyTestDriver.behovInputTopic().also { it.pipeInput(Packet(json)) }
+            assertTrue { topologyTestDriver.behovOutputTopic().isEmpty }
         }
     }
 
@@ -95,16 +81,8 @@ class ApplicationTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assertTrue { null == ut }
+            topologyTestDriver.behovInputTopic().also { it.pipeInput(packet) }
+            assertTrue { topologyTestDriver.behovOutputTopic().isEmpty }
         }
     }
 
@@ -149,23 +127,16 @@ class ApplicationTopologyTest {
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assertTrue { ut.value().hasField(MINSTEINNTEKT_RESULTAT) }
+            topologyTestDriver.behovInputTopic().also { it.pipeInput(packet) }
+            val ut = topologyTestDriver.behovOutputTopic().readValue()
+            assertTrue { ut.hasField(MINSTEINNTEKT_RESULTAT) }
             assertEquals(
                 "Minsteinntekt.v1",
-                ut.value().getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
+                ut.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.REGELIDENTIFIKATOR]
             )
 
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getNullableObjectValue(
+            val inntektsPerioder = ut.getNullableObjectValue(
                 MINSTEINNTEKT_INNTEKTSPERIODER,
                 jsonAdapterInntektPeriodeInfo::fromJsonValue
             ) as List<InntektPeriodeInfo>
@@ -219,17 +190,10 @@ class ApplicationTopologyTest {
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
+            topologyTestDriver.behovInputTopic().also { it.pipeInput(packet) }
+            val ut = topologyTestDriver.behovOutputTopic().readValue()
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.value().getNullableObjectValue(
+            val inntektsPerioder = ut.getNullableObjectValue(
                 MINSTEINNTEKT_INNTEKTSPERIODER,
                 jsonAdapterInntektPeriodeInfo::fromJsonValue
             ) as List<InntektPeriodeInfo>
@@ -283,17 +247,10 @@ class ApplicationTopologyTest {
         )
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
+            topologyTestDriver.behovInputTopic().also { it.pipeInput(packet) }
+            val ut = topologyTestDriver.behovOutputTopic().readValue()
             val nareEvaluering = Minsteinntekt.jsonAdapterEvaluering.fromJson(
-                ut.value().getStringValue(
+                ut.getStringValue(
                     MINSTEINNTEKT_NARE_EVALUERING
                 )
             )
@@ -323,18 +280,25 @@ class ApplicationTopologyTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(inntekt)!!)
 
         TopologyTestDriver(minsteinntekt.buildTopology(), config).use { topologyTestDriver ->
-            val inputRecord = factory.create(packet)
-            topologyTestDriver.pipeInput(inputRecord)
-
-            val ut = topologyTestDriver.readOutput(
-                DAGPENGER_BEHOV_PACKET_EVENT.name,
-                DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
-                DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
-            )
-
-            assert(ut.value().hasProblem())
-            assertEquals(URI("urn:dp:error:regel"), ut.value().getProblem()!!.type)
-            assertEquals(URI("urn:dp:regel:minsteinntekt"), ut.value().getProblem()!!.instance)
+            topologyTestDriver.behovInputTopic().also { it.pipeInput(packet) }
+            val ut = topologyTestDriver.behovOutputTopic().readValue()
+            assert(ut.hasProblem())
+            assertEquals(URI("urn:dp:error:regel"), ut.getProblem()!!.type)
+            assertEquals(URI("urn:dp:regel:minsteinntekt"), ut.getProblem()!!.instance)
         }
     }
 }
+
+private fun TopologyTestDriver.behovInputTopic(): TestInputTopic<String, Packet> =
+    this.createInputTopic(
+        DAGPENGER_BEHOV_PACKET_EVENT.name,
+        DAGPENGER_BEHOV_PACKET_EVENT.keySerde.serializer(),
+        DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.serializer()
+    )
+
+private fun TopologyTestDriver.behovOutputTopic(): TestOutputTopic<String, Packet> =
+    this.createOutputTopic(
+        DAGPENGER_BEHOV_PACKET_EVENT.name,
+        DAGPENGER_BEHOV_PACKET_EVENT.keySerde.deserializer(),
+        DAGPENGER_BEHOV_PACKET_EVENT.valueSerde.deserializer()
+    )
