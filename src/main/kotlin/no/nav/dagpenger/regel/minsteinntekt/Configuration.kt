@@ -51,6 +51,7 @@ private val prodProperties = ConfigurationMap(
         "kafka.reset.policy" to "earliest",
         "application.profile" to Profile.PROD.toString(),
         "application.httpPort" to "8080",
+        "feature.koronaperiode2" to true.toString(),
         "behov.topic" to Topics.DAGPENGER_BEHOV_PACKET_EVENT.name,
         "inntekt.gprc.address" to "dp-inntekt-api-grpc.teamdagpenger.svc.nais.local"
     )
