@@ -4,15 +4,10 @@ import io.prometheus.client.CollectorRegistry
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
-import no.nav.dagpenger.inntekt.rpc.InntektHenterWrapper
-import no.nav.dagpenger.ktor.auth.ApiKeyVerifier
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
-import no.nav.dagpenger.streams.HealthCheck
-import no.nav.dagpenger.streams.HealthStatus
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
-import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
@@ -22,21 +17,7 @@ internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
 
 fun main() {
-    val service = Application(config)
-    service.start()
-
-    val apiKeyVerifier = ApiKeyVerifier(config.application.inntektGprcApiSecret)
-    val apiKey = apiKeyVerifier.generate(config.application.inntektGprcApiKey)
-    val inntektClient = InntektHenterWrapper(
-        serveraddress = config.application.inntektGprcAddress,
-        apiKey = apiKey
-    )
-
-    Runtime.getRuntime().addShutdownHook(
-        Thread {
-            inntektClient.close()
-        }
-    )
+    Application(config).start()
 }
 
 class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
@@ -86,7 +67,10 @@ class Application(private val configuration: Configuration) : River(configuratio
             evaluering.finnRegelBrukt()
         )
 
-        packet.putValue(Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING, Minsteinntekt.jsonAdapterEvaluering.toJson(evaluering))
+        packet.putValue(
+            Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING,
+            Minsteinntekt.jsonAdapterEvaluering.toJson(evaluering)
+        )
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(
             Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
@@ -107,30 +91,5 @@ class Application(private val configuration: Configuration) : River(configuratio
             )
         )
         return packet
-    }
-}
-
-object RapidHealthCheck : RapidsConnection.StatusListener, HealthCheck {
-    var healthy: Boolean = false
-
-    override fun onStartup(rapidsConnection: RapidsConnection) {
-        healthy = true
-    }
-
-    override fun onReady(rapidsConnection: RapidsConnection) {
-        healthy = true
-    }
-
-    override fun onNotReady(rapidsConnection: RapidsConnection) {
-        healthy = false
-    }
-
-    override fun onShutdown(rapidsConnection: RapidsConnection) {
-        healthy = false
-    }
-
-    override fun status(): HealthStatus = when (healthy) {
-        true -> HealthStatus.UP
-        false -> HealthStatus.DOWN
     }
 }
