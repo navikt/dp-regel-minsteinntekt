@@ -12,6 +12,8 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.net.URI
+import java.time.LocalDate
+import java.time.Month
 
 internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
@@ -42,16 +44,17 @@ class Application(private val configuration: Configuration) : River(configuratio
         )
     }
 
-    override fun onPacket(packet: Packet): Packet {
-        val packetMedLøsning = løsFor(packet)
-        return packetMedLøsning
-    }
+    override fun onPacket(packet: Packet) = løsFor(packet)
 
     private fun løsFor(packet: Packet): Packet {
         val fakta = packetToFakta(packet)
 
+        val utvida =
+            fakta.beregningsdato.isBefore(LocalDate.of(2020, Month.MARCH, 20)) &&
+                fakta.regelverksdato?.isAfter(LocalDate.of(2021, Month.JANUARY, 31)) ?: false
+
         val evaluering: Evaluering =
-            if (fakta.beregningsdato.erKoronaPeriode()) {
+            if (fakta.beregningsdato.erKoronaPeriode() || utvida) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
             } else if (fakta.beregningsdato.erKoronaLærlingPeriode() && fakta.lærling) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }

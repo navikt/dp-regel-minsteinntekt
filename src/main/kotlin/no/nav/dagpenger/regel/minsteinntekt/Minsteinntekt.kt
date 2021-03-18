@@ -17,6 +17,7 @@ class Minsteinntekt {
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
         const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
         const val LÆRLING: String = "lærling"
+        const val REGELVERKSDATO: String = "regelverksdato"
 
         val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
             moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!

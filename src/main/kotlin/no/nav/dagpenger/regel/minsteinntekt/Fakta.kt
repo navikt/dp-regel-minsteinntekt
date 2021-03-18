@@ -22,7 +22,8 @@ data class Fakta(
     val grunnbeløp: BigDecimal = when {
         isThisGjusteringTest(beregningsdato) -> Grunnbeløp.GjusteringsTest.verdi
         else -> getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(beregningsdato).verdi
-    }
+    },
+    val regelverksdato: LocalDate? = null
 ) {
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 

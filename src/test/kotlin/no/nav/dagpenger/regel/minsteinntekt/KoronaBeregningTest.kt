@@ -20,9 +20,9 @@ class KoronaBeregningTest {
 
     private val jsonAdapterEvaluering: JsonAdapter<Evaluering> = moshiInstance.adapter(Evaluering::class.java)
 
-    val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
+    private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
-    val testInntekt: Inntekt = Inntekt(
+    private val testInntekt: Inntekt = Inntekt(
         inntektsId = "12345",
         inntektsListe = listOf(
             KlassifisertInntektMåned(
@@ -38,7 +38,7 @@ class KoronaBeregningTest {
         sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
     )
 
-    fun withKoronaperiode(test: () -> Unit) {
+    private fun withKoronaperiode(test: () -> Unit) {
         try {
             System.setProperty("feature.koronaperiode2", "true")
             test()
@@ -46,7 +46,7 @@ class KoronaBeregningTest {
             System.clearProperty("feature.koronaperiode2")
         }
     }
-    fun withoutKoronaperiode(test: () -> Unit) {
+    private fun withoutKoronaperiode(test: () -> Unit) {
         try {
             System.setProperty("feature.koronaperiode2", "false")
             test()
@@ -176,6 +176,33 @@ class KoronaBeregningTest {
 
             assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
             assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
+        }
+    }
+
+    @Test
+    fun `skal bruke korona-regler når regelverksdato er fom 1 februar 2021, og beregningsdato er før 20 mars 2020`() {
+        withKoronaperiode {
+            val minsteinntekt = Application(configuration)
+
+            val json =
+                """
+        {
+            "harAvtjentVerneplikt": false,
+            "oppfyllerKravTilFangstOgFisk": false,
+            "beregningsDato": "2020-03-19",
+            "regelverksdato": "2021-02-01"
+        }
+                """.trimIndent()
+
+            val packet = Packet(json)
+            packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
+
+            val outPacket = minsteinntekt.onPacket(packet)
+            val evaluering =
+                jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
+
+            assertTrue(evaluering.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
+            assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
         }
     }
 }
