@@ -8,6 +8,7 @@ import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.dagpenger.streams.KafkaAivenCredentials
 import no.nav.dagpenger.streams.River
+import no.nav.dagpenger.streams.Topic
 import no.nav.dagpenger.streams.streamConfig
 import no.nav.dagpenger.streams.streamConfigAiven
 import no.nav.nare.core.evaluations.Evaluering
@@ -24,7 +25,7 @@ fun main() {
     AivenApplication(config).start()
 }
 
-class AivenApplication(val configuration: Configuration) : Application(configuration) {
+class AivenApplication(val configuration: Configuration) : Application(configuration, configuration.regelTopic) {
     override val withHealthChecks: Boolean
         get() = false
 
@@ -37,7 +38,10 @@ class AivenApplication(val configuration: Configuration) : Application(configura
     }
 }
 
-open class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
+open class Application(
+    private val configuration: Configuration,
+    topic: Topic<String, Packet> = configuration.behovTopic
+) : River(topic) {
     override val SERVICE_APP_ID: String = configuration.application.id
     override val HTTP_PORT: Int = configuration.application.httpPort
 

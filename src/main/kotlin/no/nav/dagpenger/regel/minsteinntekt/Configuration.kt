@@ -73,7 +73,7 @@ data class Configuration(
     val behovTopic: Topic<String, Packet> = Topics.DAGPENGER_BEHOV_PACKET_EVENT.copy(
         name = config()[Key("behov.topic", stringType)]
     ),
-    val rapidTopic: Topic<String, Packet> = behovTopic.copy(name = "teamdagpenger.rapid.v1"),
+    val regelTopic: Topic<String, Packet> = behovTopic.copy(name = "teamdagpenger.regel.v1"),
 ) {
     data class Kafka(
         val brokers: String = config()[Key("kafka.bootstrap.servers", stringType)],
