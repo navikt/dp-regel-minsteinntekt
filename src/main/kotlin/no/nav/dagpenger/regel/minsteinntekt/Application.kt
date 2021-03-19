@@ -6,21 +6,38 @@ import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
+import no.nav.dagpenger.streams.KafkaAivenCredentials
 import no.nav.dagpenger.streams.River
 import no.nav.dagpenger.streams.streamConfig
+import no.nav.dagpenger.streams.streamConfigAiven
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import org.apache.kafka.streams.kstream.Predicate
 import java.net.URI
+import java.util.Properties
 
 internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
 val config = Configuration()
 
 fun main() {
     Application(config).start()
+    AivenApplication(config).start()
 }
 
-class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
+class AivenApplication(val configuration: Configuration) : Application(configuration) {
+    override val withHealthChecks: Boolean
+        get() = false
+
+    override fun getConfig(): Properties {
+        return streamConfigAiven(
+            appId = SERVICE_APP_ID,
+            bootStapServerUrl = configuration.kafka.aivenBrokers,
+            aivenCredentials = KafkaAivenCredentials()
+        )
+    }
+}
+
+open class Application(private val configuration: Configuration) : River(configuration.behovTopic) {
     override val SERVICE_APP_ID: String = configuration.application.id
     override val HTTP_PORT: Int = configuration.application.httpPort
 
