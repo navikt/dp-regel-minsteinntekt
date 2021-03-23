@@ -52,7 +52,7 @@ class PacketToFaktaGjusteringTest {
                 """
         {
             "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2020-09-02"
+            "beregningsDato": "2021-03-02"
         }
                 """.trimIndent()
 
