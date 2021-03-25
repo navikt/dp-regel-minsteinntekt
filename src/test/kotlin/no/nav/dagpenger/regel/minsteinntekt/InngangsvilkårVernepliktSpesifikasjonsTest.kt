@@ -18,7 +18,8 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         // når
@@ -37,7 +38,8 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         // når

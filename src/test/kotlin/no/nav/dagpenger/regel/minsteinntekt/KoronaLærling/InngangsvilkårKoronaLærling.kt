@@ -22,7 +22,8 @@ internal class InngangsvilkårKoronaLærling {
         verneplikt = false,
         fangstOgFisk = false,
         lærling = true,
-        beregningsdato = LocalDate.of(2020, 12, 10)
+        beregningsdato = LocalDate.of(2020, 12, 10),
+        regelverksdato = LocalDate.of(2020, 12, 10)
     )
 
     @Test

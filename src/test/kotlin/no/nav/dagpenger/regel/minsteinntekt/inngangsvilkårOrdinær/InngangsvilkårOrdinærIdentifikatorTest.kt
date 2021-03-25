@@ -33,7 +33,8 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
                 ),
                 verneplikt = true,
                 fangstOgFisk = false,
-                beregningsdato = LocalDate.now()
+                beregningsdato = LocalDate.now(),
+                regelverksdato = LocalDate.now()
             )
         )
 

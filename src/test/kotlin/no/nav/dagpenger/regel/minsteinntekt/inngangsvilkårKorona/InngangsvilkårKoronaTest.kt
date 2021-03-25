@@ -41,7 +41,8 @@ class InngangsvilkårKoronaTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -67,7 +68,8 @@ class InngangsvilkårKoronaTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -104,7 +106,8 @@ class InngangsvilkårKoronaTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -135,7 +138,8 @@ class InngangsvilkårKoronaTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
