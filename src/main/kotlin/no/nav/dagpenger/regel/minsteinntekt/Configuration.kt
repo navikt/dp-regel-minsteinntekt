@@ -26,9 +26,7 @@ private val devProperties = ConfigurationMap(
     mapOf(
         "application.profile" to Profile.DEV.toString(),
         "application.httpPort" to "8080",
-        "feature.gjustering" to false.toString(),
         "feature.koronaperiode2" to true.toString(),
-        "feature.gjustering" to false.toString(),
         "unleash.url" to "https://unleash.nais.io/api/"
     )
 )
