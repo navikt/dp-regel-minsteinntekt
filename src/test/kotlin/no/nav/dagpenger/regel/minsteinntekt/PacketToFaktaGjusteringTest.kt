@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import no.finn.unleash.FakeUnleash
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -10,10 +11,10 @@ class PacketToFaktaGjusteringTest {
 
     fun withGjustering(test: () -> Unit) {
         try {
-            System.setProperty("feature.gjustering", "true")
+            Application.unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
             test()
         } finally {
-            System.clearProperty("feature.gjustering")
+            Application.unleash = FakeUnleash().also { it.disable(GJUSTERING_TEST) }
         }
     }
 

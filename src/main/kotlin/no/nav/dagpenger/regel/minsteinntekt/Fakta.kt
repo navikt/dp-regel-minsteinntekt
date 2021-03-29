@@ -8,6 +8,7 @@ import no.nav.dagpenger.grunnbelop.Grunnbeløp
 import no.nav.dagpenger.grunnbelop.Regel
 import no.nav.dagpenger.grunnbelop.forDato
 import no.nav.dagpenger.grunnbelop.getGrunnbeløpForRegel
+import no.nav.dagpenger.regel.minsteinntekt.Application.Companion.unleash
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
@@ -46,12 +47,10 @@ data class Fakta(
         .sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
 }
 
-internal fun isThisGjusteringTest(
-    beregningsdato: LocalDate
-): Boolean {
+internal fun isThisGjusteringTest(beregningsdato: LocalDate): Boolean {
     val gVirkning = LocalDate.of(2021, 3, 1)
     val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(gVirkning.minusDays(1))
-    return config.features.gjustering() && isBeregningsDatoAfterGjustering
+    return unleash.isEnabled(GJUSTERING_TEST) && isBeregningsDatoAfterGjustering
 }
 // NB! tilfeldig valgte datoer for den andre perioden!
 fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode()

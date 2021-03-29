@@ -1,6 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import io.prometheus.client.CollectorRegistry
+import no.finn.unleash.Unleash
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
@@ -30,6 +31,7 @@ class Application(
 
     companion object {
         const val BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE = "beregningsDato"
+        var unleash: Unleash = setupUnleash(config.application.unleashUrl)
     }
 
     override fun getConfig(): Properties {
