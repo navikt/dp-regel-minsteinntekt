@@ -8,17 +8,7 @@ import org.junit.jupiter.api.Test
 import java.time.YearMonth
 
 class PacketToFaktaGjusteringTest {
-
-    fun withGjustering(test: () -> Unit) {
-        try {
-            Application.unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
-            test()
-        } finally {
-            Application.unleash = FakeUnleash().also { it.disable(GJUSTERING_TEST) }
-        }
-    }
-
-    val emptyInntekt: Inntekt = Inntekt(
+    private val emptyInntekt: Inntekt = Inntekt(
         inntektsId = "12345",
         inntektsListe = emptyList(),
         sisteAvsluttendeKalenderMåned = YearMonth.now()
@@ -26,44 +16,44 @@ class PacketToFaktaGjusteringTest {
 
     @Test
     fun ` should have the grunnbeløp without "gjustering" when beregningsdato is before justering date and featureflag is on `() {
-        withGjustering {
-            val json =
-                """
+        Application.unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
+
+        val json =
+            """
         {
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2019-05-30"
         }
-                """.trimIndent()
+            """.trimIndent()
 
-            val packet = Packet(json)
-            packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
+        val packet = Packet(json)
+        packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-            val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet)
 
-            assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
-        }
+        assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
     }
 
     @Test
     fun ` should have grunnbeløp with "gjustering" when beregningsdato is after justering date and featureflag is on`() {
-        withGjustering {
-            val adapter = moshiInstance.adapter(Inntekt::class.java)
+        Application.unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
 
-            val json =
-                """
+        val adapter = moshiInstance.adapter(Inntekt::class.java)
+
+        val json =
+            """
         {
             "oppfyllerKravTilFangstOgFisk": true,
             "beregningsDato": "2021-03-02"
         }
-                """.trimIndent()
+            """.trimIndent()
 
-            val packet = Packet(json)
-            packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
+        val packet = Packet(json)
+        packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
 
-            val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet)
 
-            assertEquals(103500.toBigDecimal(), fakta.grunnbeløp)
-        }
+        assertEquals(103500.toBigDecimal(), fakta.grunnbeløp)
     }
 
     @Test
