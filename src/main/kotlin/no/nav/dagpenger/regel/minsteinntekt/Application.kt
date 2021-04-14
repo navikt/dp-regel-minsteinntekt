@@ -50,10 +50,7 @@ class Application(
         )
     }
 
-    override fun onPacket(packet: Packet): Packet {
-        val packetMedLøsning = løsFor(packet)
-        return packetMedLøsning
-    }
+    override fun onPacket(packet: Packet) = løsFor(packet)
 
     private fun løsFor(packet: Packet): Packet {
         val fakta = packetToFakta(packet)

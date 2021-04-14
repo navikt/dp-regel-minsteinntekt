@@ -12,7 +12,7 @@ import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.REGELVERKSDA
 
 private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
-private val bruktInntektsPeriodeAdapter = moshiInstance.adapter<InntektsPeriode>(InntektsPeriode::class.java)
+private val bruktInntektsPeriodeAdapter = moshiInstance.adapter(InntektsPeriode::class.java)
 
 internal fun packetToFakta(packet: Packet): Fakta {
     val inntekt: Inntekt =
@@ -23,6 +23,7 @@ internal fun packetToFakta(packet: Packet): Fakta {
                 )
             )
         }
+
     val avtjentVernePlikt = packet.getNullableBoolean(AVTJENT_VERNEPLIKT) ?: false
     val bruktInntektsPeriode =
         packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE, bruktInntektsPeriodeAdapter::fromJsonValue)

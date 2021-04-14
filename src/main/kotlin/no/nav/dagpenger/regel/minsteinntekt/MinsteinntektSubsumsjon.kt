@@ -11,11 +11,11 @@ data class MinsteinntektSubsumsjon(
 ) {
 
     companion object {
-        val SPORINGSID = "sporingsId"
-        val SUBSUMSJONSID = "subsumsjonsId"
-        val REGELIDENTIFIKATOR = "regelIdentifikator"
-        val OPPFYLLER_MINSTEINNTEKT = "oppfyllerMinsteinntekt"
-        val BEREGNINGSREGEL = "beregningsregel"
+        const val SPORINGSID = "sporingsId"
+        const val SUBSUMSJONSID = "subsumsjonsId"
+        const val REGELIDENTIFIKATOR = "regelIdentifikator"
+        const val OPPFYLLER_MINSTEINNTEKT = "oppfyllerMinsteinntekt"
+        const val BEREGNINGSREGEL = "beregningsregel"
     }
 
     fun toMap(): Map<String, Any> {
