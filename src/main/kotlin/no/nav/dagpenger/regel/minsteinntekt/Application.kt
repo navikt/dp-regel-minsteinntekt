@@ -56,9 +56,9 @@ class Application(
         val fakta = packetToFakta(packet)
 
         val evaluering: Evaluering =
-            if (fakta.beregningsdato.erKoronaPeriode()) {
+            if (fakta.regelverksdato.erKoronaPeriode()) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-            } else if (fakta.beregningsdato.erKoronaLærlingPeriode() && fakta.lærling) {
+            } else if (fakta.regelverksdato.erKoronaLærlingPeriode() && fakta.lærling) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
             } else {
                 narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
