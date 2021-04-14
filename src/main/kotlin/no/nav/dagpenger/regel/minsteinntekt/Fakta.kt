@@ -22,8 +22,8 @@ data class Fakta(
     val regelverksdato: LocalDate,
     val lærling: Boolean = false,
     val grunnbeløp: BigDecimal = when {
-        isThisGjusteringTest(beregningsdato) -> Grunnbeløp.GjusteringsTest.verdi
-        else -> getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(beregningsdato).verdi
+        isThisGjusteringTest(regelverksdato) -> Grunnbeløp.GjusteringsTest.verdi
+        else -> getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(regelverksdato).verdi
     }
 ) {
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
@@ -48,10 +48,10 @@ data class Fakta(
         .sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
 }
 
-internal fun isThisGjusteringTest(beregningsdato: LocalDate): Boolean {
+internal fun isThisGjusteringTest(regelverksdato: LocalDate): Boolean {
     val gVirkning = LocalDate.of(2021, 3, 1)
-    val isBeregningsDatoAfterGjustering = beregningsdato.isAfter(gVirkning.minusDays(1))
-    return unleash.isEnabled(GJUSTERING_TEST) && isBeregningsDatoAfterGjustering
+    val isRegelverksdatoAfterGjustering = regelverksdato.isAfter(gVirkning.minusDays(1))
+    return unleash.isEnabled(GJUSTERING_TEST) && isRegelverksdatoAfterGjustering
 }
 // NB! tilfeldig valgte datoer for den andre perioden!
 fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode()
