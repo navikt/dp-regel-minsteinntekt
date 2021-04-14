@@ -24,7 +24,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste12Måneder.evaluer(fakta)
@@ -43,6 +44,7 @@ internal class InngangsvilkårOrdinærTest {
             verneplikt = true,
             fangstOgFisk = false,
             beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = BigDecimal(4)
         )
 
@@ -61,7 +63,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste12Måneder.evaluer(fakta)
@@ -77,7 +80,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste36Måneder.evaluer(fakta)
@@ -96,6 +100,7 @@ internal class InngangsvilkårOrdinærTest {
             verneplikt = true,
             fangstOgFisk = false,
             beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = BigDecimal(23)
         )
 
@@ -114,7 +119,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste36Måneder.evaluer(fakta)
@@ -132,7 +138,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste12Måneder.evaluer(fakta)
@@ -150,7 +157,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         val evaluering = ordinærSiste36Måneder.evaluer(fakta)
@@ -182,7 +190,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         assertEquals(50000.toBigDecimal(), fakta.arbeidsinntektSiste12)
@@ -216,7 +225,8 @@ internal class InngangsvilkårOrdinærTest {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.of(2019, 5, 10),
+            regelverksdato = LocalDate.of(2019, 5, 10)
         )
 
         assertEquals((-950000).toBigDecimal(), fakta.arbeidsinntektSiste12)

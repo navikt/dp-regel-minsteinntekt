@@ -19,6 +19,7 @@ data class Fakta(
     val verneplikt: Boolean,
     val fangstOgFisk: Boolean,
     val beregningsdato: LocalDate,
+    val regelverksdato: LocalDate,
     val lærling: Boolean = false,
     val grunnbeløp: BigDecimal = when {
         isThisGjusteringTest(beregningsdato) -> Grunnbeløp.GjusteringsTest.verdi

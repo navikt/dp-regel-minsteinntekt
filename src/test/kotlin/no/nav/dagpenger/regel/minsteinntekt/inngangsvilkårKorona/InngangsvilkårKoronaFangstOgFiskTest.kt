@@ -34,7 +34,8 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -66,7 +67,8 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -97,7 +99,8 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -128,7 +131,8 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = LocalDate.of(2020, 2, 10),
+            regelverksdato = LocalDate.of(2020, 2, 10)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)

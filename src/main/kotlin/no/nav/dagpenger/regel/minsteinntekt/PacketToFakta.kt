@@ -8,6 +8,7 @@ import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.BRUKT_INNTEK
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.FANGST_OG_FISK
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.LÆRLING
+import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.REGELVERKSDATO
 
 private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
@@ -27,6 +28,7 @@ internal fun packetToFakta(packet: Packet): Fakta {
         packet.getNullableObjectValue(BRUKT_INNTEKTSPERIODE, bruktInntektsPeriodeAdapter::fromJsonValue)
     val fangstOgFisk = packet.getNullableBoolean(FANGST_OG_FISK) ?: false
     val beregningsDato = packet.getLocalDate(BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE)
+    val regelverksdato = packet.getNullableLocalDate(REGELVERKSDATO) ?: beregningsDato
     val lærling = packet.getNullableBoolean(LÆRLING) ?: false
 
     return Fakta(
@@ -35,6 +37,7 @@ internal fun packetToFakta(packet: Packet): Fakta {
         verneplikt = avtjentVernePlikt,
         fangstOgFisk = fangstOgFisk,
         beregningsdato = beregningsDato,
+        regelverksdato = regelverksdato,
         lærling = lærling
     )
 }

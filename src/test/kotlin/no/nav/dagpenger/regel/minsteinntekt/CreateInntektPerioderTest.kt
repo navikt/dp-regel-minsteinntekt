@@ -18,7 +18,8 @@ class CreateInntektPerioderTest {
             null,
             false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 4, 10)
+            beregningsdato = LocalDate.of(2019, 4, 10),
+            regelverksdato = LocalDate.of(2019, 4, 10)
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -42,7 +43,8 @@ class CreateInntektPerioderTest {
             null,
             false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 2, 10)
+            beregningsdato = LocalDate.of(2019, 2, 10),
+            regelverksdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -71,7 +73,8 @@ class CreateInntektPerioderTest {
             null,
             false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 2, 10)
+            beregningsdato = LocalDate.of(2019, 2, 10),
+            regelverksdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -96,7 +99,8 @@ class CreateInntektPerioderTest {
             null,
             false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 2, 10)
+            beregningsdato = LocalDate.of(2019, 2, 10),
+            regelverksdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -116,7 +120,8 @@ class CreateInntektPerioderTest {
             null,
             false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 2, 10)
+            beregningsdato = LocalDate.of(2019, 2, 10),
+            regelverksdato = LocalDate.of(2019, 2, 10)
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -137,7 +142,8 @@ class CreateInntektPerioderTest {
             InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2017, 7)),
             false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 4, 10)
+            beregningsdato = LocalDate.of(2019, 4, 10),
+            regelverksdato = LocalDate.of(2019, 4, 10)
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
