@@ -61,7 +61,7 @@ class PacketToFaktaGjusteringTest {
 
             val fakta = packetToFakta(packet)
 
-            assertEquals(103500.toBigDecimal(), fakta.grunnbeløp)
+            assertEquals(103000.toBigDecimal(), fakta.grunnbeløp)
         }
     }
 
