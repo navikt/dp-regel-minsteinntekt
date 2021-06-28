@@ -24,9 +24,8 @@ object Cucumber {
 object Dagpenger {
 
     object Biblioteker {
-        const val version = "2021.06.23-14.39.74fbb7b79fde"
+        const val version = "2021.06.25-12.52.0e0ec3efadbf"
         const val stsKlient = "com.github.navikt.dp-biblioteker:sts-klient:$version"
-        const val grunnbeløp = "com.github.navikt.dp-biblioteker:grunnbelop:$version"
         const val ktorUtils = "com.github.navikt.dp-biblioteker:ktor-utils:$version"
 
         object Ktor {
@@ -44,7 +43,7 @@ object Dagpenger {
             const val client = "com.github.navikt.dp-biblioteker:soap-client:$version"
         }
     }
-
+    const val Grunnbeløp = "com.github.navikt:dp-grunnbelop:2021.06.25-11.51.bdc7c826c404"
     const val Streams = "com.github.navikt:dagpenger-streams:2021.06.23-14.29.bbb62ad15d52"
     const val Events = "com.github.navikt:dagpenger-events:2021.06.23-14.38.f9ef5d423585"
 }
@@ -229,7 +228,7 @@ object Ktlint {
 }
 
 object Spotless {
-    const val version = "5.10.1"
+    const val version = "5.14.0"
     const val spotless = "com.diffplug.spotless"
 }
 
@@ -259,7 +258,7 @@ object Wiremock {
 }
 
 object Graphql {
-    const val version = "4.0.0-alpha.12"
+    const val version = "4.1.1"
     const val graphql = "com.expediagroup.graphql"
     val client = library("client")
     fun library(name: String) = "com.expediagroup:graphql-kotlin-$name:$version"
