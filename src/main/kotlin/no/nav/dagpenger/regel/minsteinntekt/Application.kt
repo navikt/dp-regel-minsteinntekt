@@ -72,10 +72,6 @@ class Application(
             evaluering.finnRegelBrukt()
         )
 
-        packet.putValue(
-            Minsteinntekt.MINSTEINNTEKT_NARE_EVALUERING,
-            Minsteinntekt.jsonAdapterEvaluering.toJson(evaluering)
-        )
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(
             Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,

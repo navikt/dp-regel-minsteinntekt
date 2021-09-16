@@ -6,16 +6,14 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_NARE_EVALUERING
 import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.nare.core.evaluations.Evaluering
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.YearMonth
 
-class KoronaBeregningTest {
+internal class KoronaBeregningTest {
     private val configuration = Configuration()
 
     private val jsonAdapterEvaluering: JsonAdapter<Evaluering> = moshiInstance.adapter(Evaluering::class.java)
@@ -72,10 +70,6 @@ class KoronaBeregningTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
 
         val outPacket = minsteinntekt.onPacket(packet)
-        val evaluering =
-            jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
-
-        assertTrue(evaluering.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
         assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
@@ -96,10 +90,6 @@ class KoronaBeregningTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
 
         val outPacket = minsteinntekt.onPacket(packet)
-        val evaluering =
-            jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
-
-        assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
         assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
@@ -120,10 +110,6 @@ class KoronaBeregningTest {
         packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
 
         val outPacket = minsteinntekt.onPacket(packet)
-        val evaluering =
-            jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
-
-        assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
         assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
     }
 
@@ -145,15 +131,10 @@ class KoronaBeregningTest {
             packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
 
             val outPacket = minsteinntekt.onPacket(packet)
-            val evaluering =
-                jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
-
-            assertTrue(evaluering.children.any { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
             assertEquals(Beregningsregel.KORONA, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
         }
     }
     @Test
-    // NB! tilfeldig valgte datoer
     fun `Skal ikke bruke korona-regler når beregningsdato er etter 1 februar 2021 men før 30 juni 2021 men flagget ikke er satt`() {
         withoutKoronaperiode {
             val minsteinntekt = Application(configuration)
@@ -171,10 +152,6 @@ class KoronaBeregningTest {
             packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
 
             val outPacket = minsteinntekt.onPacket(packet)
-            val evaluering =
-                jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
-
-            assertTrue(evaluering.children.none { it.identifikator == "Krav til minsteinntekt etter midlertidig korona-endret § 4-4" })
             assertEquals(Beregningsregel.ORDINAER, outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL])
         }
     }

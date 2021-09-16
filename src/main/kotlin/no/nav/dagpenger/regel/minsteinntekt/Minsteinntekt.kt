@@ -11,7 +11,6 @@ class Minsteinntekt {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
         const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
-        const val MINSTEINNTEKT_NARE_EVALUERING = "minsteinntektNareEvaluering"
         const val INNTEKT = "inntektV1"
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"

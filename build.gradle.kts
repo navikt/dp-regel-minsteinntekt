@@ -10,7 +10,7 @@ plugins {
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -19,14 +19,14 @@ apply {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven("https://packages.confluent.io/maven/")
     maven("https://jitpack.io")
 }
 
 application {
     applicationName = "dp-regel-minsteinntekt"
-    mainClassName = "no.nav.dagpenger.regel.minsteinntekt.ApplicationKt"
+    mainClass.set("no.nav.dagpenger.regel.minsteinntekt.ApplicationKt")
 }
 
 java {

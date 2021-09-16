@@ -9,10 +9,7 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Application
 import no.nav.dagpenger.regel.minsteinntekt.Configuration
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.MINSTEINNTEKT_NARE_EVALUERING
-import no.nav.dagpenger.regel.minsteinntekt.Minsteinntekt.Companion.jsonAdapterEvaluering
 import no.nav.dagpenger.regel.minsteinntekt.moshiInstance
-import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -44,9 +41,8 @@ class KoronaLærlingBeregningTest : FreeSpec(
                 val packet = Packet(json)
                 packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
                 val outPacket = minsteinntekt.onPacket(packet)
-                val evaluering =
-                    jsonAdapterEvaluering.fromJson(outPacket.getStringValue(MINSTEINNTEKT_NARE_EVALUERING))!!
-                assertEquals(oppfyllerMinstearbeidsinntekt, evaluering.children.any { it.resultat == Resultat.JA })
+                val evaluering = outPacket.getMapValue("minsteinntektResultat")
+                assertEquals(oppfyllerMinstearbeidsinntekt, evaluering["oppfyllerMinsteinntekt"] as Boolean)
             }
         }
     }
