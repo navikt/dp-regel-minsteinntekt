@@ -4,7 +4,6 @@ import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties.Companion.systemProperties
 import com.natpryce.konfig.EnvironmentVariables
 import com.natpryce.konfig.Key
-import com.natpryce.konfig.booleanType
 import com.natpryce.konfig.intType
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
@@ -57,7 +56,6 @@ val REGEL_TOPIC = Topic(
 data class Configuration(
     val kafka: Kafka = Kafka(),
     val application: Application = Application(),
-    val features: Features = Features(),
     val regelTopic: Topic<String, Packet> = REGEL_TOPIC
 ) {
     data class Kafka(
@@ -70,10 +68,6 @@ data class Configuration(
         val httpPort: Int = config()[Key("application.httpPort", intType)],
         val unleashUrl: String = config()[Key("unleash.url", stringType)]
     )
-
-    class Features {
-        fun koronaperiode2() = config().getOrElse(Key("feature.koronaperiode2", booleanType), false)
-    }
 }
 
 enum class Profile {

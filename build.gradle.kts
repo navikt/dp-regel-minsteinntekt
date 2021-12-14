@@ -92,6 +92,7 @@ dependencies {
     testImplementation(Junit5.api)
     testRuntimeOnly(Junit5.engine)
 
+    testImplementation(Junit5.params)
     testImplementation(KoTest.runner)
     testImplementation(KoTest.assertions)
     testImplementation(KoTest.property)
