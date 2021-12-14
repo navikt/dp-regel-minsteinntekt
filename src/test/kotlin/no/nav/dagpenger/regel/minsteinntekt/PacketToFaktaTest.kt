@@ -1,10 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import io.kotest.core.spec.style.FreeSpec
-import io.kotest.data.headers
-import io.kotest.data.row
-import io.kotest.data.table
-import io.kotest.matchers.shouldBe
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -147,19 +142,3 @@ class PacketToFaktaTest {
         assertTrue(fakta.lærling)
     }
 }
-
-class KoronaRegelverkPeriodeTest : FreeSpec({
-    "sjekke grenseverdiene for koronaperiode " {
-        io.kotest.data.forAll(
-            table(
-                headers("dato", "er korona periode ?"),
-                row(LocalDate.of(2020, 3, 19), false),
-                row(LocalDate.of(2020, 3, 20), true),
-                row(LocalDate.of(2020, 10, 31), true),
-                row(LocalDate.of(2020, 11, 1), false),
-            )
-        ) { dato: LocalDate, erKoronaPeriode: Boolean ->
-            dato.erKoronaPeriode() shouldBe erKoronaPeriode
-        }
-    }
-})
