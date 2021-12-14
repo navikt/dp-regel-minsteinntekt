@@ -25,6 +25,10 @@ class KoronaLærlingBeregningTest : FreeSpec(
                 row(true, LocalDate.of(2020, 11, 20)),
                 row(true, LocalDate.of(2021, 9, 30)),
                 row(false, LocalDate.of(2021, 10, 1)),
+                row(false, LocalDate.of(2021, 12, 21)),
+                row(true, LocalDate.of(2021, 12, 22)),
+                row(true, LocalDate.of(2022, 2, 28)),
+                row(false, LocalDate.of(2022, 3, 1)),
 
             ).map { (oppfyllerMinstearbeidsinntekt: Boolean, beregningsdato: LocalDate) ->
 
