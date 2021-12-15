@@ -43,8 +43,8 @@ class KoronaLærlingBeregningTest {
         "true, 2020-11-20",
         "true, 2021-09-30",
         "false, 2021-10-01",
-        "false, 2021-12-13",
-        "true, 2021-12-14",
+        "false, 2021-12-14",
+        "true, 2021-12-15",
         "true, 2022-02-28",
         "false, 2022-03-01",
     )
