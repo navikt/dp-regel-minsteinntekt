@@ -9,12 +9,9 @@ import java.time.YearMonth
 fun generateArbeidsinntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, senesteMåned: YearMonth = YearMonth.of(2019, 1)): List<KlassifisertInntektMåned> {
     return (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
-            senesteMåned.minusMonths(it.toLong()),
-            listOf(
-                KlassifisertInntekt(
-                    beløpPerMnd,
-                    InntektKlasse.ARBEIDSINNTEKT
-                )
+            årMåned = senesteMåned.minusMonths(it.toLong()),
+            klassifiserteInntekter = listOf(
+                KlassifisertInntekt(beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT)
             )
         )
     }

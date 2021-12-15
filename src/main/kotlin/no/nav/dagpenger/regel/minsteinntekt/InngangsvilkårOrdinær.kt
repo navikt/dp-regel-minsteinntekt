@@ -2,6 +2,7 @@ package no.nav.dagpenger.regel.minsteinntekt
 
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.specifications.Spesifikasjon
+import java.time.LocalDate
 
 internal val ordinærSiste12Måneder = Spesifikasjon<Fakta>(
     beskrivelse = "Krav til minsteinntekt etter § 4-4 første ledd bokstav a - minst 1,5 ganger grunnbeløp siste 12 måneder",
@@ -29,11 +30,15 @@ internal val ordinærSiste36Måneder = Spesifikasjon<Fakta>(
     }
 )
 
+private val fiskOgFangstAvvikletFraDato = LocalDate.of(2022, 1,1)
 internal val ordinærSiste12MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
     beskrivelse = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav a - minst 1,5 ganger grunnbeløp siste 12 måneder",
     identifikator = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav a",
     implementasjon = {
         when {
+            (regelverksdato >= fiskOgFangstAvvikletFraDato) -> Evaluering.nei(
+                "Regel om at inntekt fra fangst og fisk inkluderes i beregning avvikles fra og med 01.01.2022"
+            )
             fangstOgFisk && inntektSiste12inkludertFangstOgFiske >= (grunnbeløp.times(1.5.toBigDecimal())) -> Evaluering.ja(
                 "Inntekt inkludert inntekt fra fangst og fisk siste 12 måneder er lik eller større enn 1,5 ganger grunnbeløp"
             )
@@ -47,6 +52,9 @@ internal val ordinærSiste36MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
     identifikator = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b",
     implementasjon = {
         when {
+            regelverksdato >= fiskOgFangstAvvikletFraDato -> Evaluering.nei(
+                "Regel om at inntekt fra fangst og fisk inkluderes i beregning avvikles fra og med 01.01.2022"
+            )
             fangstOgFisk && inntektSiste36inkludertFangstOgFiske >= (grunnbeløp.times(3.toBigDecimal())) -> Evaluering.ja(
                 "Inntekt inkludert inntekt fra fangst og fisk siste 36 måneder er lik eller større enn 3 ganger grunnbeløp"
             )
