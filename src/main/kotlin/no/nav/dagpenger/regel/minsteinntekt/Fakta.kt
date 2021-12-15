@@ -63,7 +63,7 @@ private fun LocalDate.andreKoronaperiode() =
 
 // TODO: Sette korrekt fradato, når det er klart.
 private fun LocalDate.tredjeKoronaperiode() =
-    (this in (LocalDate.of(2021, Month.DECEMBER, 22)..LocalDate.of(2022, Month.FEBRUARY, 28)))
+    (this in (LocalDate.of(2021, Month.DECEMBER, 14)..LocalDate.of(2022, Month.FEBRUARY, 28)))
 
 fun LocalDate.førsteLærlingKoronaperiode() = this in (LocalDate.of(2020, Month.NOVEMBER, 1)..LocalDate.of(2021, Month.SEPTEMBER, 30))
 

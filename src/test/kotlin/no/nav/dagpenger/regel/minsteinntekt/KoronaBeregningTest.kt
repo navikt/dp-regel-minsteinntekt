@@ -43,8 +43,8 @@ internal class KoronaBeregningTest {
         "2021-02-19, KORONA",
         "2021-09-30, KORONA",
         "2021-10-01, ORDINAER",
-        "2021-12-21, ORDINAER",
-        "2021-12-22, KORONA",
+        "2021-12-13, ORDINAER",
+        "2021-12-14, KORONA",
         "2022-02-28, KORONA",
         "2022-03-01, ORDINAER",
     )
