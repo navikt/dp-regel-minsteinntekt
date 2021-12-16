@@ -42,7 +42,6 @@ internal val ordinærSiste12MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
     }
 )
 
-
 internal val ordinærSiste36MånederMedFangstOgFiske = Spesifikasjon<Fakta>(
     beskrivelse = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b - minst 3 ganger grunnbeløp siste 36 måneder",
     identifikator = "Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b",

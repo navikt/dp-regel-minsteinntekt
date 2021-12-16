@@ -6,15 +6,12 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
-import no.nav.dagpenger.regel.minsteinntekt.fangstOgFisk
 import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
 import no.nav.dagpenger.regel.minsteinntekt.generateArbeidsOgFangstOgFiskInntekt
 import no.nav.dagpenger.regel.minsteinntekt.koronaFangstOgFisk
-import no.nav.dagpenger.regel.minsteinntekt.koronaOrdinærSiste36MånederMedFangstOgFiske
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.nare.core.evaluations.Resultat
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -27,13 +24,15 @@ import kotlin.test.assertNotNull
 class InngangsvilkårKoronaFangstOgFiskTest() {
     val G2019 = BigDecimal(99858)
 
-
     @ParameterizedTest
     @CsvSource(
         "2021-12-31, JA",
         "2022-01-01, NEI",
     )
-    fun `Koronaregelverk for fangst og fisk er avviklet fra 01-01-2022`(regelverksdato: String, forventetUtfall: String) {
+    fun `Koronaregelverk for fangst og fisk er avviklet fra 01-01-2022`(
+        regelverksdato: String,
+        forventetUtfall: String
+    ) {
 
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2021, 11)
 

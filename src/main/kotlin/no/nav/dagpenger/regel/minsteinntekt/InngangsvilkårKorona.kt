@@ -66,7 +66,6 @@ private fun Fakta.koronaFangstOgFiskAvslagBegrunnelse(antallOpptjeningsMåneder:
         "Ikke gyldig fangst og fisk. Dette skyldes at regelverket avviklet inntekt fra fangst og fisk 01.01.2022"
     }
 
-
 internal val koronaFangstOgFisk = koronaOrdinærSiste36MånederMedFangstOgFiske eller koronaOrdinærSiste12MånederMedFangstOgFiske
 
 internal val koronaOrdinær: Spesifikasjon<Fakta> =
