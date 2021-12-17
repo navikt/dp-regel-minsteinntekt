@@ -15,9 +15,9 @@ import java.time.YearMonth
 internal class KoronaBeregningTest {
     private val configuration = Configuration()
 
-    val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
+    private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
-    val testInntekt: Inntekt = Inntekt(
+    private val testInntekt: Inntekt = Inntekt(
         inntektsId = "12345",
         inntektsListe = listOf(
             KlassifisertInntektMåned(
