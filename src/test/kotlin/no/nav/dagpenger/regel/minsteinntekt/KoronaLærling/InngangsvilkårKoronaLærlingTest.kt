@@ -1,4 +1,4 @@
-package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårKorona
+package no.nav.dagpenger.regel.minsteinntekt.KoronaLærling
 
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import kotlin.test.assertEquals
 
-internal class InngangsvilkårKoronaLærling {
+internal class InngangsvilkårKoronaLærlingTest {
     private val inntekt = emptyList<KlassifisertInntektMåned>()
 
     private val fakta = Fakta(

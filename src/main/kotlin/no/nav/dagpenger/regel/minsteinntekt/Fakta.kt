@@ -53,13 +53,19 @@ internal fun isThisGjusteringTest(dato: LocalDate): Boolean {
     val isAfterGjustering = dato.isAfter(gVirkning.minusDays(1))
     return unleash.isEnabled(GJUSTERING_TEST) && isAfterGjustering
 }
-// NB! tilfeldig valgte datoer for den andre perioden!
-fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode()
+fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode() || tredjeKoronaperiode()
 
 private fun LocalDate.førsteKoronaperiode() =
     (this in (LocalDate.of(2020, Month.MARCH, 20)..LocalDate.of(2020, Month.OCTOBER, 31)))
 
 private fun LocalDate.andreKoronaperiode() =
-    (this in (LocalDate.of(2021, Month.FEBRUARY, 19)..LocalDate.of(2021, Month.SEPTEMBER, 30)) && config.features.koronaperiode2())
+    (this in (LocalDate.of(2021, Month.FEBRUARY, 19)..LocalDate.of(2021, Month.SEPTEMBER, 30)))
 
-fun LocalDate.erKoronaLærlingPeriode() = this in (LocalDate.of(2020, Month.NOVEMBER, 1)..LocalDate.of(2021, Month.SEPTEMBER, 30))
+private fun LocalDate.tredjeKoronaperiode() =
+    (this in (LocalDate.of(2021, Month.DECEMBER, 15)..LocalDate.of(2022, Month.FEBRUARY, 28)))
+
+fun LocalDate.førsteLærlingKoronaperiode() = this in (LocalDate.of(2020, Month.NOVEMBER, 1)..LocalDate.of(2021, Month.SEPTEMBER, 30))
+
+fun LocalDate.andreLærlingKoronaperiode() = this.tredjeKoronaperiode()
+
+fun LocalDate.erKoronaLærlingperiode() = this.førsteLærlingKoronaperiode() || this.andreLærlingKoronaperiode()

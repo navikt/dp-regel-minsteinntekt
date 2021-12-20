@@ -58,7 +58,7 @@ class Application(
         val evaluering: Evaluering =
             if (fakta.regelverksdato.erKoronaPeriode()) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-            } else if (fakta.regelverksdato.erKoronaLærlingPeriode() && fakta.lærling) {
+            } else if (fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling) {
                 narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
             } else {
                 narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
