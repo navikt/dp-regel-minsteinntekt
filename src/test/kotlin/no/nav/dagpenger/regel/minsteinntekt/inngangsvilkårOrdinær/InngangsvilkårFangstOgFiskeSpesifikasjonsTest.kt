@@ -5,15 +5,19 @@ import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
+import no.nav.dagpenger.regel.minsteinntekt.fangstOgFisk
 import no.nav.dagpenger.regel.minsteinntekt.generate12MånederFangstOgFiskInntekt
-import no.nav.dagpenger.regel.minsteinntekt.generate36MånederFangstOgFiskInntekt
+import no.nav.dagpenger.regel.minsteinntekt.generateArbeidsOgFangstOgFiskInntekt
 import no.nav.dagpenger.regel.minsteinntekt.generateArbeidsinntekt
 import no.nav.dagpenger.regel.minsteinntekt.generateFangstOgFiskInntekt
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12Måneder
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12MånederMedFangstOgFiske
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste36MånederMedFangstOgFiske
 import no.nav.nare.core.evaluations.Resultat
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
@@ -41,8 +45,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent litt for lite siste 12 mnd`() {
 
-        val inntekt =
-            generateFangstOgFiskInntekt(3, BigDecimal(1))
+        val inntekt = generateFangstOgFiskInntekt(3, BigDecimal(1))
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
@@ -131,7 +134,6 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har hatt nok inntekt siste 12 mnd`() {
-
         val inntekt = generate12MånederFangstOgFiskInntekt()
 
         val fakta = Fakta(
@@ -168,8 +170,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent litt for lite siste 36 mnd`() {
 
-        val inntekt =
-            generateFangstOgFiskInntekt(24, BigDecimal(1))
+        val inntekt = generateFangstOgFiskInntekt(24, BigDecimal(1))
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
@@ -186,50 +187,40 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         assertEquals(Resultat.NEI, evaluering.resultat)
     }
 
-    @Test
-    fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har hatt nok inntekt siste 36 mnd`() {
+    @ParameterizedTest
+    @CsvSource(
+        "2021-12-31, JA",
+        "2022-01-01, NEI",
+    )
+    fun `Regelverk for fangst og fisk er avviklet fra 01-01-2022`(regelverksdato: String, forventetUtfall: String) {
 
-        val inntekt = generate36MånederFangstOgFiskInntekt()
+        val sisteAvsluttendeKalenderMåned = YearMonth.of(2021, 11)
+
+        val inntekt = generateArbeidsOgFangstOgFiskInntekt(
+            numberOfMonths = 36,
+            arbeidsInntektBeløpPerMnd = BigDecimal(1000),
+            fangstOgFiskeBeløpPerMnd = BigDecimal(50000),
+            senesteMåned = sisteAvsluttendeKalenderMåned
+        )
 
         val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = LocalDate.parse(regelverksdato),
+            regelverksdato = LocalDate.parse(regelverksdato)
         )
 
-        val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)
+        val evaluering = fangstOgFisk.evaluer(fakta)
 
-        assertEquals(Resultat.JA, evaluering.resultat)
-    }
-
-    @Test
-    fun `Skal gi rett til dagpenger i følge § 4-4 dersom man har bare arbeidsinntekt siste 12 mnd, selv om fangst og fiske er oppfylt `() {
-
-        val inntekt =
-            generateArbeidsinntekt(12, BigDecimal(50000))
-
-        val fakta = Fakta(
-            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
-            verneplikt = true,
-            fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
-        )
-
-        val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
-
-        assertEquals(Resultat.JA, evaluering.resultat)
+        assertTrue(evaluering.children.all { Resultat.valueOf(forventetUtfall) == it.resultat })
     }
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom man har næringsinntekt siste 36 mnd, men er fangst og fisk er ikke oppfylt `() {
 
-        val inntekt =
-            generateArbeidsinntekt(36, BigDecimal(50000))
+        val inntekt = generateArbeidsinntekt(36, BigDecimal(50000))
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),

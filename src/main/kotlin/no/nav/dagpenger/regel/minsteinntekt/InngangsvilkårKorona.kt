@@ -34,10 +34,12 @@ internal val koronaOrdinærSiste12MånederMedFangstOgFiske = Spesifikasjon<Fakta
     identifikator = "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav a",
     implementasjon = {
         when {
-            fangstOgFisk && inntektSiste12inkludertFangstOgFiske >= (grunnbeløp.times(0.75.toBigDecimal())) -> Evaluering.ja(
+            erGyldigFangstOgFisk() && inntektSiste12inkludertFangstOgFiske >= (grunnbeløp.times(0.75.toBigDecimal())) -> Evaluering.ja(
                 "Inntekt inkludert inntekt fra fangst og fisk siste 12 måneder er lik eller større enn 0,75 ganger grunnbeløp"
             )
-            else -> Evaluering.nei("Inntekt inkludert inntekt fra fangst og fisk siste 12 måneder er mindre enn 0,75 ganger grunnbeløp")
+            else -> Evaluering.nei(
+                koronaFangstOgFiskAvslagBegrunnelse(antallOpptjeningsMåneder = "12", antallGangerGrunnbeløp = "0,75")
+            )
         }
     }
 )
@@ -47,16 +49,27 @@ internal val koronaOrdinærSiste36MånederMedFangstOgFiske = Spesifikasjon<Fakta
     identifikator = "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b",
     implementasjon = {
         when {
-            fangstOgFisk && inntektSiste36inkludertFangstOgFiske >= (grunnbeløp.times(2.25.toBigDecimal())) -> Evaluering.ja(
+            erGyldigFangstOgFisk() && inntektSiste36inkludertFangstOgFiske >= (grunnbeløp.times(2.25.toBigDecimal())) -> Evaluering.ja(
                 "Inntekt inkludert inntekt fra fangst og fisk siste 36 måneder er lik eller større enn 2,25 ganger grunnbeløp"
             )
-            else -> Evaluering.nei("Inntekt inkludert inntekt fra fangst og fisk siste 36 måneder er mindre enn 2,25 ganger grunnbeløp")
+            else -> Evaluering.nei(
+                koronaFangstOgFiskAvslagBegrunnelse(antallOpptjeningsMåneder = "36", antallGangerGrunnbeløp = "2,25")
+            )
         }
     }
 )
 
+private fun Fakta.koronaFangstOgFiskAvslagBegrunnelse(antallOpptjeningsMåneder: String, antallGangerGrunnbeløp: String) =
+    if (erGyldigFangstOgFisk()) {
+        "Inntekt inkludert inntekt fra fangst og fisk siste $antallOpptjeningsMåneder måneder er mindre enn $antallGangerGrunnbeløp ganger grunnbeløp"
+    } else {
+        "Ikke gyldig fangst og fisk. Dette skyldes at regelverket avviklet inntekt fra fangst og fisk 01.01.2022"
+    }
+
+internal val koronaFangstOgFisk = koronaOrdinærSiste36MånederMedFangstOgFiske eller koronaOrdinærSiste12MånederMedFangstOgFiske
+
 internal val koronaOrdinær: Spesifikasjon<Fakta> =
-    (koronaOrdinærSiste12Måneder eller koronaOrdinærSiste36Måneder).eller(koronaOrdinærSiste36MånederMedFangstOgFiske eller koronaOrdinærSiste12MånederMedFangstOgFiske)
+    (koronaOrdinærSiste12Måneder eller koronaOrdinærSiste36Måneder).eller(koronaFangstOgFisk)
         .med(
             identifikator = "Krav til minsteinntekt etter midlertidig korona-endret § 4-4",
             beskrivelse = "Krav til minsteinntekt etter ordinære regler"

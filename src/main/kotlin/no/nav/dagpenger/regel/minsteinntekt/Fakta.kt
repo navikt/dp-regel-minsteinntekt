@@ -17,7 +17,7 @@ data class Fakta(
     val inntekt: Inntekt,
     val bruktInntektsPeriode: InntektsPeriode? = null,
     val verneplikt: Boolean,
-    val fangstOgFisk: Boolean,
+    private val fangstOgFisk: Boolean,
     val beregningsdato: LocalDate,
     val regelverksdato: LocalDate,
     val lærling: Boolean = false,
@@ -26,6 +26,12 @@ data class Fakta(
         else -> getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(beregningsdato).verdi
     }
 ) {
+
+    internal fun erGyldigFangstOgFisk(): Boolean {
+        val fangstOgFiskAvvikletFra = LocalDate.of(2022, 1, 1)
+        return (fangstOgFisk && regelverksdato < fangstOgFiskAvvikletFra)
+    }
+
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 
     val inntektsPerioderUtenBruktInntekt = if (bruktInntektsPeriode == null) inntektsPerioder else inntekt.filterPeriod(
