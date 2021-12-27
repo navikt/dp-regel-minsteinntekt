@@ -42,16 +42,6 @@ val jar by tasks.getting(Jar::class) {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
 
-val kafkaVersion = "2.0.1"
-val kotlinLoggingVersion = "1.4.9"
-val log4j2Version = "2.11.1"
-val jupiterVersion = "5.3.2"
-val confluentVersion = "5.0.2"
-val prometheusVersion = "0.6.0"
-val ktorVersion = "1.2.0"
-val moshiVersion = "1.8.0"
-val ktorMoshiVersion = "1.0.1"
-val orgJsonVersion = "20180813"
 
 dependencies {
     implementation(kotlin("stdlib"))
@@ -124,7 +114,7 @@ tasks.withType<Test> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.0.1"
+    gradleVersion = "7.3.1"
 }
 
 tasks.named("compileKotlin") {
