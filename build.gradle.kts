@@ -42,7 +42,6 @@ val jar by tasks.getting(Jar::class) {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
 
-
 dependencies {
     implementation(kotlin("stdlib"))
 
@@ -119,4 +118,9 @@ tasks.withType<Wrapper> {
 
 tasks.named("compileKotlin") {
     dependsOn("spotlessKotlinCheck")
+}
+
+// https://stackoverflow.com/questions/48033792/log4j2-error-statuslogger-unrecognized-conversion-specifier
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer::class.java)
 }
