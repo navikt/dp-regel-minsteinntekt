@@ -45,8 +45,8 @@ class KoronaLærlingBeregningTest {
         "false, 2021-10-01",
         "false, 2021-12-14",
         "true, 2021-12-15",
-        "true, 2022-02-28",
-        "false, 2022-03-01",
+        "true, 2022-03-31",
+        "false, 2022-04-01",
     )
     fun `Skal evaluere minsteinntekt for lærlingeperiode`(oppfyllerMinstearbeidsinntekt: Boolean, beregningsdato: String) {
         val minsteinntekt = Application(configuration)

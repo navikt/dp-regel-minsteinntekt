@@ -45,8 +45,8 @@ internal class KoronaBeregningTest {
         "2021-10-01, ORDINAER",
         "2021-12-14, ORDINAER",
         "2021-12-15, KORONA",
-        "2022-02-28, KORONA",
-        "2022-03-01, ORDINAER",
+        "2022-03-31, KORONA",
+        "2022-04-01, ORDINAER",
     )
     fun Koronaperiode(beregningsdato: String, regel: String) {
         val minsteinntekt = Application(configuration)
