@@ -55,7 +55,7 @@ data class Fakta(
 }
 
 internal fun isThisGjusteringTest(dato: LocalDate): Boolean {
-    val gVirkning = LocalDate.of(2022, 4, 25)
+    val gVirkning = LocalDate.of(2022, 5, 16)
     val isAfterGjustering = dato.isAfter(gVirkning.minusDays(1))
     return unleash.isEnabled(GJUSTERING_TEST) && isAfterGjustering
 }
