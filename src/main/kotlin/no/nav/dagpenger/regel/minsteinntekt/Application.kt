@@ -1,7 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import io.getunleash.Unleash
 import io.prometheus.client.CollectorRegistry
-import no.finn.unleash.Unleash
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.Problem
@@ -24,7 +24,7 @@ fun main() {
 }
 
 class Application(
-    private val configuration: Configuration
+    private val configuration: Configuration,
 ) : River(configuration.regelTopic) {
     override val SERVICE_APP_ID: String = configuration.application.id
     override val HTTP_PORT: Int = configuration.application.httpPort
@@ -38,7 +38,7 @@ class Application(
         return streamConfigAiven(
             appId = SERVICE_APP_ID,
             bootStapServerUrl = configuration.kafka.aivenBrokers,
-            aivenCredentials = KafkaAivenCredentials()
+            aivenCredentials = KafkaAivenCredentials(),
         )
     }
 
@@ -46,7 +46,7 @@ class Application(
         return listOf(
             Predicate { _, packet -> !packet.hasField(MINSTEINNTEKT_RESULTAT) },
             Predicate { _, packet -> packet.hasField(INNTEKT) },
-            Predicate { _, packet -> packet.hasField(BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE) }
+            Predicate { _, packet -> packet.hasField(BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE) },
         )
     }
 
@@ -69,15 +69,15 @@ class Application(
             ulidGenerator.nextULID(),
             Minsteinntekt.REGELIDENTIFIKATOR,
             evaluering.resultat == Resultat.JA,
-            evaluering.finnRegelBrukt()
+            evaluering.finnRegelBrukt(),
         )
 
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(
             Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
             checkNotNull(
-                Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta))
-            )
+                Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
+            ),
         )
 
         return packet
@@ -88,8 +88,8 @@ class Application(
             Problem(
                 type = URI("urn:dp:error:regel"),
                 title = "Ukjent feil ved bruk av minsteinntektregel",
-                instance = URI("urn:dp:regel:minsteinntekt")
-            )
+                instance = URI("urn:dp:regel:minsteinntekt"),
+            ),
         )
         return packet
     }

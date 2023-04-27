@@ -52,7 +52,6 @@ dependencies {
     implementation(Moshi.moshi)
     implementation(Moshi.moshiAdapters)
     implementation(Moshi.moshiKotlin)
-    implementation(Moshi.moshiKtor)
 
     implementation(Ulid.ulid)
 
@@ -67,15 +66,13 @@ dependencies {
 
     implementation(Nare.nare)
 
-    implementation(Ktor.serverNetty)
-
     implementation(Kafka.clients)
     implementation(Kafka.streams)
 
     implementation(Konfig.konfig)
     implementation(Kotlin.Logging.kotlinLogging)
 
-    implementation("no.finn.unleash:unleash-client-java:3.2.9")
+    implementation("io.getunleash:unleash-client-java:8.0.0")
 
     testImplementation(kotlin("test"))
     testImplementation(Junit5.params)

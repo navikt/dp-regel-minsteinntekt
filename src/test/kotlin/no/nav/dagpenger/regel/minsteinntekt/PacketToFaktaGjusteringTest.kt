@@ -1,6 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import no.finn.unleash.FakeUnleash
+import io.getunleash.FakeUnleash
 import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import org.junit.jupiter.api.Assertions.assertEquals
