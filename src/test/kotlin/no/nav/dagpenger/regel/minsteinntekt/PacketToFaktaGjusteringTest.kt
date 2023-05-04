@@ -44,7 +44,7 @@ class PacketToFaktaGjusteringTest {
             """
         {
             "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2023-04-26"
+            "beregningsDato": "2023-05-15"
         }
             """.trimIndent()
 
@@ -53,7 +53,7 @@ class PacketToFaktaGjusteringTest {
 
         val fakta = packetToFakta(packet)
 
-        assertEquals(115000.toBigDecimal(), fakta.grunnbeløp)
+        assertEquals(117000.toBigDecimal(), fakta.grunnbeløp)
     }
 
     @Test
