@@ -29,9 +29,8 @@ application {
     mainClass.set("no.nav.dagpenger.regel.minsteinntekt.ApplicationKt")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+kotlin {
+    jvmToolchain(17)
 }
 
 val jar by tasks.getting(Jar::class) {
