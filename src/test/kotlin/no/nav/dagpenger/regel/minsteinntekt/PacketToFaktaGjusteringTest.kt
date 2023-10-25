@@ -16,7 +16,7 @@ class PacketToFaktaGjusteringTest {
 
     @Test
     fun ` should have the grunnbeløp without "gjustering" when beregningsdato is before justering date and featureflag is on `() {
-        Application.unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
+        val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
 
         val json =
             """
@@ -29,14 +29,14 @@ class PacketToFaktaGjusteringTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, GrunnbeløpStrategy(unleash))
 
         assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
     }
 
     @Test
     fun ` should have grunnbeløp with "gjustering" when beregningsdato is after justering date and featureflag is on`() {
-        Application.unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
+        val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
 
         val adapter = moshiInstance.adapter(Inntekt::class.java)
 
@@ -51,7 +51,7 @@ class PacketToFaktaGjusteringTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, GrunnbeløpStrategy(unleash))
 
         assertEquals(117000.toBigDecimal(), fakta.grunnbeløp)
     }
@@ -71,7 +71,7 @@ class PacketToFaktaGjusteringTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", adapter.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, GrunnbeløpStrategy(FakeUnleash().apply { this.disableAll() }))
 
         assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
     }

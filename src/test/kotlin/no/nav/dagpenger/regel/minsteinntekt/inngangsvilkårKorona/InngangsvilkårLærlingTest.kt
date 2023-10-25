@@ -5,6 +5,7 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
 import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
+import no.nav.dagpenger.regel.minsteinntekt.grunnbeløpStrategy
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.dagpenger.regel.minsteinntekt.lærling
 import no.nav.nare.core.evaluations.Resultat
@@ -16,14 +17,16 @@ import kotlin.test.assertEquals
 internal class InngangsvilkårLærlingTest {
     private val inntekt = emptyList<KlassifisertInntektMåned>()
 
+    val beregningsdato = LocalDate.of(2020, 2, 10)
     private val fakta = Fakta(
         inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
         bruktInntektsPeriode = null,
         verneplikt = false,
         fangstOgFisk = false,
         lærling = true,
-        beregningsdato = LocalDate.of(2020, 2, 10),
-        regelverksdato = LocalDate.of(2020, 2, 10)
+        beregningsdato = beregningsdato,
+        regelverksdato = LocalDate.of(2020, 2, 10),
+        grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
     )
 
     @Test

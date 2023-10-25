@@ -10,6 +10,7 @@ import no.nav.dagpenger.regel.minsteinntekt.generate12MånederFangstOgFiskInntek
 import no.nav.dagpenger.regel.minsteinntekt.generateArbeidsOgFangstOgFiskInntekt
 import no.nav.dagpenger.regel.minsteinntekt.generateArbeidsinntekt
 import no.nav.dagpenger.regel.minsteinntekt.generateFangstOgFiskInntekt
+import no.nav.dagpenger.regel.minsteinntekt.grunnbeløpStrategy
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12Måneder
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste12MånederMedFangstOgFiske
 import no.nav.dagpenger.regel.minsteinntekt.ordinærSiste36MånederMedFangstOgFiske
@@ -28,17 +29,18 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 12 mnd`() {
 
+        val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2019, 5, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
-
         assertEquals(Resultat.NEI, evaluering.resultat)
     }
 
@@ -81,13 +83,15 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             )
         )
 
+        val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2019, 5, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         assertEquals(50000.toBigDecimal(), fakta.inntektSiste12inkludertFangstOgFiske)
@@ -116,13 +120,15 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             )
         )
 
+        val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2019, 5, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         assertEquals((-950000).toBigDecimal(), fakta.inntektSiste12inkludertFangstOgFiske)
@@ -136,13 +142,15 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har hatt nok inntekt siste 12 mnd`() {
         val inntekt = generate12MånederFangstOgFiskInntekt()
 
+        val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2019, 5, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -153,13 +161,15 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 36 mnd`() {
 
+        val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2019, 5, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)
@@ -203,13 +213,15 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             senesteMåned = sisteAvsluttendeKalenderMåned
         )
 
+        val beregningsdato = LocalDate.parse(regelverksdato)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.parse(regelverksdato),
-            regelverksdato = LocalDate.parse(regelverksdato)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.parse(regelverksdato),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = fangstOgFisk.evaluer(fakta)
@@ -222,13 +234,15 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val inntekt = generateArbeidsinntekt(36, BigDecimal(50000))
 
+        val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2019, 5, 10),
-            regelverksdato = LocalDate.of(2019, 5, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2019, 5, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)

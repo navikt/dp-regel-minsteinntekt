@@ -1,10 +1,13 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import io.getunleash.FakeUnleash
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntekt
 import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import java.math.BigDecimal
 import java.time.YearMonth
+
+internal val grunnbeløpStrategy = GrunnbeløpStrategy(FakeUnleash().apply { this.disableAll() })
 
 fun generateArbeidsinntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, senesteMåned: YearMonth = YearMonth.of(2019, 1)): List<KlassifisertInntektMåned> {
     return (0 until numberOfMonths).toList().map {

@@ -29,7 +29,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertTrue(fakta.erGyldigFangstOgFisk())
     }
@@ -47,7 +47,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertEquals(LocalDate.of(2019, 4, 10), fakta.beregningsdato)
     }
@@ -65,7 +65,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertEquals(99858.toBigDecimal(), fakta.grunnbeløp)
     }
@@ -83,7 +83,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertTrue(fakta.verneplikt)
     }
@@ -101,7 +101,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertEquals(YearMonth.of(2019, 2), fakta.bruktInntektsPeriode!!.førsteMåned)
         assertEquals(YearMonth.of(2019, 3), fakta.bruktInntektsPeriode!!.sisteMåned)
@@ -119,7 +119,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertEquals("12345", fakta.inntekt.inntektsId)
     }
@@ -137,7 +137,7 @@ class PacketToFaktaTest {
         val packet = Packet(json)
         packet.putValue("inntektV1", ApplicationTopologyTest.jsonAdapterInntekt.toJsonValue(emptyInntekt)!!)
 
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         assertTrue(fakta.lærling)
     }

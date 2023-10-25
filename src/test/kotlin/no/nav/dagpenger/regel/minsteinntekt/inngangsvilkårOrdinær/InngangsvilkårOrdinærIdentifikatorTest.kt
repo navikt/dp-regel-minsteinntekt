@@ -2,6 +2,7 @@ package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårOrdinær
 
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
+import no.nav.dagpenger.regel.minsteinntekt.grunnbeløpStrategy
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntekt
 import no.nav.dagpenger.regel.minsteinntekt.ordinær
 import no.nav.nare.core.evaluations.Resultat
@@ -23,6 +24,7 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
 
     @Test
     fun `Minsteinntekt gir JA til verneplikt`() {
+        val beregningsdato = LocalDate.now()
         var evaluering = kravTilMinsteinntekt.evaluer(
             Fakta(
                 inntekt = Inntekt(
@@ -33,8 +35,9 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
                 ),
                 verneplikt = true,
                 fangstOgFisk = false,
-                beregningsdato = LocalDate.now(),
-                regelverksdato = LocalDate.now()
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.now(),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
             )
         )
 

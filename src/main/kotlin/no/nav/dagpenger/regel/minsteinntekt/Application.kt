@@ -1,6 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import io.getunleash.Unleash
 import io.prometheus.client.CollectorRegistry
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
@@ -28,10 +27,10 @@ class Application(
 ) : River(configuration.regelTopic) {
     override val SERVICE_APP_ID: String = configuration.application.id
     override val HTTP_PORT: Int = configuration.application.httpPort
+    private val grunnbeløpStrategy = GrunnbeløpStrategy(configuration.unleash)
 
     companion object {
         const val BEREGNINGSDATO_GAMMEL_SKRIVEMÅTE = "beregningsDato"
-        var unleash: Unleash = setupUnleash(config.application.unleashUrl)
     }
 
     override fun getConfig(): Properties {
@@ -53,15 +52,19 @@ class Application(
     override fun onPacket(packet: Packet) = løsFor(packet)
 
     private fun løsFor(packet: Packet): Packet {
-        val fakta = packetToFakta(packet)
+        val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
         val evaluering: Evaluering =
-            if (fakta.regelverksdato.erKoronaPeriode()) {
-                narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-            } else if (fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling) {
-                narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-            } else {
-                narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+            when {
+                fakta.regelverksdato.erKoronaPeriode() -> {
+                    narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+                }
+                fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling -> {
+                    narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+                }
+                else -> {
+                    narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+                }
             }
 
         val resultat = MinsteinntektSubsumsjon(

@@ -4,11 +4,6 @@ import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
 import no.nav.dagpenger.events.inntekt.v1.all
 import no.nav.dagpenger.events.inntekt.v1.sumInntekt
-import no.nav.dagpenger.grunnbelop.Grunnbeløp
-import no.nav.dagpenger.grunnbelop.Regel
-import no.nav.dagpenger.grunnbelop.forDato
-import no.nav.dagpenger.grunnbelop.getGrunnbeløpForRegel
-import no.nav.dagpenger.regel.minsteinntekt.Application.Companion.unleash
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
@@ -21,10 +16,7 @@ data class Fakta(
     val beregningsdato: LocalDate,
     val regelverksdato: LocalDate,
     val lærling: Boolean = false,
-    val grunnbeløp: BigDecimal = when {
-        isThisGjusteringTest(beregningsdato) -> Grunnbeløp.GjusteringsTest.verdi
-        else -> getGrunnbeløpForRegel(Regel.Minsteinntekt).forDato(beregningsdato).verdi
-    }
+    val grunnbeløp: BigDecimal,
 ) {
 
     internal fun erGyldigFangstOgFisk(): Boolean {
@@ -34,10 +26,14 @@ data class Fakta(
 
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 
-    val inntektsPerioderUtenBruktInntekt = if (bruktInntektsPeriode == null) inntektsPerioder else inntekt.filterPeriod(
-        bruktInntektsPeriode.førsteMåned,
-        bruktInntektsPeriode.sisteMåned
-    ).splitIntoInntektsPerioder()
+    val inntektsPerioderUtenBruktInntekt = if (bruktInntektsPeriode == null) {
+        inntektsPerioder
+    } else {
+        inntekt.filterPeriod(
+            bruktInntektsPeriode.førsteMåned,
+            bruktInntektsPeriode.sisteMåned,
+        ).splitIntoInntektsPerioder()
+    }
 
     val arbeidsinntektSiste12: BigDecimal =
         inntektsPerioderUtenBruktInntekt.first.sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT))
@@ -47,18 +43,13 @@ data class Fakta(
     val inntektSiste12inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.first.sumInntekt(
         listOf(
             InntektKlasse.ARBEIDSINNTEKT,
-            InntektKlasse.FANGST_FISKE
-        )
+            InntektKlasse.FANGST_FISKE,
+        ),
     )
     val inntektSiste36inkludertFangstOgFiske: BigDecimal = inntektsPerioderUtenBruktInntekt.all()
         .sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
 }
 
-internal fun isThisGjusteringTest(dato: LocalDate): Boolean {
-    val gVirkning = LocalDate.of(2023, 5, 15)
-    val isAfterGjustering = dato.isAfter(gVirkning.minusDays(1))
-    return unleash.isEnabled(GJUSTERING_TEST) && isAfterGjustering
-}
 fun LocalDate.erKoronaPeriode() = førsteKoronaperiode() || andreKoronaperiode() || tredjeKoronaperiode()
 
 private fun LocalDate.førsteKoronaperiode() =

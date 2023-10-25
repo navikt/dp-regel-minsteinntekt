@@ -7,6 +7,7 @@ import no.nav.dagpenger.events.inntekt.v1.KlassifisertInntektMåned
 import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
 import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
+import no.nav.dagpenger.regel.minsteinntekt.grunnbeløpStrategy
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.nare.core.evaluations.Resultat
 import org.junit.jupiter.api.Test
@@ -36,13 +37,15 @@ class InngangsvilkårKoronaTest {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -63,13 +66,15 @@ class InngangsvilkårKoronaTest {
 
         val inntekt = generateArbeidsInntekt(1..1, G2019)
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -101,13 +106,15 @@ class InngangsvilkårKoronaTest {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -133,13 +140,15 @@ class InngangsvilkårKoronaTest {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = false,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)

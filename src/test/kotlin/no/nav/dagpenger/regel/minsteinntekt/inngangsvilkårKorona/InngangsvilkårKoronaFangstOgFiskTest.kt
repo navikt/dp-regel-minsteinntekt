@@ -8,6 +8,7 @@ import no.nav.dagpenger.regel.minsteinntekt.Beregningsregel
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
 import no.nav.dagpenger.regel.minsteinntekt.finnRegelBrukt
 import no.nav.dagpenger.regel.minsteinntekt.generateArbeidsOgFangstOgFiskInntekt
+import no.nav.dagpenger.regel.minsteinntekt.grunnbeløpStrategy
 import no.nav.dagpenger.regel.minsteinntekt.koronaFangstOgFisk
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntektKorona
 import no.nav.nare.core.evaluations.Resultat
@@ -43,13 +44,15 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             senesteMåned = sisteAvsluttendeKalenderMåned
         )
 
+        val beregningsdato = LocalDate.parse(regelverksdato)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
             bruktInntektsPeriode = null,
             verneplikt = true,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.parse(regelverksdato),
-            regelverksdato = LocalDate.parse(regelverksdato)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.parse(regelverksdato),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = koronaFangstOgFisk.evaluer(fakta)
@@ -67,13 +70,15 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -100,13 +105,15 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -132,13 +139,15 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -164,13 +173,15 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             )
         )
 
+        val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
             bruktInntektsPeriode = null,
             verneplikt = false,
             fangstOgFisk = true,
-            beregningsdato = LocalDate.of(2020, 2, 10),
-            regelverksdato = LocalDate.of(2020, 2, 10)
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 2, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
