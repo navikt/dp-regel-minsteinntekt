@@ -11,7 +11,6 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
 
     @Test
     fun ` § 4-19 - Dagpenger etter avtjent verneplikt skal gi rett til Dagpenger  `() {
-
         // gitt fakta
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
@@ -21,7 +20,7 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         // når
@@ -33,7 +32,6 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
 
     @Test
     fun ` § 4-19 - Dagpenger etter ikke å ha avtjent verneplikt skal gi ikke rett til Dagpenger  `() {
-
         // gitt fakta
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
@@ -43,7 +41,7 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         // når

@@ -28,12 +28,12 @@ class KoronaLærlingBeregningTest {
                 klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(98866),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-            )
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
+            ),
         ),
-        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
+        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
     )
 
     @ParameterizedTest

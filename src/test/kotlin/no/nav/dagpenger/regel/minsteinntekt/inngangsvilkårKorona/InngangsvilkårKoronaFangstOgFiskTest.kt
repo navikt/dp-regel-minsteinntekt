@@ -23,6 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class InngangsvilkårKoronaFangstOgFiskTest() {
+    @Suppress("ktlint:standard:property-naming")
     val G2019 = BigDecimal(99858)
 
     @ParameterizedTest
@@ -32,16 +33,15 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
     )
     fun `Koronaregelverk for fangst og fisk er avviklet fra 01-01-2022`(
         regelverksdato: String,
-        forventetUtfall: String
+        forventetUtfall: String,
     ) {
-
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2021, 11)
 
         val inntekt = generateArbeidsOgFangstOgFiskInntekt(
             numberOfMonths = 36,
             arbeidsInntektBeløpPerMnd = BigDecimal(1000),
             fangstOgFiskeBeløpPerMnd = BigDecimal(50000),
-            senesteMåned = sisteAvsluttendeKalenderMåned
+            senesteMåned = sisteAvsluttendeKalenderMåned,
         )
 
         val beregningsdato = LocalDate.parse(regelverksdato)
@@ -52,7 +52,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.parse(regelverksdato),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = koronaFangstOgFisk.evaluer(fakta)
@@ -62,12 +62,11 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
     @Test
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har mer enn 2,25G fangst og fiske-inntekt siste 36 mnd, og fangstOgFisk er satt`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2018, 1),
-                listOf(KlassifisertInntekt(G2019 * BigDecimal(2.5), InntektKlasse.FANGST_FISKE))
-            )
+                listOf(KlassifisertInntekt(G2019 * BigDecimal(2.5), InntektKlasse.FANGST_FISKE)),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -78,7 +77,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -86,7 +85,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b"
+            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -97,12 +96,11 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
     @Test
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har mer enn 0,75G fangst og fiske-inntekt siste 12 mnd, og fangstOgFisk er satt`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2020, 1),
-                listOf(KlassifisertInntekt(G2019, InntektKlasse.FANGST_FISKE))
-            )
+                listOf(KlassifisertInntekt(G2019, InntektKlasse.FANGST_FISKE)),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -113,7 +111,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -121,7 +119,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b"
+            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -131,12 +129,11 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har mindre enn 2,25G fangst og fiske-inntekt siste 36 mnd, og fangstOgFisk er satt`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2018, 1),
-                listOf(KlassifisertInntekt(G2019 * BigDecimal(2), InntektKlasse.FANGST_FISKE))
-            )
+                listOf(KlassifisertInntekt(G2019 * BigDecimal(2), InntektKlasse.FANGST_FISKE)),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -147,7 +144,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -155,7 +152,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b"
+            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -165,12 +162,11 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har mindre enn 0,75G fangst og fiske-inntekt siste 12 mnd, og fangstOgFisk er satt`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2020, 1),
-                listOf(KlassifisertInntekt(G2019 * BigDecimal(0.5), InntektKlasse.FANGST_FISKE))
-            )
+                listOf(KlassifisertInntekt(G2019 * BigDecimal(0.5), InntektKlasse.FANGST_FISKE)),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -181,7 +177,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -189,7 +185,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b"
+            "Krav til minsteinntekt etter § 4-18 + midlertidig korona-endret § 4-4 første ledd bokstav b",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")

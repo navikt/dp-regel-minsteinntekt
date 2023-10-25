@@ -26,7 +26,7 @@ internal class InngangsvilkårLærlingTest {
         lærling = true,
         beregningsdato = beregningsdato,
         regelverksdato = LocalDate.of(2020, 2, 10),
-        grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+        grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
     )
 
     @Test

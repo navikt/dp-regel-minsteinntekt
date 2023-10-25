@@ -7,7 +7,7 @@ data class MinsteinntektSubsumsjon(
     val subsumsjonsId: String,
     val regelidentifikator: String,
     val oppfyllerMinsteinntekt: Boolean,
-    val beregningsregel: Beregningsregel
+    val beregningsregel: Beregningsregel,
 ) {
 
     companion object {
@@ -24,17 +24,17 @@ data class MinsteinntektSubsumsjon(
             SUBSUMSJONSID to subsumsjonsId,
             REGELIDENTIFIKATOR to regelidentifikator,
             OPPFYLLER_MINSTEINNTEKT to oppfyllerMinsteinntekt,
-            BEREGNINGSREGEL to beregningsregel
+            BEREGNINGSREGEL to beregningsregel,
         )
     }
 }
 
 data class InntektsPeriode(
     val førsteMåned: YearMonth,
-    val sisteMåned: YearMonth
+    val sisteMåned: YearMonth,
 )
 
 enum class Beregningsregel {
     ORDINAER,
-    KORONA
+    KORONA,
 }

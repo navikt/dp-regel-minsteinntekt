@@ -22,10 +22,13 @@ fun main() {
     Application(config).start()
 }
 
+@Suppress("ktlint:standard:property-naming")
 class Application(
     private val configuration: Configuration,
 ) : River(configuration.regelTopic) {
+
     override val SERVICE_APP_ID: String = configuration.application.id
+
     override val HTTP_PORT: Int = configuration.application.httpPort
     private val grunnbeløpStrategy = GrunnbeløpStrategy(configuration.unleash)
 

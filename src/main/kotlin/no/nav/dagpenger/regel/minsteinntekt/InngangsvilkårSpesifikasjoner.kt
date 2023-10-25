@@ -16,22 +16,24 @@ internal val verneplikt = Spesifikasjon<Fakta>(
             verneplikt -> Evaluering.ja("Verneplikt er avtjent i henhold til kravet")
             else -> Evaluering.nei("Verneplikt er ikke avtjent i henhold til kravet")
         }
-    }
+    },
 )
 
 internal val kravTilMinsteinntekt: Spesifikasjon<Fakta> = (ordinær eller verneplikt)
     .med(
         identifikator = "Krav til minsteinntekt",
-        beskrivelse = "Krav til minsteinntekt"
+        beskrivelse = "Krav til minsteinntekt",
     )
 
 internal val kravTilMinsteinntektKorona: Spesifikasjon<Fakta> = (koronaOrdinær eller verneplikt eller lærling)
     .med(
         identifikator = "Krav til minsteinntekt",
-        beskrivelse = "Krav til minsteinntekt"
+        beskrivelse = "Krav til minsteinntekt",
     )
 
 fun Evaluering.finnRegelBrukt() =
-    if (this.children.any { it.identifikator == koronaOrdinær.identifikator || it.identifikator == lærling.identifikator })
+    if (this.children.any { it.identifikator == koronaOrdinær.identifikator || it.identifikator == lærling.identifikator }) {
         Beregningsregel.KORONA
-    else Beregningsregel.ORDINAER
+    } else {
+        Beregningsregel.ORDINAER
+    }

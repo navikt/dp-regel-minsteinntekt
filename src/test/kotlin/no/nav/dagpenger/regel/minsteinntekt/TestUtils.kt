@@ -14,8 +14,8 @@ fun generateArbeidsinntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, senest
         KlassifisertInntektMåned(
             årMåned = senesteMåned.minusMonths(it.toLong()),
             klassifiserteInntekter = listOf(
-                KlassifisertInntekt(beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT)
-            )
+                KlassifisertInntekt(beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT),
+            ),
         )
     }
 }
@@ -27,9 +27,9 @@ fun generateFangstOgFiskInntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, s
             listOf(
                 KlassifisertInntekt(
                     beløpPerMnd,
-                    InntektKlasse.FANGST_FISKE
-                )
-            )
+                    InntektKlasse.FANGST_FISKE,
+                ),
+            ),
         )
     }
 }
@@ -40,8 +40,8 @@ fun generateArbeidsOgFangstOgFiskInntekt(numberOfMonths: Int, arbeidsInntektBel�
             senesteMåned.minusMonths(it.toLong()),
             listOf(
                 KlassifisertInntekt(arbeidsInntektBeløpPerMnd, InntektKlasse.ARBEIDSINNTEKT),
-                KlassifisertInntekt(fangstOgFiskeBeløpPerMnd, InntektKlasse.FANGST_FISKE)
-            )
+                KlassifisertInntekt(fangstOgFiskeBeløpPerMnd, InntektKlasse.FANGST_FISKE),
+            ),
         )
     }
 }

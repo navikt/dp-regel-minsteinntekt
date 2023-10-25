@@ -28,7 +28,6 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 12 mnd`() {
-
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
@@ -37,7 +36,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -46,7 +45,6 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent litt for lite siste 12 mnd`() {
-
         val inntekt = generateFangstOgFiskInntekt(3, BigDecimal(1))
 
         val fakta = Fakta(
@@ -56,7 +54,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = LocalDate.of(2019, 5, 10),
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = BigDecimal(4)
+            grunnbeløp = BigDecimal(4),
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -66,21 +64,20 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke hatt nok inntekt siste 12 mnd, på grunn av minus-inntekt`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2019, 3),
                 klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(1000000),
-                        inntektKlasse = InntektKlasse.FANGST_FISKE
+                        inntektKlasse = InntektKlasse.FANGST_FISKE,
                     ),
                     KlassifisertInntekt(
                         beløp = BigDecimal(-950000),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-            )
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2019, 5, 10)
@@ -91,7 +88,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         assertEquals(50000.toBigDecimal(), fakta.inntektSiste12inkludertFangstOgFiske)
@@ -103,21 +100,20 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom summen av inntekt blir negativ`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2019, 3),
                 klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(1000000),
-                        inntektKlasse = InntektKlasse.FANGST_FISKE
+                        inntektKlasse = InntektKlasse.FANGST_FISKE,
                     ),
                     KlassifisertInntekt(
                         beløp = BigDecimal(-1950000),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-            )
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2019, 5, 10)
@@ -128,7 +124,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         assertEquals((-950000).toBigDecimal(), fakta.inntektSiste12inkludertFangstOgFiske)
@@ -150,7 +146,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = ordinærSiste12MånederMedFangstOgFiske.evaluer(fakta)
@@ -160,7 +156,6 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du ikke har inntekt siste 36 mnd`() {
-
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
@@ -169,7 +164,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)
@@ -179,7 +174,6 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent litt for lite siste 36 mnd`() {
-
         val inntekt = generateFangstOgFiskInntekt(24, BigDecimal(1))
 
         val fakta = Fakta(
@@ -189,7 +183,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = LocalDate.of(2019, 5, 10),
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = BigDecimal(23)
+            grunnbeløp = BigDecimal(23),
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)
@@ -203,14 +197,13 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         "2022-01-01, NEI",
     )
     fun `Regelverk for fangst og fisk er avviklet fra 01-01-2022`(regelverksdato: String, forventetUtfall: String) {
-
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2021, 11)
 
         val inntekt = generateArbeidsOgFangstOgFiskInntekt(
             numberOfMonths = 36,
             arbeidsInntektBeløpPerMnd = BigDecimal(1000),
             fangstOgFiskeBeløpPerMnd = BigDecimal(50000),
-            senesteMåned = sisteAvsluttendeKalenderMåned
+            senesteMåned = sisteAvsluttendeKalenderMåned,
         )
 
         val beregningsdato = LocalDate.parse(regelverksdato)
@@ -221,7 +214,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.parse(regelverksdato),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = fangstOgFisk.evaluer(fakta)
@@ -230,8 +223,8 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
     }
 
     @Test
+    @Suppress("ktlint:standard:max-line-length")
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom man har næringsinntekt siste 36 mnd, men er fangst og fisk er ikke oppfylt `() {
-
         val inntekt = generateArbeidsinntekt(36, BigDecimal(50000))
 
         val beregningsdato = LocalDate.of(2019, 5, 10)
@@ -242,7 +235,7 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = ordinærSiste36MånederMedFangstOgFiske.evaluer(fakta)

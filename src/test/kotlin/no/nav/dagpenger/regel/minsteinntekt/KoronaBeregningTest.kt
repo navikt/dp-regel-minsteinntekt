@@ -25,12 +25,12 @@ internal class KoronaBeregningTest {
                 klassifiserteInntekter = listOf(
                     KlassifisertInntekt(
                         beløp = BigDecimal(98866),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-            )
+                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
+            ),
         ),
-        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2)
+        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
     )
 
     @ParameterizedTest
@@ -48,7 +48,7 @@ internal class KoronaBeregningTest {
         "2022-03-31, KORONA",
         "2022-04-01, ORDINAER",
     )
-    fun Koronaperiode(beregningsdato: String, regel: String) {
+    fun koronaperiode(beregningsdato: String, regel: String) {
         val minsteinntekt = Application(configuration)
         val json =
             """
@@ -63,7 +63,7 @@ internal class KoronaBeregningTest {
         val outPacket = minsteinntekt.onPacket(packet)
         assertEquals(
             Beregningsregel.valueOf(regel),
-            outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL]
+            outPacket.getMapValue(MINSTEINNTEKT_RESULTAT)[MinsteinntektSubsumsjon.BEREGNINGSREGEL],
         )
     }
 }

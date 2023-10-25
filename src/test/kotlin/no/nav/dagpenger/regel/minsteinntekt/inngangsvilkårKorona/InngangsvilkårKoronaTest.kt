@@ -19,11 +19,11 @@ import kotlin.test.assertNotNull
 
 class InngangsvilkårKoronaTest {
 
+    @Suppress("ktlint:standard:property-naming")
     val G2019 = BigDecimal(99858)
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent under 0,75G arbeidsinntekt siste 12 mnd`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2019, 4),
@@ -31,10 +31,10 @@ class InngangsvilkårKoronaTest {
                     KlassifisertInntekt(G2019 * BigDecimal(1), InntektKlasse.FANGST_FISKE),
                     KlassifisertInntekt(
                         BigDecimal(20),
-                        InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-            )
+                        InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -45,7 +45,7 @@ class InngangsvilkårKoronaTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -53,7 +53,7 @@ class InngangsvilkårKoronaTest {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav a"
+            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav a",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -63,7 +63,6 @@ class InngangsvilkårKoronaTest {
 
     @Test
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har hatt over 0,75G siste 12 mnd`() {
-
         val inntekt = generateArbeidsInntekt(1..1, G2019)
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -74,7 +73,7 @@ class InngangsvilkårKoronaTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -82,7 +81,7 @@ class InngangsvilkårKoronaTest {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav a"
+            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav a",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -92,7 +91,6 @@ class InngangsvilkårKoronaTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent under 2,25G arbeidsinntekt siste 36 mnd`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2018, 4),
@@ -100,10 +98,10 @@ class InngangsvilkårKoronaTest {
                     KlassifisertInntekt(G2019 * BigDecimal(2), InntektKlasse.FANGST_FISKE),
                     KlassifisertInntekt(
                         G2019 * BigDecimal(2),
-                        InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
-            )
+                        InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -114,7 +112,7 @@ class InngangsvilkårKoronaTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -122,7 +120,7 @@ class InngangsvilkårKoronaTest {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav b"
+            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav b",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -132,12 +130,11 @@ class InngangsvilkårKoronaTest {
 
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har tjent over 2,25G siste 36 mnd`() {
-
         val inntekt = listOf(
             KlassifisertInntektMåned(
                 YearMonth.of(2018, 1),
-                listOf(KlassifisertInntekt(G2019 * BigDecimal(2.5), InntektKlasse.ARBEIDSINNTEKT))
-            )
+                listOf(KlassifisertInntekt(G2019 * BigDecimal(2.5), InntektKlasse.ARBEIDSINNTEKT)),
+            ),
         )
 
         val beregningsdato = LocalDate.of(2020, 2, 10)
@@ -148,7 +145,7 @@ class InngangsvilkårKoronaTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val evaluering = kravTilMinsteinntektKorona.evaluer(fakta)
@@ -156,7 +153,7 @@ class InngangsvilkårKoronaTest {
 
         val riktigRegel = finnEvaluering(
             evaluering,
-            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav b"
+            "Krav til minsteinntekt etter midlertidig korona-endret § 4-4 første ledd bokstav b",
         )
 
         assertNotNull(riktigRegel, "Brukte ikke riktig regel")
@@ -171,9 +168,9 @@ class InngangsvilkårKoronaTest {
                 listOf(
                     KlassifisertInntekt(
                         beløpPerMnd,
-                        InntektKlasse.ARBEIDSINNTEKT
-                    )
-                )
+                        InntektKlasse.ARBEIDSINNTEKT,
+                    ),
+                ),
             )
         }
     }

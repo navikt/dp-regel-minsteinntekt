@@ -15,10 +15,11 @@ import kotlin.test.assertSame
 internal class InngangsvilkårOrdinærIdentifikatorTest {
 
     @Test
+    @Suppress("ktlint:standard:max-line-length")
     fun `Minsteinntekt inneholder alle krav etter § 4-4`() {
         assertEquals(
             "Krav til minsteinntekt etter § 4-4 første ledd bokstav a, Krav til minsteinntekt etter § 4-4 første ledd bokstav b, Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav a, Krav til minsteinntekt etter § 4-18 + § 4-4 første ledd bokstav b",
-            ordinær.children.joinToString { it.identifikator }
+            ordinær.children.joinToString { it.identifikator },
         )
     }
 
@@ -31,20 +32,20 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
                     inntektsId = "test-inntekt",
                     inntektsListe = listOf(),
                     manueltRedigert = false,
-                    sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11)
+                    sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11),
                 ),
                 verneplikt = true,
                 fangstOgFisk = false,
                 beregningsdato = beregningsdato,
                 regelverksdato = LocalDate.now(),
-                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
-            )
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            ),
         )
 
         assertSame(Resultat.JA, evaluering.resultat)
         assertEquals(
             "Krav til minsteinntekt etter § 4-4, Krav til minsteinntekt etter § 4-19",
-            evaluering.children.joinToString { it.identifikator }
+            evaluering.children.joinToString { it.identifikator },
         )
     }
 }

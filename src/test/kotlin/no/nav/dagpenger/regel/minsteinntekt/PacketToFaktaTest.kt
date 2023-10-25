@@ -13,7 +13,7 @@ class PacketToFaktaTest {
     val emptyInntekt: Inntekt = Inntekt(
         inntektsId = "12345",
         inntektsListe = emptyList(),
-        sisteAvsluttendeKalenderMåned = YearMonth.now()
+        sisteAvsluttendeKalenderMåned = YearMonth.now(),
     )
 
     @Test

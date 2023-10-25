@@ -21,7 +21,7 @@ class CreateInntektPerioderTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 4, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -41,14 +41,14 @@ class CreateInntektPerioderTest {
             Inntekt(
                 "id",
                 inntektsListe,
-                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
+                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
             ),
             null,
             false,
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -66,21 +66,21 @@ class CreateInntektPerioderTest {
             36,
             BigDecimal(2000),
             BigDecimal(2000),
-            sisteAvsluttendeKalenderMåned
+            sisteAvsluttendeKalenderMåned,
         )
         val beregningsdato = LocalDate.of(2019, 2, 10)
         val fakta = Fakta(
             Inntekt(
                 "id",
                 inntektsListe,
-                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
+                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
             ),
             null,
             false,
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -101,14 +101,14 @@ class CreateInntektPerioderTest {
             Inntekt(
                 "id",
                 inntektsListe,
-                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned
+                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
             ),
             null,
             false,
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -131,7 +131,7 @@ class CreateInntektPerioderTest {
             fangstOgFisk = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
@@ -155,7 +155,7 @@ class CreateInntektPerioderTest {
             fangstOgFisk = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 4, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato)
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
         )
 
         val inntektsPerioder = createInntektPerioder(fakta)
