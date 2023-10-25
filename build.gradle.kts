@@ -57,18 +57,15 @@ dependencies {
     // Miljøkonfigurasjon
     implementation(libs.konfig)
 
+    // unleash
     implementation("io.getunleash:unleash-client-java:8.4.0")
 
     testImplementation(kotlin("test"))
-    testImplementation(Junit5.params)
-
-    testImplementation(KoTest.runner)
-    testImplementation(KoTest.assertions)
-    testImplementation(KoTest.property)
-
-    testImplementation(Kafka.streamTestUtils)
-
+    testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.mockk)
+    testImplementation("org.junit.jupiter:junit-jupiter-params:${libs.versions.junit.get()}")
+
+    testImplementation("org.apache.kafka:kafka-streams-test-utils:3.3.1")
 }
 
 // https://stackoverflow.com/questions/48033792/log4j2-error-statuslogger-unrecognized-conversion-specifier
