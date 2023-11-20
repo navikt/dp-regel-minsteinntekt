@@ -23,7 +23,7 @@ val jar by tasks.getting(Jar::class) {
 }
 
 val moshiVersion = "1.15.0"
-val log4j2Versjon = "2.21.1"
+val log4j2Versjon = "2.22.0"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
