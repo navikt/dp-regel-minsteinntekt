@@ -20,6 +20,7 @@ val config = Configuration()
 
 fun main() {
     Application(config).start()
+    // ApplicationBuilder(Config.config).start()
 }
 
 @Suppress("ktlint:standard:property-naming")

@@ -27,6 +27,8 @@ val log4j2Versjon = "2.21.1"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
+    implementation(libs.rapids.and.rivers)
+
     implementation("com.github.navikt:dagpenger-events:20230831.d11fdb")
     implementation("com.github.navikt:dagpenger-streams:20230831.f3d785")
     implementation("com.github.navikt:dp-grunnbelop:2023.05.24-15.26.f42064d9fdc8")
