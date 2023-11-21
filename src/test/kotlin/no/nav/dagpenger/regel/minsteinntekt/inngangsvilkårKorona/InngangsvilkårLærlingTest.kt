@@ -20,9 +20,9 @@ internal class InngangsvilkårLærlingTest {
     val beregningsdato = LocalDate.of(2020, 2, 10)
     private val fakta = Fakta(
         inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
-        bruktInntektsPeriode = null,
+        bruktInntektsperiode = null,
         verneplikt = false,
-        fangstOgFisk = false,
+        fangstOgFiske = false,
         lærling = true,
         beregningsdato = beregningsdato,
         regelverksdato = LocalDate.of(2020, 2, 10),

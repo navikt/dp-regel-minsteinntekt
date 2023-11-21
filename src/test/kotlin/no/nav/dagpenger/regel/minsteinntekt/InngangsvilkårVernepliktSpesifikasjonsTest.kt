@@ -15,9 +15,9 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = false,
+            fangstOgFiske = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -36,9 +36,9 @@ internal class InngangsvilkårVernepliktSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = false,
+            fangstOgFiske = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),

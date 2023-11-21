@@ -31,9 +31,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -49,9 +49,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = LocalDate.of(2019, 5, 10),
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = BigDecimal(4),
@@ -83,9 +83,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -119,9 +119,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -141,9 +141,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -159,9 +159,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", emptyList(), sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -178,9 +178,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
 
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = LocalDate.of(2019, 5, 10),
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = BigDecimal(23),
@@ -209,9 +209,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.parse(regelverksdato)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.parse(regelverksdato),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -230,9 +230,9 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
         val beregningsdato = LocalDate.of(2019, 5, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 4)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = false,
+            fangstOgFiske = false,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2019, 5, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),

@@ -9,18 +9,32 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
 
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
+        const val INNTEKT = "inntektV1"
+        const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
+        const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
+        const val FANGST_OG_FISKE = "oppfyllerKravTilFangstOgFisk"
+        const val LÆRLING: String = "lærling"
+        const val BEREGNINGSDATO = "beregningsDato"
+        const val REGELVERKSDATO = "regelverksdato"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
         const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
-        const val INNTEKT = "inntektV1"
-        const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
-        const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
-        const val FANGST_OG_FISK = "oppfyllerKravTilFangstOgFisk"
-        const val LÆRLING: String = "lærling"
-        const val REGELVERKSDATO = "regelverksdato"
 
         internal val rapidFilter: River.() -> Unit = {
-            validate { it.requireKey() }
-            validate { it.interestedIn() }
+            validate {
+                it.requireKey(
+                    INNTEKT,
+                    BEREGNINGSDATO,
+                )
+            }
+            validate {
+                it.interestedIn(
+                    AVTJENT_VERNEPLIKT,
+                    FANGST_OG_FISKE,
+                    LÆRLING,
+                    REGELVERKSDATO,
+                    BRUKT_INNTEKTSPERIODE,
+                )
+            }
             validate { it.rejectKey(MINSTEINNTEKT_RESULTAT) }
         }
     }

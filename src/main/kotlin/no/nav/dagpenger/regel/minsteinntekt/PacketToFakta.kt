@@ -34,9 +34,9 @@ internal fun packetToFakta(packet: Packet, grunnbeløpStrategy: GrunnbeløpStrat
 
     return Fakta(
         inntekt = inntekt,
-        bruktInntektsPeriode = bruktInntektsPeriode,
+        bruktInntektsperiode = bruktInntektsPeriode,
         verneplikt = avtjentVernePlikt,
-        fangstOgFisk = fangstOgFisk,
+        fangstOgFiske = fangstOgFisk,
         beregningsdato = beregningsDato,
         regelverksdato = regelverksdato,
         lærling = lærling,

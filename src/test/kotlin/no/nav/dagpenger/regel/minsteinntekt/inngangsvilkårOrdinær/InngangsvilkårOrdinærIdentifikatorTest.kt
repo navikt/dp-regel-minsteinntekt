@@ -35,7 +35,7 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
                     sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11),
                 ),
                 verneplikt = true,
-                fangstOgFisk = false,
+                fangstOgFiske = false,
                 beregningsdato = beregningsdato,
                 regelverksdato = LocalDate.now(),
                 grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),

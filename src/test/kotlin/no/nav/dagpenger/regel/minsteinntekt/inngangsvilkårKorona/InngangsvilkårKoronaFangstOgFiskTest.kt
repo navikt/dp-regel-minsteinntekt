@@ -47,9 +47,9 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         val beregningsdato = LocalDate.parse(regelverksdato)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = true,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.parse(regelverksdato),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -72,9 +72,9 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -106,9 +106,9 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -139,9 +139,9 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
@@ -172,9 +172,9 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         val beregningsdato = LocalDate.of(2020, 2, 10)
         val fakta = Fakta(
             inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
-            bruktInntektsPeriode = null,
+            bruktInntektsperiode = null,
             verneplikt = false,
-            fangstOgFisk = true,
+            fangstOgFiske = true,
             beregningsdato = beregningsdato,
             regelverksdato = LocalDate.of(2020, 2, 10),
             grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),

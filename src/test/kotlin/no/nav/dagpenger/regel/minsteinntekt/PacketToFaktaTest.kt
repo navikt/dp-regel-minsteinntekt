@@ -103,8 +103,8 @@ class PacketToFaktaTest {
 
         val fakta = packetToFakta(packet, grunnbeløpStrategy)
 
-        assertEquals(YearMonth.of(2019, 2), fakta.bruktInntektsPeriode!!.førsteMåned)
-        assertEquals(YearMonth.of(2019, 3), fakta.bruktInntektsPeriode!!.sisteMåned)
+        assertEquals(YearMonth.of(2019, 2), fakta.bruktInntektsperiode!!.førsteMåned)
+        assertEquals(YearMonth.of(2019, 3), fakta.bruktInntektsperiode!!.sisteMåned)
     }
 
     @Test

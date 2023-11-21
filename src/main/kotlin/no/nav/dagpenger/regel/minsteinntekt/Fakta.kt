@@ -10,9 +10,9 @@ import java.time.Month
 
 data class Fakta(
     val inntekt: Inntekt,
-    val bruktInntektsPeriode: InntektsPeriode? = null,
+    val bruktInntektsperiode: InntektsPeriode? = null,
     val verneplikt: Boolean,
-    private val fangstOgFisk: Boolean,
+    private val fangstOgFiske: Boolean,
     val beregningsdato: LocalDate,
     val regelverksdato: LocalDate,
     val lærling: Boolean = false,
@@ -21,17 +21,17 @@ data class Fakta(
 
     internal fun erGyldigFangstOgFisk(): Boolean {
         val fangstOgFiskAvvikletFra = LocalDate.of(2022, 1, 1)
-        return (fangstOgFisk && regelverksdato < fangstOgFiskAvvikletFra)
+        return (fangstOgFiske && regelverksdato < fangstOgFiskAvvikletFra)
     }
 
     val inntektsPerioder = inntekt.splitIntoInntektsPerioder()
 
-    val inntektsPerioderUtenBruktInntekt = if (bruktInntektsPeriode == null) {
+    val inntektsPerioderUtenBruktInntekt = if (bruktInntektsperiode == null) {
         inntektsPerioder
     } else {
         inntekt.filterPeriod(
-            bruktInntektsPeriode.førsteMåned,
-            bruktInntektsPeriode.sisteMåned,
+            bruktInntektsperiode.førsteMåned,
+            bruktInntektsperiode.sisteMåned,
         ).splitIntoInntektsPerioder()
     }
 
