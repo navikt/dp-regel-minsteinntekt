@@ -31,7 +31,14 @@ data class MinsteinntektSubsumsjon(
 data class InntektsPeriode(
     val førsteMåned: YearMonth,
     val sisteMåned: YearMonth,
-)
+) {
+    fun toMap(): Map<String, Any> {
+        return mapOf(
+            "førsteMåned" to førsteMåned,
+            "sisteMåned" to sisteMåned,
+        )
+    }
+}
 
 enum class Beregningsregel {
     ORDINAER,

@@ -8,4 +8,19 @@ data class InntektPeriodeInfo(
     val periode: Int,
     val inneholderFangstOgFisk: Boolean,
     val andel: BigDecimal,
-)
+) {
+
+    fun toMap(): Map<String, Any> {
+        return mapOf(
+            "inntektsPeriode" to inntektsPeriode.toMap(),
+            "inntekt" to inntekt,
+            "periode" to periode,
+            "inneholderFangstOgFisk" to inneholderFangstOgFisk,
+            "andel" to andel,
+        )
+    }
+
+    companion object {
+        fun List<InntektPeriodeInfo>.toMaps() = this.map { it.toMap() }
+    }
+}

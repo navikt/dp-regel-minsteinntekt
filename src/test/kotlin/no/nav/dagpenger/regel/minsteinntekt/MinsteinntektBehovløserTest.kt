@@ -82,30 +82,30 @@ private val inntektsPerioder = """{
         "førsteMåned": "2018-03",
         "sisteMåned": "2019-02"
       },
-      "inntekt": "25000",
+      "inntekt": 25000,
       "periode": 1,
       "inneholderFangstOgFisk": false,
-      "andel": "25000"
+      "andel": 25000
     },
     {
       "inntektsPeriode": {
         "førsteMåned": "2017-03",
         "sisteMåned": "2018-02"
       },
-      "inntekt": "0",
+      "inntekt": 0,
       "periode": 2,
       "inneholderFangstOgFisk": false,
-      "andel": "0"
+      "andel": 0
     },
     {
       "inntektsPeriode": {
         "førsteMåned": "2016-03",
         "sisteMåned": "2017-02"
       },
-      "inntekt": "0",
+      "inntekt": 0,
       "periode": 3,
       "inneholderFangstOgFisk": false,
-      "andel": "0"
+      "andel": 0
     }
   ]
 }"""
@@ -118,30 +118,30 @@ private val inntektsperioderMedFangstOgFiske = """{
         "førsteMåned": "2018-03",
         "sisteMåned": "2019-02"
       },
-      "inntekt": "25000",
+      "inntekt": 25000,
       "periode": 1,
       "inneholderFangstOgFisk": true,
-      "andel": "25000"
+      "andel": 25000
     },
     {
       "inntektsPeriode": {
         "førsteMåned": "2017-03",
         "sisteMåned": "2018-02"
       },
-      "inntekt": "0",
+      "inntekt": 0,
       "periode": 2,
       "inneholderFangstOgFisk": false,
-      "andel": "0"
+      "andel": 0
     },
     {
       "inntektsPeriode": {
         "førsteMåned": "2016-03",
         "sisteMåned": "2017-02"
       },
-      "inntekt": "0",
+      "inntekt": 0,
       "periode": 3,
       "inneholderFangstOgFisk": false,
-      "andel": "0"
+      "andel": 0
     }
   ]
 }"""

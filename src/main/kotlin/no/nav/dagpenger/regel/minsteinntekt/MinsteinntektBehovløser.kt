@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import no.nav.dagpenger.regel.minsteinntekt.InntektPeriodeInfo.Companion.toMaps
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -79,10 +80,7 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
 
             packet[MINSTEINNTEKT_RESULTAT] = resultat.toMap()
             // TODO: Bytt ut moshi
-            packet[MINSTEINNTEKT_INNTEKTSPERIODER] =
-                checkNotNull(
-                    Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
-                )
+            packet[MINSTEINNTEKT_INNTEKTSPERIODER] = createInntektPerioder(fakta).toMaps()
 
             context.publish(packet.toJson())
         } catch (e: Exception) {
