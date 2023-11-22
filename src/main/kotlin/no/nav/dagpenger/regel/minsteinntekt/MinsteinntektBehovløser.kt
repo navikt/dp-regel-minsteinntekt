@@ -4,6 +4,8 @@ import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.nare.core.evaluations.Evaluering
+import no.nav.nare.core.evaluations.Resultat
 
 class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.PacketListener {
 
@@ -13,7 +15,7 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
         const val BRUKT_INNTEKTSPERIODE = "bruktInntektsPeriode"
         const val AVTJENT_VERNEPLIKT = "harAvtjentVerneplikt"
         const val FANGST_OG_FISKE = "oppfyllerKravTilFangstOgFisk"
-        const val LÆRLING: String = "lærling"
+        const val LÆRLING = "lærling"
         const val BEREGNINGSDATO = "beregningsDato"
         const val REGELVERKSDATO = "regelverksdato"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
@@ -44,6 +46,35 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        TODO("Not yet implemented")
+        val fakta = packetToFakta(packet, GrunnbeløpStrategy(Config.unleash))
+
+        val evaluering: Evaluering =
+            when {
+                fakta.regelverksdato.erKoronaPeriode() -> {
+                    narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+                }
+                fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling -> {
+                    narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+                }
+                else -> {
+                    narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+                }
+            }
+
+        val resultat = MinsteinntektSubsumsjon(
+            ulidGenerator.nextULID(),
+            ulidGenerator.nextULID(),
+            Minsteinntekt.REGELIDENTIFIKATOR,
+            evaluering.resultat == Resultat.JA,
+            evaluering.finnRegelBrukt(),
+        )
+
+        packet[MINSTEINNTEKT_RESULTAT] = resultat.toMap()
+        // TODO: Bytt ut moshi
+        packet[MINSTEINNTEKT_INNTEKTSPERIODER] = checkNotNull(
+            Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
+        )
+
+        context.publish(packet.toJson())
     }
 }
