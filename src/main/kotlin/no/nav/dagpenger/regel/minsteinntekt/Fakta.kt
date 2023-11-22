@@ -12,7 +12,7 @@ data class Fakta(
     val inntekt: Inntekt,
     val bruktInntektsperiode: InntektsPeriode? = null,
     val verneplikt: Boolean,
-    private val fangstOgFiske: Boolean,
+    val fangstOgFiske: Boolean,
     val beregningsdato: LocalDate,
     val regelverksdato: LocalDate,
     val lærling: Boolean = false,
