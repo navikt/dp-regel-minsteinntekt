@@ -6,6 +6,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
+import java.net.URI
 
 class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.PacketListener {
     companion object {
@@ -19,6 +20,7 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
         const val REGELVERKSDATO = "regelverksdato"
         const val MINSTEINNTEKT_RESULTAT = "minsteinntektResultat"
         const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
+        const val PROBLEM = "system_problem"
 
         internal val rapidFilter: River.() -> Unit = {
             validate {
@@ -48,37 +50,51 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
         packet: JsonMessage,
         context: MessageContext,
     ) {
-        val fakta = packetToFakta(packet, GrunnbeløpStrategy(Config.unleash))
+        try {
+            val fakta = packetToFakta(packet, GrunnbeløpStrategy(Config.unleash))
 
-        val evaluering: Evaluering =
-            when {
-                fakta.regelverksdato.erKoronaPeriode() -> {
-                    narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+            val evaluering: Evaluering =
+                when {
+                    fakta.regelverksdato.erKoronaPeriode() -> {
+                        narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+                    }
+
+                    fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling -> {
+                        narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
+                    }
+
+                    else -> {
+                        narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
+                    }
                 }
-                fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling -> {
-                    narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
-                }
-                else -> {
-                    narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
-                }
-            }
 
-        val resultat =
-            MinsteinntektSubsumsjon(
-                ulidGenerator.nextULID(),
-                ulidGenerator.nextULID(),
-                Minsteinntekt.REGELIDENTIFIKATOR,
-                evaluering.resultat == Resultat.JA,
-                evaluering.finnRegelBrukt(),
-            )
+            val resultat =
+                MinsteinntektSubsumsjon(
+                    ulidGenerator.nextULID(),
+                    ulidGenerator.nextULID(),
+                    Minsteinntekt.REGELIDENTIFIKATOR,
+                    evaluering.resultat == Resultat.JA,
+                    evaluering.finnRegelBrukt(),
+                )
 
-        packet[MINSTEINNTEKT_RESULTAT] = resultat.toMap()
-        // TODO: Bytt ut moshi
-        packet[MINSTEINNTEKT_INNTEKTSPERIODER] =
-            checkNotNull(
-                Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
-            )
+            packet[MINSTEINNTEKT_RESULTAT] = resultat.toMap()
+            // TODO: Bytt ut moshi
+            packet[MINSTEINNTEKT_INNTEKTSPERIODER] =
+                checkNotNull(
+                    Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
+                )
 
-        context.publish(packet.toJson())
+            context.publish(packet.toJson())
+        } catch (e: Exception) {
+            val problem =
+                Problem(
+                    type = URI("urn:dp:error:regel"),
+                    title = "Ukjent feil ved bruk av minsteinntektregel",
+                    instance = URI("urn:dp:regel:minsteinntekt"),
+                )
+            packet[PROBLEM] = problem.toMap
+            context.publish(packet.toJson())
+            throw e
+        }
     }
 }

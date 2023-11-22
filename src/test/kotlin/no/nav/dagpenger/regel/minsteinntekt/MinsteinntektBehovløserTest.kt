@@ -1,6 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import io.kotest.assertions.json.shouldEqualSpecifiedJsonIgnoringOrder
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
@@ -40,6 +41,26 @@ class MinsteinntektBehovløserTest {
         resultatJson.toString().let { resultJson ->
             resultJson shouldEqualSpecifiedJsonIgnoringOrder minsteinntektResultat
             resultJson shouldEqualSpecifiedJsonIgnoringOrder inntektsperioderMedFangstOgFiske
+        }
+    }
+
+    @Test
+    fun `Skal legge til system_problem`() {
+        shouldThrowAny {
+            testRapid.sendTestMessage(feilJson)
+        }
+        testRapid.inspektør.size shouldBe 1
+        testRapid.inspektør.message(0).toString().let { resultJson ->
+            resultJson shouldEqualSpecifiedJsonIgnoringOrder """
+              {
+                  "system_problem": {
+                    "type": "urn:dp:error:regel",
+                    "title": "Ukjent feil ved bruk av minsteinntektregel",
+                    "status": 500,
+                    "instance": "urn:dp:regel:minsteinntekt"
+                  }
+              }
+            """
         }
     }
 }
@@ -186,3 +207,12 @@ private val inputJsonMedInntektFraFangstOgFiske =
           }
         }
         """
+
+@Language("JSON")
+val feilJson =
+    """
+            {
+              "beregningsDato": "2020-05-20",
+              "inntektV1": "ERROR"
+            } 
+    """.trimIndent()
