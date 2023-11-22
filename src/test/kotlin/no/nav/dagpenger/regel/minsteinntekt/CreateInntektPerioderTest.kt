@@ -14,15 +14,16 @@ class CreateInntektPerioderTest {
     fun `createInntektPerioder correctly for no inntekt`() {
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 3)
         val beregningsdato = LocalDate.of(2019, 4, 10)
-        val fakta = Fakta(
-            Inntekt("id", emptyList(), sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
-            null,
-            false,
-            fangstOgFiske = false,
-            beregningsdato = beregningsdato,
-            regelverksdato = LocalDate.of(2019, 4, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-        )
+        val fakta =
+            Fakta(
+                Inntekt("id", emptyList(), sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
+                null,
+                false,
+                fangstOgFiske = false,
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.of(2019, 4, 10),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            )
 
         val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
@@ -37,19 +38,20 @@ class CreateInntektPerioderTest {
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
         val inntektsListe = generateArbeidsinntekt(36, BigDecimal(1000), sisteAvsluttendeKalenderMåned)
         val beregningsdato = LocalDate.of(2019, 2, 10)
-        val fakta = Fakta(
-            Inntekt(
-                "id",
-                inntektsListe,
-                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
-            ),
-            null,
-            false,
-            fangstOgFiske = false,
-            beregningsdato = beregningsdato,
-            regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-        )
+        val fakta =
+            Fakta(
+                Inntekt(
+                    "id",
+                    inntektsListe,
+                    sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
+                ),
+                null,
+                false,
+                fangstOgFiske = false,
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.of(2019, 2, 10),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            )
 
         val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
@@ -62,26 +64,28 @@ class CreateInntektPerioderTest {
     @Test
     fun `createInntektPerioder correctly for inntekt with both types when fangstOgFiske=false`() {
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
-        val inntektsListe = generateArbeidsOgFangstOgFiskInntekt(
-            36,
-            BigDecimal(2000),
-            BigDecimal(2000),
-            sisteAvsluttendeKalenderMåned,
-        )
+        val inntektsListe =
+            generateArbeidsOgFangstOgFiskInntekt(
+                36,
+                BigDecimal(2000),
+                BigDecimal(2000),
+                sisteAvsluttendeKalenderMåned,
+            )
         val beregningsdato = LocalDate.of(2019, 2, 10)
-        val fakta = Fakta(
-            Inntekt(
-                "id",
-                inntektsListe,
-                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
-            ),
-            null,
-            false,
-            fangstOgFiske = false,
-            beregningsdato = beregningsdato,
-            regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-        )
+        val fakta =
+            Fakta(
+                Inntekt(
+                    "id",
+                    inntektsListe,
+                    sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
+                ),
+                null,
+                false,
+                fangstOgFiske = false,
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.of(2019, 2, 10),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            )
 
         val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
@@ -97,19 +101,20 @@ class CreateInntektPerioderTest {
         val inntektsListe =
             generateArbeidsOgFangstOgFiskInntekt(36, BigDecimal(2000), BigDecimal(2000), sisteAvsluttendeKalenderMåned)
         val beregningsdato = LocalDate.of(2019, 2, 10)
-        val fakta = Fakta(
-            Inntekt(
-                "id",
-                inntektsListe,
-                sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
-            ),
-            null,
-            false,
-            fangstOgFiske = true,
-            beregningsdato = beregningsdato,
-            regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-        )
+        val fakta =
+            Fakta(
+                Inntekt(
+                    "id",
+                    inntektsListe,
+                    sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned,
+                ),
+                null,
+                false,
+                fangstOgFiske = true,
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.of(2019, 2, 10),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            )
 
         val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
@@ -124,15 +129,16 @@ class CreateInntektPerioderTest {
         val sisteAvsluttendeKalenderMåned = YearMonth.of(2019, 1)
         val inntektsListe = generateFangstOgFiskInntekt(36, BigDecimal(2000), sisteAvsluttendeKalenderMåned)
         val beregningsdato = LocalDate.of(2019, 2, 10)
-        val fakta = Fakta(
-            Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
-            null,
-            false,
-            fangstOgFiske = true,
-            beregningsdato = beregningsdato,
-            regelverksdato = LocalDate.of(2019, 2, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-        )
+        val fakta =
+            Fakta(
+                Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
+                null,
+                false,
+                fangstOgFiske = true,
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.of(2019, 2, 10),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            )
 
         val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
@@ -148,15 +154,16 @@ class CreateInntektPerioderTest {
 
         val inntektsListe = generateArbeidsinntekt(36, BigDecimal(2000), sisteAvsluttendeKalenderMåned)
         val beregningsdato = LocalDate.of(2019, 4, 10)
-        val fakta = Fakta(
-            Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
-            InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2017, 7)),
-            false,
-            fangstOgFiske = false,
-            beregningsdato = beregningsdato,
-            regelverksdato = LocalDate.of(2019, 4, 10),
-            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-        )
+        val fakta =
+            Fakta(
+                Inntekt("id", inntektsListe, sisteAvsluttendeKalenderMåned = sisteAvsluttendeKalenderMåned),
+                InntektsPeriode(YearMonth.of(2015, 1), YearMonth.of(2017, 7)),
+                false,
+                fangstOgFiske = false,
+                beregningsdato = beregningsdato,
+                regelverksdato = LocalDate.of(2019, 4, 10),
+                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+            )
 
         val inntektsPerioder = createInntektPerioder(fakta)
         assertThreeCorrectPeriods(inntektsPerioder, sisteAvsluttendeKalenderMåned)
@@ -168,7 +175,10 @@ class CreateInntektPerioderTest {
         assertTrue(inntektsPerioder.none { it.inneholderFangstOgFisk })
     }
 
-    fun assertThreeCorrectPeriods(inntektsInfoListe: List<InntektPeriodeInfo>, senesteMåned: YearMonth) {
+    fun assertThreeCorrectPeriods(
+        inntektsInfoListe: List<InntektPeriodeInfo>,
+        senesteMåned: YearMonth,
+    ) {
         assertEquals(3, inntektsInfoListe.size)
 
         val førstePeriode = inntektsInfoListe.find { it.periode == 1 }

@@ -9,7 +9,6 @@ data class MinsteinntektSubsumsjon(
     val oppfyllerMinsteinntekt: Boolean,
     val beregningsregel: Beregningsregel,
 ) {
-
     companion object {
         const val SPORINGSID = "sporingsId"
         const val SUBSUMSJONSID = "subsumsjonsId"

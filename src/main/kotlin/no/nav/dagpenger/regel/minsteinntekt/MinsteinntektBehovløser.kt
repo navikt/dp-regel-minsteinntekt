@@ -8,7 +8,6 @@ import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 
 class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.PacketListener {
-
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val INNTEKT = "inntektV1"
@@ -45,7 +44,10 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
         River(rapidsConnection).apply(rapidFilter).register(this)
     }
 
-    override fun onPacket(packet: JsonMessage, context: MessageContext) {
+    override fun onPacket(
+        packet: JsonMessage,
+        context: MessageContext,
+    ) {
         val fakta = packetToFakta(packet, GrunnbeløpStrategy(Config.unleash))
 
         val evaluering: Evaluering =
@@ -61,19 +63,21 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
                 }
             }
 
-        val resultat = MinsteinntektSubsumsjon(
-            ulidGenerator.nextULID(),
-            ulidGenerator.nextULID(),
-            Minsteinntekt.REGELIDENTIFIKATOR,
-            evaluering.resultat == Resultat.JA,
-            evaluering.finnRegelBrukt(),
-        )
+        val resultat =
+            MinsteinntektSubsumsjon(
+                ulidGenerator.nextULID(),
+                ulidGenerator.nextULID(),
+                Minsteinntekt.REGELIDENTIFIKATOR,
+                evaluering.resultat == Resultat.JA,
+                evaluering.finnRegelBrukt(),
+            )
 
         packet[MINSTEINNTEKT_RESULTAT] = resultat.toMap()
         // TODO: Bytt ut moshi
-        packet[MINSTEINNTEKT_INNTEKTSPERIODER] = checkNotNull(
-            Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
-        )
+        packet[MINSTEINNTEKT_INNTEKTSPERIODER] =
+            checkNotNull(
+                Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
+            )
 
         context.publish(packet.toJson())
     }

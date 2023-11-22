@@ -9,18 +9,35 @@ import java.time.YearMonth
 
 internal val grunnbeløpStrategy = GrunnbeløpStrategy(FakeUnleash().apply { this.disableAll() })
 
-fun generateArbeidsinntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, senesteMåned: YearMonth = YearMonth.of(2019, 1)): List<KlassifisertInntektMåned> {
+fun generateArbeidsinntekt(
+    numberOfMonths: Int,
+    beløpPerMnd: BigDecimal,
+    senesteMåned: YearMonth =
+        YearMonth.of(
+            2019,
+            1,
+        ),
+): List<KlassifisertInntektMåned> {
     return (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
             årMåned = senesteMåned.minusMonths(it.toLong()),
-            klassifiserteInntekter = listOf(
+            klassifiserteInntekter =
+            listOf(
                 KlassifisertInntekt(beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT),
             ),
         )
     }
 }
 
-fun generateFangstOgFiskInntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, senesteMåned: YearMonth = YearMonth.of(2019, 1)): List<KlassifisertInntektMåned> {
+fun generateFangstOgFiskInntekt(
+    numberOfMonths: Int,
+    beløpPerMnd: BigDecimal,
+    senesteMåned: YearMonth =
+        YearMonth.of(
+            2019,
+            1,
+        ),
+): List<KlassifisertInntektMåned> {
     return (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
             senesteMåned.minusMonths(it.toLong()),
@@ -34,7 +51,16 @@ fun generateFangstOgFiskInntekt(numberOfMonths: Int, beløpPerMnd: BigDecimal, s
     }
 }
 
-fun generateArbeidsOgFangstOgFiskInntekt(numberOfMonths: Int, arbeidsInntektBeløpPerMnd: BigDecimal, fangstOgFiskeBeløpPerMnd: BigDecimal, senesteMåned: YearMonth = YearMonth.of(2019, 1)): List<KlassifisertInntektMåned> {
+fun generateArbeidsOgFangstOgFiskInntekt(
+    numberOfMonths: Int,
+    arbeidsInntektBeløpPerMnd: BigDecimal,
+    fangstOgFiskeBeløpPerMnd: BigDecimal,
+    senesteMåned: YearMonth =
+        YearMonth.of(
+            2019,
+            1,
+        ),
+): List<KlassifisertInntektMåned> {
     return (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
             senesteMåned.minusMonths(it.toLong()),

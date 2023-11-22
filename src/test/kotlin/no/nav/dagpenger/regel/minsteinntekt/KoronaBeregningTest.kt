@@ -17,21 +17,24 @@ internal class KoronaBeregningTest {
 
     private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
-    private val testInntekt: Inntekt = Inntekt(
-        inntektsId = "12345",
-        inntektsListe = listOf(
-            KlassifisertInntektMåned(
-                årMåned = YearMonth.of(2020, 2),
-                klassifiserteInntekter = listOf(
-                    KlassifisertInntekt(
-                        beløp = BigDecimal(98866),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+    private val testInntekt: Inntekt =
+        Inntekt(
+            inntektsId = "12345",
+            inntektsListe =
+            listOf(
+                KlassifisertInntektMåned(
+                    årMåned = YearMonth.of(2020, 2),
+                    klassifiserteInntekter =
+                    listOf(
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(98866),
+                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                        ),
                     ),
                 ),
             ),
-        ),
-        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
-    )
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
+        )
 
     @ParameterizedTest
     @CsvSource(
@@ -48,7 +51,10 @@ internal class KoronaBeregningTest {
         "2022-03-31, KORONA",
         "2022-04-01, ORDINAER",
     )
-    fun koronaperiode(beregningsdato: String, regel: String) {
+    fun koronaperiode(
+        beregningsdato: String,
+        regel: String,
+    ) {
         val minsteinntekt = Application(configuration)
         val json =
             """

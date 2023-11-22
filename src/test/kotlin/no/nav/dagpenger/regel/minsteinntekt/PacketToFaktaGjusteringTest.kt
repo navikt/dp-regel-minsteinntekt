@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test
 import java.time.YearMonth
 
 class PacketToFaktaGjusteringTest {
-    private val emptyInntekt: Inntekt = Inntekt(
-        inntektsId = "12345",
-        inntektsListe = emptyList(),
-        sisteAvsluttendeKalenderMåned = YearMonth.now(),
-    )
+    private val emptyInntekt: Inntekt =
+        Inntekt(
+            inntektsId = "12345",
+            inntektsListe = emptyList(),
+            sisteAvsluttendeKalenderMåned = YearMonth.now(),
+        )
 
     @Test
     fun ` should have the grunnbeløp without "gjustering" when beregningsdato is before justering date and featureflag is on `() {
@@ -20,10 +21,10 @@ class PacketToFaktaGjusteringTest {
 
         val json =
             """
-        {
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2019-05-30"
-        }
+            {
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2019-05-30"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -42,10 +43,10 @@ class PacketToFaktaGjusteringTest {
 
         val json =
             """
-        {
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2023-05-15"
-        }
+            {
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2023-05-15"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -62,10 +63,10 @@ class PacketToFaktaGjusteringTest {
 
         val json =
             """
-        {
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2020-09-02"
-        }
+            {
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2020-09-02"
+            }
             """.trimIndent()
 
         val packet = Packet(json)

@@ -15,26 +15,28 @@ import java.math.BigDecimal
 import java.time.YearMonth
 
 class KoronaLærlingBeregningTest {
-
     private val configuration = Configuration()
 
     val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
-    val testInntekt: Inntekt = Inntekt(
-        inntektsId = "12345",
-        inntektsListe = listOf(
-            KlassifisertInntektMåned(
-                årMåned = YearMonth.of(2020, 2),
-                klassifiserteInntekter = listOf(
-                    KlassifisertInntekt(
-                        beløp = BigDecimal(98866),
-                        inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+    val testInntekt: Inntekt =
+        Inntekt(
+            inntektsId = "12345",
+            inntektsListe =
+            listOf(
+                KlassifisertInntektMåned(
+                    årMåned = YearMonth.of(2020, 2),
+                    klassifiserteInntekter =
+                    listOf(
+                        KlassifisertInntekt(
+                            beløp = BigDecimal(98866),
+                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                        ),
                     ),
                 ),
             ),
-        ),
-        sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
-    )
+            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
+        )
 
     @ParameterizedTest
     @CsvSource(
@@ -48,16 +50,19 @@ class KoronaLærlingBeregningTest {
         "true, 2022-03-31",
         "false, 2022-04-01",
     )
-    fun `Skal evaluere minsteinntekt for lærlingeperiode`(oppfyllerMinstearbeidsinntekt: Boolean, beregningsdato: String) {
+    fun `Skal evaluere minsteinntekt for lærlingeperiode`(
+        oppfyllerMinstearbeidsinntekt: Boolean,
+        beregningsdato: String,
+    ) {
         val minsteinntekt = Application(configuration)
         val json =
             """
-                        {
-                            "lærling": true,
-                            "harAvtjentVerneplikt": false,
-                            "oppfyllerKravTilFangstOgFisk": false,
-                            "beregningsDato": "$beregningsdato"
-                        }
+            {
+                "lærling": true,
+                "harAvtjentVerneplikt": false,
+                "oppfyllerKravTilFangstOgFisk": false,
+                "beregningsDato": "$beregningsdato"
+            }
             """.trimIndent()
 
         val packet = Packet(json)

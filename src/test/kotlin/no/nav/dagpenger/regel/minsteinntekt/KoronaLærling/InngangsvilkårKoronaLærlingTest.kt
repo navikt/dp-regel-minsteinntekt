@@ -18,16 +18,17 @@ internal class InngangsvilkårKoronaLærlingTest {
     private val inntekt = emptyList<KlassifisertInntektMåned>()
 
     val beregningsdato = LocalDate.of(2020, 12, 10)
-    private val fakta = Fakta(
-        inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
-        bruktInntektsperiode = null,
-        verneplikt = false,
-        fangstOgFiske = false,
-        lærling = true,
-        beregningsdato = beregningsdato,
-        regelverksdato = LocalDate.of(2020, 12, 10),
-        grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-    )
+    private val fakta =
+        Fakta(
+            inntekt = Inntekt("123", inntekt, sisteAvsluttendeKalenderMåned = YearMonth.of(2020, 2)),
+            bruktInntektsperiode = null,
+            verneplikt = false,
+            fangstOgFiske = false,
+            lærling = true,
+            beregningsdato = beregningsdato,
+            regelverksdato = LocalDate.of(2020, 12, 10),
+            grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
+        )
 
     @Test
     fun ` Forskrift 2-6 Midlertidig inntekssikringsordning for lærlinger – unntak fra folketrygdloven paragraf 4-4 `() {

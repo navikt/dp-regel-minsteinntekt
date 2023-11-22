@@ -56,11 +56,13 @@ class RapidFilterTest {
         )
         testListener.onPacketCalled shouldBe false
     }
+
     private fun Map<String, Any>.muterOgKonverterToJsonString(block: (map: MutableMap<String, Any>) -> Unit): String {
         val mutableMap = this.toMutableMap()
         block.invoke(mutableMap)
         return JsonMessage.newMessage(mutableMap).toJson()
     }
+
     private class TestListener(rapidsConnection: RapidsConnection) : River.PacketListener {
         var onPacketCalled = false
 

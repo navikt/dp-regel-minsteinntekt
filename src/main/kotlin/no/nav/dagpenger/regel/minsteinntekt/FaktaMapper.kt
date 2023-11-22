@@ -54,6 +54,7 @@ object FaktaMapper {
             true -> this[REGELVERKSDATO].asLocalDate()
             false -> this.beregningsdato()
         }
+
     fun JsonMessage.fangstOgFiske() =
         when (this.harVerdi(FANGST_OG_FISKE)) {
             true -> this[FANGST_OG_FISKE].toBooleanStrict()
@@ -65,11 +66,13 @@ object FaktaMapper {
             true -> this[LÆRLING].toBooleanStrict()
             false -> false
         }
+
     fun JsonMessage.avtjentVerneplikt() =
         when (this.harVerdi(AVTJENT_VERNEPLIKT)) {
             true -> this[AVTJENT_VERNEPLIKT].toBooleanStrict()
             false -> false
         }
+
     fun JsonMessage.bruktInntektsperiode(): InntektsPeriode? {
         val bruktInntektsperiode = this[BRUKT_INNTEKTSPERIODE]
         return when (this.harVerdi(BRUKT_INNTEKTSPERIODE)) {
@@ -77,6 +80,7 @@ object FaktaMapper {
             false -> null
         }
     }
+
     fun JsonMessage.inntekt(): Inntekt {
         val inntekt = this[INNTEKT]
         return when (this.harVerdi(INNTEKT)) {
@@ -84,7 +88,10 @@ object FaktaMapper {
             false -> throw ManglendeInntektException()
         }
     }
+
     class ManglendeInntektException : RuntimeException("Mangler inntekt")
+
     private fun JsonNode.toBooleanStrict() = this.asText().toBooleanStrict()
+
     private fun JsonMessage.harVerdi(field: String) = !this[field].isMissingOrNull()
 }

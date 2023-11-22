@@ -27,7 +27,6 @@ fun main() {
 class Application(
     private val configuration: Configuration,
 ) : River(configuration.regelTopic) {
-
     override val SERVICE_APP_ID: String = configuration.application.id
 
     override val HTTP_PORT: Int = configuration.application.httpPort
@@ -71,13 +70,14 @@ class Application(
                 }
             }
 
-        val resultat = MinsteinntektSubsumsjon(
-            ulidGenerator.nextULID(),
-            ulidGenerator.nextULID(),
-            Minsteinntekt.REGELIDENTIFIKATOR,
-            evaluering.resultat == Resultat.JA,
-            evaluering.finnRegelBrukt(),
-        )
+        val resultat =
+            MinsteinntektSubsumsjon(
+                ulidGenerator.nextULID(),
+                ulidGenerator.nextULID(),
+                Minsteinntekt.REGELIDENTIFIKATOR,
+                evaluering.resultat == Resultat.JA,
+                evaluering.finnRegelBrukt(),
+            )
 
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(
@@ -90,7 +90,10 @@ class Application(
         return packet
     }
 
-    override fun onFailure(packet: Packet, error: Throwable?): Packet {
+    override fun onFailure(
+        packet: Packet,
+        error: Throwable?,
+    ): Packet {
         packet.addProblem(
             Problem(
                 type = URI("urn:dp:error:regel"),

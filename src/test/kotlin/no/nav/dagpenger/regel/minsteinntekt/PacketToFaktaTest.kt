@@ -9,21 +9,21 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 class PacketToFaktaTest {
-
-    val emptyInntekt: Inntekt = Inntekt(
-        inntektsId = "12345",
-        inntektsListe = emptyList(),
-        sisteAvsluttendeKalenderMåned = YearMonth.now(),
-    )
+    val emptyInntekt: Inntekt =
+        Inntekt(
+            inntektsId = "12345",
+            inntektsListe = emptyList(),
+            sisteAvsluttendeKalenderMåned = YearMonth.now(),
+        )
 
     @Test
     fun ` should map fangst_og_fisk from packet to Fakta `() {
         val json =
             """
-        {
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2019-04-10"
-        }
+            {
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2019-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -38,10 +38,10 @@ class PacketToFaktaTest {
     fun ` should map beregningsdato from packet to Fakta `() {
         val json =
             """
-        {
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2019-04-10"
-        }
+            {
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2019-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -56,10 +56,10 @@ class PacketToFaktaTest {
     fun ` should have the right grunnbeløp `() {
         val json =
             """
-        {
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2019-05-30"
-        }
+            {
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2019-05-30"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -74,10 +74,10 @@ class PacketToFaktaTest {
     fun ` should map avtjent_verneplikt from packet to Fakta `() {
         val json =
             """
-        {
-            "harAvtjentVerneplikt": true,
-            "beregningsDato": "2019-04-10"
-        }
+            {
+                "harAvtjentVerneplikt": true,
+                "beregningsDato": "2019-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -92,10 +92,10 @@ class PacketToFaktaTest {
     fun ` should map brukt_inntektsperiode from packet to Fakta `() {
         val json =
             """
-        {
-            "bruktInntektsPeriode": {"førsteMåned":"2019-02", "sisteMåned":"2019-03"},
-            "beregningsDato": "2019-04-10"
-        }
+            {
+                "bruktInntektsPeriode": {"førsteMåned":"2019-02", "sisteMåned":"2019-03"},
+                "beregningsDato": "2019-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -111,9 +111,9 @@ class PacketToFaktaTest {
     fun ` should map inntekt from packet to Fakta `() {
         val json =
             """
-        {
-            "beregningsDato": "2019-04-10"
-        }
+            {
+                "beregningsDato": "2019-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -128,10 +128,10 @@ class PacketToFaktaTest {
     fun ` should map lærling from packet to Fakta `() {
         val json =
             """
-        {
-            "lærling": true,
-            "beregningsDato": "2019-04-10"
-        }
+            {
+                "lærling": true,
+                "beregningsDato": "2019-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)

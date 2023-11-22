@@ -24,10 +24,11 @@ internal class ApplicationTopologyTest {
     private val configuration = Configuration()
 
     companion object {
-        val config = Properties().apply {
-            this[StreamsConfig.APPLICATION_ID_CONFIG] = "test"
-            this[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = "dummy:1234"
-        }
+        val config =
+            Properties().apply {
+                this[StreamsConfig.APPLICATION_ID_CONFIG] = "test"
+                this[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = "dummy:1234"
+            }
 
         val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
     }
@@ -53,22 +54,24 @@ internal class ApplicationTopologyTest {
     fun ` dagpengebehov without beregningsDato should not be processed`() {
         val minsteinntekt = Application(configuration)
 
-        val inntekt: Inntekt = Inntekt(
-            inntektsId = "12345",
-            inntektsListe = listOf(
-                KlassifisertInntektMåned(
-                    årMåned = YearMonth.of(2018, 2),
-                    klassifiserteInntekter = listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(25000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+        val inntekt: Inntekt =
+            Inntekt(
+                inntektsId = "12345",
+                inntektsListe =
+                listOf(
+                    KlassifisertInntektMåned(
+                        årMåned = YearMonth.of(2018, 2),
+                        klassifiserteInntekter =
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(25000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
                         ),
                     ),
-
                 ),
-            ),
-            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
-        )
+                sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
+            )
 
         val emptyjsonBehov =
             """
@@ -88,30 +91,32 @@ internal class ApplicationTopologyTest {
     fun ` should add minsteinntektsubsumsjon`() {
         val minsteinntekt = Application(configuration)
 
-        val inntekt: Inntekt = Inntekt(
-            inntektsId = "12345",
-            inntektsListe = listOf(
-                KlassifisertInntektMåned(
-                    årMåned = YearMonth.of(2018, 2),
-                    klassifiserteInntekter = listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(25000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+        val inntekt: Inntekt =
+            Inntekt(
+                inntektsId = "12345",
+                inntektsListe =
+                listOf(
+                    KlassifisertInntektMåned(
+                        årMåned = YearMonth.of(2018, 2),
+                        klassifiserteInntekter =
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(25000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
                         ),
                     ),
-
                 ),
-            ),
-            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
-        )
+                sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 2),
+            )
 
         val json =
             """
-        {
-            "harAvtjentVerneplikt": true,
-            "oppfyllerKravTilFangstOgFisk": false,
-            "beregningsDato": "2018-03-10"
-        }
+            {
+                "harAvtjentVerneplikt": true,
+                "oppfyllerKravTilFangstOgFisk": false,
+                "beregningsDato": "2018-03-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -134,10 +139,11 @@ internal class ApplicationTopologyTest {
             )
 
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.getNullableObjectValue(
-                MINSTEINNTEKT_INNTEKTSPERIODER,
-                jsonAdapterInntektPeriodeInfo::fromJsonValue,
-            ) as List<InntektPeriodeInfo>
+            val inntektsPerioder =
+                ut.getNullableObjectValue(
+                    MINSTEINNTEKT_INNTEKTSPERIODER,
+                    jsonAdapterInntektPeriodeInfo::fromJsonValue,
+                ) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 2), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(25000), inntektsPerioder.find { it.periode == 1 }?.inntekt)
@@ -148,33 +154,36 @@ internal class ApplicationTopologyTest {
     fun ` should add minsteinntektsubsumsjon oppfyllerKravTilFangstOgFisk`() {
         val minsteinntekt = Application(configuration)
 
-        val inntekt: Inntekt = Inntekt(
-            inntektsId = "12345",
-            inntektsListe = listOf(
-                KlassifisertInntektMåned(
-                    årMåned = YearMonth.of(2018, 2),
-                    klassifiserteInntekter = listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(25000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
-                        ),
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(1000),
-                            inntektKlasse = InntektKlasse.FANGST_FISKE,
+        val inntekt: Inntekt =
+            Inntekt(
+                inntektsId = "12345",
+                inntektsListe =
+                listOf(
+                    KlassifisertInntektMåned(
+                        årMåned = YearMonth.of(2018, 2),
+                        klassifiserteInntekter =
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(25000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(1000),
+                                inntektKlasse = InntektKlasse.FANGST_FISKE,
+                            ),
                         ),
                     ),
                 ),
-            ),
-            sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3),
-        )
+                sisteAvsluttendeKalenderMåned = YearMonth.of(2018, 3),
+            )
 
         val json =
             """
-        {
-            "harAvtjentVerneplikt": true,
-            "oppfyllerKravTilFangstOgFisk": true,
-            "beregningsDato": "2018-04-10"
-        }
+            {
+                "harAvtjentVerneplikt": true,
+                "oppfyllerKravTilFangstOgFisk": true,
+                "beregningsDato": "2018-04-10"
+            }
             """.trimIndent()
 
         val packet = Packet(json)
@@ -191,10 +200,11 @@ internal class ApplicationTopologyTest {
             topologyTestDriver.regelInputTopic().also { it.pipeInput(packet) }
             val ut = topologyTestDriver.regelOutputTopic().readValue()
             // test inntektsperioder are added to packet correctly
-            val inntektsPerioder = ut.getNullableObjectValue(
-                MINSTEINNTEKT_INNTEKTSPERIODER,
-                jsonAdapterInntektPeriodeInfo::fromJsonValue,
-            ) as List<InntektPeriodeInfo>
+            val inntektsPerioder =
+                ut.getNullableObjectValue(
+                    MINSTEINNTEKT_INNTEKTSPERIODER,
+                    jsonAdapterInntektPeriodeInfo::fromJsonValue,
+                ) as List<InntektPeriodeInfo>
             assertEquals(3, inntektsPerioder.size)
             assertEquals(YearMonth.of(2018, 3), inntektsPerioder.find { it.periode == 1 }?.inntektsPeriode?.sisteMåned)
             assertEquals(BigDecimal(26000), inntektsPerioder.find { it.periode == 1 }?.inntekt)

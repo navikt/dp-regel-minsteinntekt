@@ -14,7 +14,10 @@ private val jsonAdapterInntekt = moshiInstance.adapter(Inntekt::class.java)
 
 private val bruktInntektsPeriodeAdapter = moshiInstance.adapter(InntektsPeriode::class.java)
 
-internal fun packetToFakta(packet: Packet, grunnbeløpStrategy: GrunnbeløpStrategy): Fakta {
+internal fun packetToFakta(
+    packet: Packet,
+    grunnbeløpStrategy: GrunnbeløpStrategy,
+): Fakta {
     val inntekt: Inntekt =
         packet.getObjectValue(INNTEKT) { serialized ->
             checkNotNull(

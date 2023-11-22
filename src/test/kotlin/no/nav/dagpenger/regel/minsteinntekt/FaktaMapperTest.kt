@@ -270,6 +270,7 @@ class FaktaMapperTest {
             this.problems = problems
         }
     }
+
     private fun inntektMap() =
         mapOf(
             "inntektsId" to "id3a",

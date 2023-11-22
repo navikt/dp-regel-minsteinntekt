@@ -13,7 +13,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 internal class InngangsvilkårOrdinærIdentifikatorTest {
-
     @Test
     @Suppress("ktlint:standard:max-line-length")
     fun `Minsteinntekt inneholder alle krav etter § 4-4`() {
@@ -26,21 +25,23 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
     @Test
     fun `Minsteinntekt gir JA til verneplikt`() {
         val beregningsdato = LocalDate.now()
-        var evaluering = kravTilMinsteinntekt.evaluer(
-            Fakta(
-                inntekt = Inntekt(
-                    inntektsId = "test-inntekt",
-                    inntektsListe = listOf(),
-                    manueltRedigert = false,
-                    sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11),
+        var evaluering =
+            kravTilMinsteinntekt.evaluer(
+                Fakta(
+                    inntekt =
+                    Inntekt(
+                        inntektsId = "test-inntekt",
+                        inntektsListe = listOf(),
+                        manueltRedigert = false,
+                        sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11),
+                    ),
+                    verneplikt = true,
+                    fangstOgFiske = false,
+                    beregningsdato = beregningsdato,
+                    regelverksdato = LocalDate.now(),
+                    grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
                 ),
-                verneplikt = true,
-                fangstOgFiske = false,
-                beregningsdato = beregningsdato,
-                regelverksdato = LocalDate.now(),
-                grunnbeløp = grunnbeløpStrategy.grunnbeløp(beregningsdato),
-            ),
-        )
+            )
 
         assertSame(Resultat.JA, evaluering.resultat)
         assertEquals(

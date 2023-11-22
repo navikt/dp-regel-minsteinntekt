@@ -9,7 +9,6 @@ import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 
 class MinsteinntektBehovløserTest {
-
     private val testRapid = TestRapid()
 
     init {
@@ -81,7 +80,8 @@ class MinsteinntektBehovløserTest {
 }
 
 @Language("JSON")
-fun inputJson() = """
+fun inputJson() =
+    """
         {
           "beregningsDato": "2019-02-27",
           "harAvtjentVerneplikt": false,

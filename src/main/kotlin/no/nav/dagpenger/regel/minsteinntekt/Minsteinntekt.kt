@@ -37,8 +37,12 @@ fun createInntektPerioder(fakta: Fakta): List<InntektPeriodeInfo> {
             ),
             list.sumInntekt(if (fakta.erGyldigFangstOgFisk()) medFangstOgFisk else arbeidsInntekt),
             index + 1,
-            fakta.inntektsPerioderUtenBruktInntekt.toList()[index].any { it.klassifiserteInntekter.any { it.inntektKlasse == InntektKlasse.FANGST_FISKE } },
-            fakta.inntektsPerioderUtenBruktInntekt.toList()[index].sumInntekt(if (fakta.erGyldigFangstOgFisk()) medFangstOgFisk else arbeidsInntekt),
+            fakta.inntektsPerioderUtenBruktInntekt.toList()[index].any {
+                it.klassifiserteInntekter.any { it.inntektKlasse == InntektKlasse.FANGST_FISKE }
+            },
+            fakta.inntektsPerioderUtenBruktInntekt.toList()[index].sumInntekt(
+                if (fakta.erGyldigFangstOgFisk()) medFangstOgFisk else arbeidsInntekt,
+            ),
         )
     }
 }
