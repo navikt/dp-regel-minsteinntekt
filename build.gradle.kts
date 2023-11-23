@@ -15,7 +15,6 @@ application {
     mainClass.set("no.nav.dagpenger.regel.minsteinntekt.ApplicationKt")
 }
 
-val log4j2Versjon = "2.21.1"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
@@ -32,10 +31,6 @@ dependencies {
     implementation("no.nav:nare-prometheus:0b41ab4")
 
     implementation(libs.kotlin.logging)
-    implementation("org.apache.logging.log4j:log4j-api:$log4j2Versjon")
-    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4j2Versjon")
-    implementation("org.apache.logging.log4j:log4j-layout-template-json:$log4j2Versjon")
-    implementation("org.apache.logging.log4j:log4j-core:$log4j2Versjon")
 
     implementation("no.nav:nare:768ae37")
 
