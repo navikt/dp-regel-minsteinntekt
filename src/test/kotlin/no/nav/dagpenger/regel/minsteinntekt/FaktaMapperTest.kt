@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import io.getunleash.FakeUnleash
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.AVTJENT_VERNEPLIKT
@@ -246,6 +247,54 @@ class FaktaMapperTest {
             it.inntektsId shouldBe "id3a"
             it.inntektsListe.size shouldBe 2
         }
+    }
+
+    @Test
+    fun `Should have the grunnbeløp without "gjustering" when beregningsdato is before justering date and featureflag is on `() {
+        val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
+        val behovløser = OnPacketTestListener(testRapid)
+
+        val testMessage = testMessage(
+            beregningsdato = LocalDate.of(2019, 5, 30),
+            fangstOgFiske = true,
+        )
+        testRapid.sendTestMessage(testMessage)
+
+        val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash))
+
+        fakta.grunnbeløp shouldBe 99858.toBigDecimal()
+    }
+
+    @Test
+    fun `Should have grunnbeløp with "gjustering" when beregningsdato is after justering date and featureflag is on`() {
+        val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
+        val behovløser = OnPacketTestListener(testRapid)
+
+        val testMessage = testMessage(
+            fangstOgFiske = true,
+            beregningsdato = LocalDate.of(2023, 5, 15),
+        )
+        testRapid.sendTestMessage(testMessage)
+
+        val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash))
+
+        fakta.grunnbeløp shouldBe 117000.toBigDecimal()
+    }
+
+    @Test
+    fun `Should have grunnbeløp without "gjustering" when beregningsdato is after justering date and featureflag is off`() {
+        val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
+        val behovløser = OnPacketTestListener(testRapid)
+
+        val testMessage = testMessage(
+            fangstOgFiske = true,
+            beregningsdato = LocalDate.of(2020, 9, 2),
+        )
+        testRapid.sendTestMessage(testMessage)
+
+        val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(FakeUnleash().apply { this.disableAll() }))
+
+        fakta.grunnbeløp shouldBe 99858.toBigDecimal()
     }
 
     private class OnPacketTestListener(rapidsConnection: RapidsConnection) : River.PacketListener {
