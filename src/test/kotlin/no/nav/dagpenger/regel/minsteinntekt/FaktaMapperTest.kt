@@ -292,7 +292,7 @@ class FaktaMapperTest {
         )
         testRapid.sendTestMessage(testMessage)
 
-        val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(FakeUnleash().apply { this.disableAll() }))
+        val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash.apply { this.disableAll() }))
 
         fakta.grunnbeløp shouldBe 99858.toBigDecimal()
     }

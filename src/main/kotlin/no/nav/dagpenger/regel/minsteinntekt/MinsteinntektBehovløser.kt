@@ -1,5 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import io.prometheus.client.CollectorRegistry
+import no.nav.NarePrometheus
 import no.nav.dagpenger.regel.minsteinntekt.InntektPeriodeInfo.Companion.toMaps
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
@@ -23,6 +25,7 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
         const val MINSTEINNTEKT_INNTEKTSPERIODER = "minsteinntektInntektsPerioder"
         const val PROBLEM = "system_problem"
 
+        internal val narePrometheus = NarePrometheus(CollectorRegistry.defaultRegistry)
         internal val rapidFilter: River.() -> Unit = {
             validate {
                 it.requireKey(
