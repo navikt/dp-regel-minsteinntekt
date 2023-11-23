@@ -4,6 +4,7 @@ import io.kotest.assertions.json.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektSubsumsjon.Companion.BEREGNINGSREGEL
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
@@ -90,12 +91,48 @@ class MinsteinntektBehovløserTest {
         val resultatPacket = testRapid.inspektør.message(0)
         resultatPacket[MINSTEINNTEKT_RESULTAT][BEREGNINGSREGEL].asText() shouldBe Beregningsregel.valueOf(regel).name
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        "false, 2020-03-19",
+        "true, 2020-03-20",
+        "true, 2020-11-20",
+        "true, 2021-09-30",
+        "false, 2021-10-01",
+        "false, 2021-12-14",
+        "true, 2021-12-15",
+        "true, 2022-03-31",
+        "false, 2022-04-01",
+    )
+    fun `Skal evaluere minsteinntekt for lærlingeperiode`(
+        oppfyllerMinstearbeidsinntekt: Boolean,
+        beregningsdato: String,
+    ) {
+        val testMessage = testMessage(beregningsdato)
+        testRapid.sendTestMessage(testMessage)
+        val json =
+            """
+            {
+                "lærling": true,
+                "harAvtjentVerneplikt": false,
+                "oppfyllerKravTilFangstOgFisk": false,
+                "beregningsDato": "$beregningsdato"
+            }
+            """.trimIndent()
+
+        val packet = Packet(json)
+        // packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
+        // val outPacket = minsteinntekt.onPacket(packet)
+        // val evaluering = outPacket.getMapValue("minsteinntektResultat")
+        // Assertions.assertEquals(oppfyllerMinstearbeidsinntekt, evaluering["oppfyllerMinsteinntekt"] as Boolean)
+    }
 }
 
 @Language("JSON")
-fun testMessage(beregningsdato: String) = """
+fun testMessage(beregningsdato: String, erLærling: Boolean = false) = """
 {
     "harAvtjentVerneplikt": false,
+    "lærling": $erLærling,
     "oppfyllerKravTilFangstOgFisk": false,
     "beregningsDato": "$beregningsdato",
     "inntektV1": {
