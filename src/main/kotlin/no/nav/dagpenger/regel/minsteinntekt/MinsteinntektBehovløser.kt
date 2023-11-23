@@ -73,13 +73,12 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
                 MinsteinntektSubsumsjon(
                     ulidGenerator.nextULID(),
                     ulidGenerator.nextULID(),
-                    Minsteinntekt.REGELIDENTIFIKATOR,
+                    REGELIDENTIFIKATOR,
                     evaluering.resultat == Resultat.JA,
                     evaluering.finnRegelBrukt(),
                 )
 
             packet[MINSTEINNTEKT_RESULTAT] = resultat.toMap()
-            // TODO: Bytt ut moshi
             packet[MINSTEINNTEKT_INNTEKTSPERIODER] = createInntektPerioder(fakta).toMaps()
 
             context.publish(packet.toJson())

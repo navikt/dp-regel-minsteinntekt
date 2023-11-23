@@ -5,9 +5,12 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
+import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektSubsumsjon.Companion.BEREGNINGSREGEL
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 class MinsteinntektBehovløserTest {
     private val testRapid = TestRapid()
@@ -63,7 +66,56 @@ class MinsteinntektBehovløserTest {
             """
         }
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        "2020-03-19, ORDINAER",
+        "2020-03-20, KORONA",
+        "2020-10-31, KORONA",
+        "2020-11-01, ORDINAER",
+        "2021-02-18, ORDINAER",
+        "2021-02-19, KORONA",
+        "2021-09-30, KORONA",
+        "2021-10-01, ORDINAER",
+        "2021-12-14, ORDINAER",
+        "2021-12-15, KORONA",
+        "2022-03-31, KORONA",
+        "2022-04-01, ORDINAER",
+    )
+    fun `Skal benytte korrekt beregningsregel avhengig av beregningsdato`(
+        beregningsdato: String,
+        regel: String,
+    ) {
+        testRapid.sendTestMessage(testMessage(beregningsdato))
+        val resultatPacket = testRapid.inspektør.message(0)
+        resultatPacket[MINSTEINNTEKT_RESULTAT][BEREGNINGSREGEL].asText() shouldBe Beregningsregel.valueOf(regel).name
+    }
 }
+
+@Language("JSON")
+fun testMessage(beregningsdato: String) = """
+{
+    "harAvtjentVerneplikt": false,
+    "oppfyllerKravTilFangstOgFisk": false,
+    "beregningsDato": "$beregningsdato",
+    "inntektV1": {
+      "inntektsId": "12345",
+      "inntektsListe": [
+        {
+          "årMåned": "2019-02",
+          "klassifiserteInntekter": [
+            {
+              "beløp": "25000",
+              "inntektKlasse": "ARBEIDSINNTEKT"
+            }
+          ]
+        }
+      ],
+      "manueltRedigert": false,
+      "sisteAvsluttendeKalenderMåned": "2019-02"
+    }
+}
+""".trimIndent()
 
 @Language("JSON")
 private val minsteinntektResultat = """{
