@@ -4,9 +4,9 @@ import io.kotest.assertions.json.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import no.nav.dagpenger.events.Packet
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektSubsumsjon.Companion.BEREGNINGSREGEL
+import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektSubsumsjon.Companion.OPPFYLLER_MINSTEINNTEKT
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
@@ -87,7 +87,7 @@ class MinsteinntektBehovløserTest {
         beregningsdato: String,
         regel: String,
     ) {
-        testRapid.sendTestMessage(testMessage(beregningsdato))
+        testRapid.sendTestMessage(testMessage(beregningsdato, beløp = "25000", årMånedForInntekt = "2019-02"))
         val resultatPacket = testRapid.inspektør.message(0)
         resultatPacket[MINSTEINNTEKT_RESULTAT][BEREGNINGSREGEL].asText() shouldBe Beregningsregel.valueOf(regel).name
     }
@@ -108,28 +108,15 @@ class MinsteinntektBehovløserTest {
         oppfyllerMinstearbeidsinntekt: Boolean,
         beregningsdato: String,
     ) {
-        val testMessage = testMessage(beregningsdato)
+        val testMessage = testMessage(beregningsdato = beregningsdato, erLærling = true, beløp = "98866", årMånedForInntekt = "2020-02")
         testRapid.sendTestMessage(testMessage)
-        val json =
-            """
-            {
-                "lærling": true,
-                "harAvtjentVerneplikt": false,
-                "oppfyllerKravTilFangstOgFisk": false,
-                "beregningsDato": "$beregningsdato"
-            }
-            """.trimIndent()
-
-        val packet = Packet(json)
-        // packet.putValue("inntektV1", jsonAdapterInntekt.toJsonValue(testInntekt)!!)
-        // val outPacket = minsteinntekt.onPacket(packet)
-        // val evaluering = outPacket.getMapValue("minsteinntektResultat")
-        // Assertions.assertEquals(oppfyllerMinstearbeidsinntekt, evaluering["oppfyllerMinsteinntekt"] as Boolean)
+        val resultatPacket = testRapid.inspektør.message(0)
+        resultatPacket[MINSTEINNTEKT_RESULTAT][OPPFYLLER_MINSTEINNTEKT].asBoolean() shouldBe oppfyllerMinstearbeidsinntekt
     }
 }
 
 @Language("JSON")
-fun testMessage(beregningsdato: String, erLærling: Boolean = false) = """
+fun testMessage(beregningsdato: String, erLærling: Boolean = false, beløp: String, årMånedForInntekt: String) = """
 {
     "harAvtjentVerneplikt": false,
     "lærling": $erLærling,
@@ -139,17 +126,17 @@ fun testMessage(beregningsdato: String, erLærling: Boolean = false) = """
       "inntektsId": "12345",
       "inntektsListe": [
         {
-          "årMåned": "2019-02",
+          "årMåned": "$årMånedForInntekt",
           "klassifiserteInntekter": [
             {
-              "beløp": "25000",
+              "beløp": "$beløp",
               "inntektKlasse": "ARBEIDSINNTEKT"
             }
           ]
         }
       ],
       "manueltRedigert": false,
-      "sisteAvsluttendeKalenderMåned": "2019-02"
+      "sisteAvsluttendeKalenderMåned": "$årMånedForInntekt"
     }
 }
 """.trimIndent()
