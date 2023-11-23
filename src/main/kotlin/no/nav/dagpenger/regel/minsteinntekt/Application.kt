@@ -1,5 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Types
 import io.prometheus.client.CollectorRegistry
 import no.nav.NarePrometheus
 import no.nav.dagpenger.events.Packet
@@ -62,9 +64,11 @@ class Application(
                 fakta.regelverksdato.erKoronaPeriode() -> {
                     narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
                 }
+
                 fakta.regelverksdato.erKoronaLærlingperiode() && fakta.lærling -> {
                     narePrometheus.tellEvaluering { kravTilMinsteinntektKorona.evaluer(fakta) }
                 }
+
                 else -> {
                     narePrometheus.tellEvaluering { kravTilMinsteinntekt.evaluer(fakta) }
                 }
@@ -78,12 +82,13 @@ class Application(
                 evaluering.resultat == Resultat.JA,
                 evaluering.finnRegelBrukt(),
             )
-
+        val jsonAdapterInntektPeriodeInfo: JsonAdapter<List<InntektPeriodeInfo>> =
+            moshiInstance.adapter(Types.newParameterizedType(List::class.java, InntektPeriodeInfo::class.java))!!
         packet.putValue(MINSTEINNTEKT_RESULTAT, resultat.toMap())
         packet.putValue(
             Minsteinntekt.MINSTEINNTEKT_INNTEKTSPERIODER,
             checkNotNull(
-                Minsteinntekt.jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
+                jsonAdapterInntektPeriodeInfo.toJsonValue(createInntektPerioder(fakta)),
             ),
         )
 
