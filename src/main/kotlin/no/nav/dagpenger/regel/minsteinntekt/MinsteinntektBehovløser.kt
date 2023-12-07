@@ -1,6 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import io.prometheus.client.CollectorRegistry
+import mu.KotlinLogging
 import no.nav.NarePrometheus
 import no.nav.dagpenger.regel.minsteinntekt.InntektPeriodeInfo.Companion.toMaps
 import no.nav.helse.rapids_rivers.JsonMessage
@@ -10,6 +11,8 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import java.net.URI
+
+private val sikkerLogg = KotlinLogging.logger("tjenestekall")
 
 class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.PacketListener {
     companion object {
@@ -55,8 +58,9 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
         context: MessageContext,
     ) {
         try {
-            val fakta = packetToFakta(packet, GrunnbeløpStrategy(Config.unleash))
+            sikkerLogg.info("Mottok behov for vurdering av minsteinntekt: ${packet.toJson()}")
 
+            val fakta = packetToFakta(packet, GrunnbeløpStrategy(Config.unleash))
             val evaluering: Evaluering =
                 when {
                     fakta.regelverksdato.erKoronaPeriode() -> {
@@ -85,6 +89,7 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
             packet[MINSTEINNTEKT_INNTEKTSPERIODER] = createInntektPerioder(fakta).toMaps()
 
             context.publish(packet.toJson())
+            sikkerLogg.info { "Løste behov for vurdering av minsteinntekt $resultat med fakta $fakta" }
         } catch (e: Exception) {
             val problem =
                 Problem(

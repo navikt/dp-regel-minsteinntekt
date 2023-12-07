@@ -1,7 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import com.fasterxml.jackson.databind.JsonNode
-import mu.KotlinLogging
 import no.nav.dagpenger.events.inntekt.v1.Inntekt
 import no.nav.dagpenger.regel.minsteinntekt.FaktaMapper.avtjentVerneplikt
 import no.nav.dagpenger.regel.minsteinntekt.FaktaMapper.beregningsdato
@@ -20,8 +19,6 @@ import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.R
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.asLocalDate
 import no.nav.helse.rapids_rivers.isMissingOrNull
-
-private val sikkerLogg = KotlinLogging.logger("tjenestekall")
 
 internal fun packetToFakta(
     packet: JsonMessage,
