@@ -118,6 +118,7 @@ class MinsteinntektBehovløserTest {
 @Language("JSON")
 fun testMessage(beregningsdato: String, erLærling: Boolean = false, beløp: String, årMånedForInntekt: String) = """
 {
+    "behovId": "behovId",
     "harAvtjentVerneplikt": false,
     "lærling": $erLærling,
     "oppfyllerKravTilFangstOgFisk": false,
@@ -226,6 +227,7 @@ private val inntektsperioderMedFangstOgFiske = """{
 private val inputJson =
     """
         {
+          "behovId": "behovId",
           "beregningsDato": "2019-02-27",
           "harAvtjentVerneplikt": false,
           "bruktInntektsPeriode": {
@@ -255,6 +257,7 @@ private val inputJson =
 private val inputJsonMedInntektFraFangstOgFiske =
     """
         {
+          "behovId": "behovId",
           "beregningsDato": "2019-02-27",
           "harAvtjentVerneplikt": false,
           "bruktInntektsPeriode": {
@@ -288,6 +291,7 @@ private val inputJsonMedInntektFraFangstOgFiske =
 val feilJson =
     """
             {
+              "behovId": "behovId",
               "beregningsDato": "2020-05-20",
               "inntektV1": "ERROR"
             } 

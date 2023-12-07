@@ -4,6 +4,7 @@ import io.getunleash.FakeUnleash
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.AVTJENT_VERNEPLIKT
+import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEHOV_ID
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEREGNINGSDATO
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BRUKT_INNTEKTSPERIODE
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.FANGST_OG_FISKE
@@ -34,7 +35,7 @@ class FaktaMapperTest {
             )
 
         private fun testMessage(
-            // TODO behovId: String = "behovId",
+            behovId: String = "behovId",
             beregningsdato: Any = LocalDate.MAX,
             regelverksdato: Any? = LocalDate.MAX,
             inntekt: Any = emptyInntekt,
@@ -45,7 +46,7 @@ class FaktaMapperTest {
         ): String {
             val testMap: MutableMap<String, Any> =
                 mutableMapOf(
-                    // BEHOV_ID to behovId,
+                    BEHOV_ID to behovId,
                     INNTEKT to inntekt,
                     BEREGNINGSDATO to beregningsdato,
                 )

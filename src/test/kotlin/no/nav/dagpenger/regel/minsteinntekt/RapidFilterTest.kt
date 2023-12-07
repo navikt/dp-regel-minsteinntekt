@@ -1,6 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import io.kotest.matchers.shouldBe
+import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEHOV_ID
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEREGNINGSDATO
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
@@ -16,8 +17,9 @@ class RapidFilterTest {
     private val testRapid = TestRapid()
     private val testMessage =
         mapOf(
-            BEREGNINGSDATO to "verdi",
-            INNTEKT to "verid",
+            BEHOV_ID to "behovIdVerdi",
+            BEREGNINGSDATO to "beregningsdatoVerdi",
+            INNTEKT to "inntektVerdi",
         )
 
     @Test
@@ -32,6 +34,11 @@ class RapidFilterTest {
     @Test
     fun `Skal ikke behandle pakker med manglende required keys`() {
         val testListener = TestListener(testRapid)
+
+        testRapid.sendTestMessage(
+            testMessage.muterOgKonverterToJsonString { it.remove(BEHOV_ID) },
+        )
+        testListener.onPacketCalled shouldBe false
 
         testRapid.sendTestMessage(
             testMessage.muterOgKonverterToJsonString { it.remove(BEREGNINGSDATO) },
