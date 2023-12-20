@@ -1,6 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt.inngangsvilkårOrdinær
 
-import no.nav.dagpenger.events.inntekt.v1.Inntekt
+import no.nav.dagpenger.inntekt.v1.Inntekt
 import no.nav.dagpenger.regel.minsteinntekt.Fakta
 import no.nav.dagpenger.regel.minsteinntekt.grunnbeløpStrategy
 import no.nav.dagpenger.regel.minsteinntekt.kravTilMinsteinntekt

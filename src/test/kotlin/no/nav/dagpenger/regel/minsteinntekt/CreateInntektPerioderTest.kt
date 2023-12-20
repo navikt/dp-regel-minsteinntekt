@@ -1,6 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import no.nav.dagpenger.events.inntekt.v1.Inntekt
+import no.nav.dagpenger.inntekt.v1.Inntekt
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

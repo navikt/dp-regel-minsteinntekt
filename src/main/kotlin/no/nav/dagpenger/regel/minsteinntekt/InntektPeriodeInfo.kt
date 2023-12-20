@@ -1,7 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import no.nav.dagpenger.events.inntekt.v1.InntektKlasse
-import no.nav.dagpenger.events.inntekt.v1.sumInntekt
+import no.nav.dagpenger.inntekt.v1.InntektKlasse
+import no.nav.dagpenger.inntekt.v1.sumInntekt
 import java.math.BigDecimal
 
 data class InntektPeriodeInfo(
@@ -11,7 +11,6 @@ data class InntektPeriodeInfo(
     val inneholderFangstOgFisk: Boolean,
     val andel: BigDecimal,
 ) {
-
     fun toMap(): Map<String, Any> {
         return mapOf(
             "inntektsPeriode" to inntektsPeriode.toMap(),
@@ -26,6 +25,7 @@ data class InntektPeriodeInfo(
         fun List<InntektPeriodeInfo>.toMaps() = this.map { it.toMap() }
     }
 }
+
 fun createInntektPerioder(fakta: Fakta): List<InntektPeriodeInfo> {
     val arbeidsInntekt = listOf(InntektKlasse.ARBEIDSINNTEKT)
     val medFangstOgFisk = listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE)

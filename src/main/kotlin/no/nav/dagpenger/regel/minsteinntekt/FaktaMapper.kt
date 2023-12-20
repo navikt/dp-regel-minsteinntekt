@@ -1,7 +1,7 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
 import com.fasterxml.jackson.databind.JsonNode
-import no.nav.dagpenger.events.inntekt.v1.Inntekt
+import no.nav.dagpenger.inntekt.v1.Inntekt
 import no.nav.dagpenger.regel.minsteinntekt.FaktaMapper.avtjentVerneplikt
 import no.nav.dagpenger.regel.minsteinntekt.FaktaMapper.beregningsdato
 import no.nav.dagpenger.regel.minsteinntekt.FaktaMapper.bruktInntektsperiode
