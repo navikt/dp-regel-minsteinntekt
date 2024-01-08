@@ -5,6 +5,7 @@ import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.B
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEREGNINGSDATO
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
+import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.PROBLEM
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.MessageProblems
@@ -47,6 +48,15 @@ class RapidFilterTest {
 
         testRapid.sendTestMessage(
             testMessage.muterOgKonverterToJsonString { it.remove(INNTEKT) },
+        )
+        testListener.onPacketCalled shouldBe false
+    }
+
+    @Test
+    fun `Skal ikke behandle pakker med problem`() {
+        val testListener = TestListener(testRapid)
+        testRapid.sendTestMessage(
+            testMessage.muterOgKonverterToJsonString { it[PROBLEM] = "problem" },
         )
         testListener.onPacketCalled shouldBe false
     }

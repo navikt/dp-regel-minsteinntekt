@@ -44,6 +44,7 @@ class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.Packe
                 )
             }
             validate { it.rejectKey(MINSTEINNTEKT_RESULTAT) }
+            validate { it.rejectKey(PROBLEM) }
         }
     }
 
