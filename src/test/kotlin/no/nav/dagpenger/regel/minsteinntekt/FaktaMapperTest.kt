@@ -273,13 +273,13 @@ class FaktaMapperTest {
 
         val testMessage = testMessage(
             fangstOgFiske = true,
-            beregningsdato = LocalDate.of(2023, 5, 15),
+            beregningsdato = LocalDate.of(2024, 5, 15),
         )
         testRapid.sendTestMessage(testMessage)
 
         val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash))
 
-        fakta.grunnbeløp shouldBe 117000.toBigDecimal()
+        fakta.grunnbeløp shouldBe 124000.toBigDecimal()
     }
 
     @Test
