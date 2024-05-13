@@ -279,7 +279,7 @@ class FaktaMapperTest {
 
         val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash))
 
-        fakta.grunnbeløp shouldBe 124000.toBigDecimal()
+        fakta.grunnbeløp shouldBe 124028.toBigDecimal()
     }
 
     @Test
