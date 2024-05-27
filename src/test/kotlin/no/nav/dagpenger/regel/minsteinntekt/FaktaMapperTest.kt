@@ -273,7 +273,7 @@ class FaktaMapperTest {
 
         val testMessage = testMessage(
             fangstOgFiske = true,
-            beregningsdato = LocalDate.of(2024, 5, 15),
+            beregningsdato = LocalDate.of(2024, 6, 3),
         )
         testRapid.sendTestMessage(testMessage)
 
