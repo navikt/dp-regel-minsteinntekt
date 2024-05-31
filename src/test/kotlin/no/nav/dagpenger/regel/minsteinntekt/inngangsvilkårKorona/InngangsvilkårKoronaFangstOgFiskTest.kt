@@ -62,6 +62,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         assertTrue(evaluering.children.all { Resultat.valueOf(forventetUtfall) == it.resultat })
     }
 
+    @Suppress("ktlint:standard:max-line-length")
     @Test
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har mer enn 2,25G fangst og fiske-inntekt siste 36 mnd, og fangstOgFisk er satt`() {
         val inntekt =
@@ -99,6 +100,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
+    @Suppress("ktlint:standard:max-line-length")
     @Test
     fun `Skal gi rett til dagpenger i følge § 4-4 dersom du har mer enn 0,75G fangst og fiske-inntekt siste 12 mnd, og fangstOgFisk er satt`() {
         val inntekt =
@@ -135,6 +137,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
+    @Suppress("ktlint:standard:max-line-length")
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har mindre enn 2,25G fangst og fiske-inntekt siste 36 mnd, og fangstOgFisk er satt`() {
         val inntekt =
@@ -171,6 +174,7 @@ class InngangsvilkårKoronaFangstOgFiskTest() {
         assertEquals(Beregningsregel.KORONA, evaluering.finnRegelBrukt())
     }
 
+    @Suppress("ktlint:standard:max-line-length")
     @Test
     fun `Skal ikke gi rett til dagpenger i følge § 4-4 dersom du har mindre enn 0,75G fangst og fiske-inntekt siste 12 mnd, og fangstOgFisk er satt`() {
         val inntekt =

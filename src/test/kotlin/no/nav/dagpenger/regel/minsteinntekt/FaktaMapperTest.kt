@@ -177,10 +177,10 @@ class FaktaMapperTest {
         testRapid.sendTestMessage(
             testMessage(
                 bruktInntektsperiode =
-                mapOf(
-                    "førsteMåned" to førsteMåned,
-                    "sisteMåned" to sisteMåned,
-                ),
+                    mapOf(
+                        "førsteMåned" to førsteMåned,
+                        "sisteMåned" to sisteMåned,
+                    ),
             ),
         )
         packetToFakta(
@@ -201,10 +201,10 @@ class FaktaMapperTest {
         testRapid.sendTestMessage(
             testMessage(
                 bruktInntektsperiode =
-                mapOf(
-                    "MikkeMus" to førsteMåned,
-                    "sisteMåned" to sisteMåned,
-                ),
+                    mapOf(
+                        "MikkeMus" to førsteMåned,
+                        "sisteMåned" to sisteMåned,
+                    ),
             ),
         )
         shouldThrow<IllegalArgumentException> {
@@ -217,10 +217,10 @@ class FaktaMapperTest {
         testRapid.sendTestMessage(
             testMessage(
                 bruktInntektsperiode =
-                mapOf(
-                    "førsteMåned" to førsteMåned,
-                    "sisteMåned" to "DonaldDuck",
-                ),
+                    mapOf(
+                        "førsteMåned" to førsteMåned,
+                        "sisteMåned" to "DonaldDuck",
+                    ),
             ),
         )
         shouldThrow<IllegalArgumentException> {
@@ -255,10 +255,11 @@ class FaktaMapperTest {
         val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
         val behovløser = OnPacketTestListener(testRapid)
 
-        val testMessage = testMessage(
-            beregningsdato = LocalDate.of(2019, 5, 30),
-            fangstOgFiske = true,
-        )
+        val testMessage =
+            testMessage(
+                beregningsdato = LocalDate.of(2019, 5, 30),
+                fangstOgFiske = true,
+            )
         testRapid.sendTestMessage(testMessage)
 
         val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash))
@@ -271,10 +272,11 @@ class FaktaMapperTest {
         val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
         val behovløser = OnPacketTestListener(testRapid)
 
-        val testMessage = testMessage(
-            fangstOgFiske = true,
-            beregningsdato = LocalDate.of(2024, 6, 3),
-        )
+        val testMessage =
+            testMessage(
+                fangstOgFiske = true,
+                beregningsdato = LocalDate.of(2024, 6, 3),
+            )
         testRapid.sendTestMessage(testMessage)
 
         val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash))
@@ -287,10 +289,11 @@ class FaktaMapperTest {
         val unleash = FakeUnleash().also { it.enable(GJUSTERING_TEST) }
         val behovløser = OnPacketTestListener(testRapid)
 
-        val testMessage = testMessage(
-            fangstOgFiske = true,
-            beregningsdato = LocalDate.of(2020, 9, 2),
-        )
+        val testMessage =
+            testMessage(
+                fangstOgFiske = true,
+                beregningsdato = LocalDate.of(2020, 9, 2),
+            )
         testRapid.sendTestMessage(testMessage)
 
         val fakta = packetToFakta(behovløser.packet, GrunnbeløpStrategy(unleash.apply { this.disableAll() }))

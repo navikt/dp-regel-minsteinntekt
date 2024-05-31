@@ -70,16 +70,16 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
                 KlassifisertInntektMåned(
                     YearMonth.of(2019, 3),
                     klassifiserteInntekter =
-                    listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(1000000),
-                            inntektKlasse = InntektKlasse.FANGST_FISKE,
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(1000000),
+                                inntektKlasse = InntektKlasse.FANGST_FISKE,
+                            ),
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(-950000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
                         ),
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(-950000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
-                        ),
-                    ),
                 ),
             )
 
@@ -109,16 +109,16 @@ internal class InngangsvilkårFangstOgFiskeSpesifikasjonsTest {
                 KlassifisertInntektMåned(
                     YearMonth.of(2019, 3),
                     klassifiserteInntekter =
-                    listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(1000000),
-                            inntektKlasse = InntektKlasse.FANGST_FISKE,
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(1000000),
+                                inntektKlasse = InntektKlasse.FANGST_FISKE,
+                            ),
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(-1950000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
                         ),
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(-1950000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
-                        ),
-                    ),
                 ),
             )
 

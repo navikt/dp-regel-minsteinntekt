@@ -187,16 +187,16 @@ internal class InngangsvilkårOrdinærTest {
                 KlassifisertInntektMåned(
                     YearMonth.of(2019, 3),
                     klassifiserteInntekter =
-                    listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(1000000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(1000000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(-950000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
                         ),
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(-950000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
-                        ),
-                    ),
                 ),
             )
 
@@ -226,16 +226,16 @@ internal class InngangsvilkårOrdinærTest {
                 KlassifisertInntektMåned(
                     YearMonth.of(2019, 3),
                     klassifiserteInntekter =
-                    listOf(
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(1000000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                        listOf(
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(1000000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
+                            KlassifisertInntekt(
+                                beløp = BigDecimal(-1950000),
+                                inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
+                            ),
                         ),
-                        KlassifisertInntekt(
-                            beløp = BigDecimal(-1950000),
-                            inntektKlasse = InntektKlasse.ARBEIDSINNTEKT,
-                        ),
-                    ),
                 ),
             )
 

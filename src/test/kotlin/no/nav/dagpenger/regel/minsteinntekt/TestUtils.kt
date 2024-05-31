@@ -22,9 +22,9 @@ fun generateArbeidsinntekt(
         KlassifisertInntektMåned(
             årMåned = senesteMåned.minusMonths(it.toLong()),
             klassifiserteInntekter =
-            listOf(
-                KlassifisertInntekt(beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT),
-            ),
+                listOf(
+                    KlassifisertInntekt(beløpPerMnd, InntektKlasse.ARBEIDSINNTEKT),
+                ),
         )
     }
 }

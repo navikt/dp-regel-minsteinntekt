@@ -29,12 +29,12 @@ internal class InngangsvilkårOrdinærIdentifikatorTest {
             kravTilMinsteinntekt.evaluer(
                 Fakta(
                     inntekt =
-                    Inntekt(
-                        inntektsId = "test-inntekt",
-                        inntektsListe = listOf(),
-                        manueltRedigert = false,
-                        sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11),
-                    ),
+                        Inntekt(
+                            inntektsId = "test-inntekt",
+                            inntektsListe = listOf(),
+                            manueltRedigert = false,
+                            sisteAvsluttendeKalenderMåned = YearMonth.of(2001, 11),
+                        ),
                     verneplikt = true,
                     fangstOgFiske = false,
                     beregningsdato = beregningsdato,

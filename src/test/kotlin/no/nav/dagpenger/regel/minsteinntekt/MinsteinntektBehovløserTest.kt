@@ -116,31 +116,36 @@ class MinsteinntektBehovløserTest {
 }
 
 @Language("JSON")
-fun testMessage(beregningsdato: String, erLærling: Boolean = false, beløp: String, årMånedForInntekt: String) = """
-{
-    "behovId": "behovId",
-    "harAvtjentVerneplikt": false,
-    "lærling": $erLærling,
-    "oppfyllerKravTilFangstOgFisk": false,
-    "beregningsDato": "$beregningsdato",
-    "inntektV1": {
-      "inntektsId": "12345",
-      "inntektsListe": [
-        {
-          "årMåned": "$årMånedForInntekt",
-          "klassifiserteInntekter": [
+fun testMessage(
+    beregningsdato: String,
+    erLærling: Boolean = false,
+    beløp: String,
+    årMånedForInntekt: String,
+) = """
+    {
+        "behovId": "behovId",
+        "harAvtjentVerneplikt": false,
+        "lærling": $erLærling,
+        "oppfyllerKravTilFangstOgFisk": false,
+        "beregningsDato": "$beregningsdato",
+        "inntektV1": {
+          "inntektsId": "12345",
+          "inntektsListe": [
             {
-              "beløp": "$beløp",
-              "inntektKlasse": "ARBEIDSINNTEKT"
+              "årMåned": "$årMånedForInntekt",
+              "klassifiserteInntekter": [
+                {
+                  "beløp": "$beløp",
+                  "inntektKlasse": "ARBEIDSINNTEKT"
+                }
+              ]
             }
-          ]
+          ],
+          "manueltRedigert": false,
+          "sisteAvsluttendeKalenderMåned": "$årMånedForInntekt"
         }
-      ],
-      "manueltRedigert": false,
-      "sisteAvsluttendeKalenderMåned": "$årMånedForInntekt"
     }
-}
-""".trimIndent()
+    """.trimIndent()
 
 @Language("JSON")
 private val minsteinntektResultat = """{
@@ -290,9 +295,9 @@ private val inputJsonMedInntektFraFangstOgFiske =
 @Language("JSON")
 val feilJson =
     """
-            {
-              "behovId": "behovId",
-              "beregningsDato": "2020-05-20",
-              "inntektV1": "ERROR"
-            } 
+    {
+      "behovId": "behovId",
+      "beregningsDato": "2020-05-20",
+      "inntektV1": "ERROR"
+    } 
     """.trimIndent()
