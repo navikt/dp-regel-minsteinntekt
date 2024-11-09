@@ -1,5 +1,6 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.github.navikt.tbd_libs.rapids_and_rivers.test_support.TestRapid
 import io.kotest.assertions.json.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.shouldBe
@@ -7,7 +8,6 @@ import io.kotest.matchers.shouldNotBe
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.MINSTEINNTEKT_RESULTAT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektSubsumsjon.Companion.BEREGNINGSREGEL
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektSubsumsjon.Companion.OPPFYLLER_MINSTEINNTEKT
-import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

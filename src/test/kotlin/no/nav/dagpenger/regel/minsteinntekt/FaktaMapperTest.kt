@@ -1,5 +1,11 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
+import com.github.navikt.tbd_libs.rapids_and_rivers.River
+import com.github.navikt.tbd_libs.rapids_and_rivers.test_support.TestRapid
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageContext
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageProblems
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.RapidsConnection
 import io.getunleash.FakeUnleash
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -11,12 +17,6 @@ import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.F
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.LÆRLING
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.REGELVERKSDATO
-import no.nav.helse.rapids_rivers.JsonMessage
-import no.nav.helse.rapids_rivers.MessageContext
-import no.nav.helse.rapids_rivers.MessageProblems
-import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.rapids_rivers.River
-import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -301,7 +301,9 @@ class FaktaMapperTest {
         fakta.grunnbeløp shouldBe 99858.toBigDecimal()
     }
 
-    private class OnPacketTestListener(rapidsConnection: RapidsConnection) : River.PacketListener {
+    private class OnPacketTestListener(
+        rapidsConnection: RapidsConnection,
+    ) : River.PacketListener {
         var problems: MessageProblems? = null
         lateinit var packet: JsonMessage
 

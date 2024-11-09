@@ -1,21 +1,23 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
+import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
+import com.github.navikt.tbd_libs.rapids_and_rivers.River
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageContext
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.RapidsConnection
 import io.prometheus.client.CollectorRegistry
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.NarePrometheus
 import no.nav.dagpenger.regel.minsteinntekt.InntektPeriodeInfo.Companion.toMaps
-import no.nav.helse.rapids_rivers.JsonMessage
-import no.nav.helse.rapids_rivers.MessageContext
-import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.rapids_rivers.River
 import no.nav.nare.core.evaluations.Evaluering
 import no.nav.nare.core.evaluations.Resultat
 import java.net.URI
 
 private val sikkerLogg = KotlinLogging.logger("tjenestekall")
 
-class MinsteinntektBehovløser(rapidsConnection: RapidsConnection) : River.PacketListener {
+class MinsteinntektBehovløser(
+    rapidsConnection: RapidsConnection,
+) : River.PacketListener {
     companion object {
         const val REGELIDENTIFIKATOR = "Minsteinntekt.v1"
         const val INNTEKT = "inntektV1"
