@@ -4,9 +4,11 @@ import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.River
 import com.github.navikt.tbd_libs.rapids_and_rivers.test_support.TestRapid
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageContext
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageMetadata
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageProblems
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.RapidsConnection
 import io.kotest.matchers.shouldBe
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEHOV_ID
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.BEREGNINGSDATO
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.INNTEKT
@@ -95,6 +97,8 @@ class RapidFilterTest {
         override fun onPacket(
             packet: JsonMessage,
             context: MessageContext,
+            metadata: MessageMetadata,
+            meterRegistry: MeterRegistry,
         ) {
             this.onPacketCalled = true
         }
@@ -102,6 +106,7 @@ class RapidFilterTest {
         override fun onError(
             problems: MessageProblems,
             context: MessageContext,
+            metadata: MessageMetadata,
         ) {
         }
     }
