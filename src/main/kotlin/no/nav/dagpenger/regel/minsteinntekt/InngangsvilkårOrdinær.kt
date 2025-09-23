@@ -76,7 +76,8 @@ private fun Fakta.fangstOgFiskAvslagBegrunnelse(
 internal val fangstOgFisk = ordinærSiste12MånederMedFangstOgFiske eller ordinærSiste36MånederMedFangstOgFiske
 
 internal val ordinær: Spesifikasjon<Fakta> =
-    (ordinærSiste12Måneder eller ordinærSiste36Måneder).eller(fangstOgFisk)
+    (ordinærSiste12Måneder eller ordinærSiste36Måneder)
+        .eller(fangstOgFisk)
         .med(
             identifikator = "Krav til minsteinntekt etter § 4-4",
             beskrivelse = "Krav til minsteinntekt etter ordinære regler",
