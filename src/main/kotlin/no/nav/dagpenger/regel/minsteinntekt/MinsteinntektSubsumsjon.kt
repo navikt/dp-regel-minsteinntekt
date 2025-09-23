@@ -17,27 +17,25 @@ data class MinsteinntektSubsumsjon(
         const val BEREGNINGSREGEL = "beregningsregel"
     }
 
-    fun toMap(): Map<String, Any> {
-        return mapOf(
+    fun toMap(): Map<String, Any> =
+        mapOf(
             SPORINGSID to sporingsId,
             SUBSUMSJONSID to subsumsjonsId,
             REGELIDENTIFIKATOR to regelidentifikator,
             OPPFYLLER_MINSTEINNTEKT to oppfyllerMinsteinntekt,
             BEREGNINGSREGEL to beregningsregel,
         )
-    }
 }
 
 data class InntektsPeriode(
     val førsteMåned: YearMonth,
     val sisteMåned: YearMonth,
 ) {
-    fun toMap(): Map<String, Any> {
-        return mapOf(
+    fun toMap(): Map<String, Any> =
+        mapOf(
             "førsteMåned" to førsteMåned,
             "sisteMåned" to sisteMåned,
         )
-    }
 }
 
 enum class Beregningsregel {

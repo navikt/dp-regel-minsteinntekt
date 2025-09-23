@@ -29,10 +29,11 @@ data class Fakta(
         if (bruktInntektsperiode == null) {
             inntektsPerioder
         } else {
-            inntekt.filterPeriod(
-                bruktInntektsperiode.førsteMåned,
-                bruktInntektsperiode.sisteMåned,
-            ).splitIntoInntektsPerioder()
+            inntekt
+                .filterPeriod(
+                    bruktInntektsperiode.førsteMåned,
+                    bruktInntektsperiode.sisteMåned,
+                ).splitIntoInntektsPerioder()
         }
 
     val arbeidsinntektSiste12: BigDecimal =
@@ -48,7 +49,8 @@ data class Fakta(
             ),
         )
     val inntektSiste36inkludertFangstOgFiske: BigDecimal =
-        inntektsPerioderUtenBruktInntekt.all()
+        inntektsPerioderUtenBruktInntekt
+            .all()
             .sumInntekt(listOf(InntektKlasse.ARBEIDSINNTEKT, InntektKlasse.FANGST_FISKE))
 }
 
