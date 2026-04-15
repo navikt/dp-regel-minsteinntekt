@@ -6,15 +6,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
     maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-    maven {
-        url = uri("https://maven.pkg.github.com/navikt/maven-release")
-        credentials {
-            username = System.getenv("GITHUB_USERNAME")
-            password = System.getenv("GITHUB_PASSWORD")
-        }
-    }
 }
 
 application {
@@ -28,7 +20,7 @@ dependencies {
     implementation(libs.rapids.and.rivers)
 
     implementation("com.github.navikt:dp-inntekt-kontrakter:2_20251211.17f9d7")
-    implementation("com.github.navikt:dp-grunnbelop:20250526.166.5b778c")
+    implementation("no.nav.dagpenger:dp-grunnbelop:20260415.272.a351d9")
 
     implementation("de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0")
 
