@@ -1,6 +1,5 @@
 package no.nav.dagpenger.regel.minsteinntekt
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.asLocalDate
 import com.github.navikt.tbd_libs.rapids_and_rivers.isMissingOrNull
@@ -19,6 +18,7 @@ import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.F
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.INNTEKT
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.LÆRLING
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.REGELVERKSDATO
+import tools.jackson.databind.JsonNode
 
 internal fun packetToFakta(
     packet: JsonMessage,

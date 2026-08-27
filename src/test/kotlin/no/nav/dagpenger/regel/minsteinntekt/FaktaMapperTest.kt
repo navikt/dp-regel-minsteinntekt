@@ -20,6 +20,7 @@ import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.I
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.LÆRLING
 import no.nav.dagpenger.regel.minsteinntekt.MinsteinntektBehovløser.Companion.REGELVERKSDATO
 import org.junit.jupiter.api.Test
+import tools.jackson.databind.DatabindException
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
@@ -209,7 +210,7 @@ class FaktaMapperTest {
                     ),
             ),
         )
-        shouldThrow<IllegalArgumentException> {
+        shouldThrow<DatabindException> {
             packetToFakta(
                 behovløser.packet,
                 GrunnbeløpStrategy(),
@@ -225,7 +226,7 @@ class FaktaMapperTest {
                     ),
             ),
         )
-        shouldThrow<IllegalArgumentException> {
+        shouldThrow<DatabindException> {
             packetToFakta(
                 behovløser.packet,
                 GrunnbeløpStrategy(),
