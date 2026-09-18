@@ -86,7 +86,8 @@ private fun Fakta.koronaFangstOgFiskAvslagBegrunnelse(
 internal val koronaFangstOgFisk = koronaOrdinærSiste36MånederMedFangstOgFiske eller koronaOrdinærSiste12MånederMedFangstOgFiske
 
 internal val koronaOrdinær: Spesifikasjon<Fakta> =
-    (koronaOrdinærSiste12Måneder eller koronaOrdinærSiste36Måneder).eller(koronaFangstOgFisk)
+    (koronaOrdinærSiste12Måneder eller koronaOrdinærSiste36Måneder)
+        .eller(koronaFangstOgFisk)
         .med(
             identifikator = "Krav til minsteinntekt etter midlertidig korona-endret § 4-4",
             beskrivelse = "Krav til minsteinntekt etter ordinære regler",

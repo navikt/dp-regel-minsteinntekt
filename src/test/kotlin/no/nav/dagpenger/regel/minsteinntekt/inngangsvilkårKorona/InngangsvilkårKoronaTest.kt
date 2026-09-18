@@ -174,8 +174,8 @@ class InngangsvilkårKoronaTest {
     fun generateArbeidsInntekt(
         range: IntRange,
         beløpPerMnd: BigDecimal,
-    ): List<KlassifisertInntektMåned> {
-        return (range).toList().map {
+    ): List<KlassifisertInntektMåned> =
+        (range).toList().map {
             KlassifisertInntektMåned(
                 YearMonth.of(2020, 2).minusMonths(it.toLong()),
                 listOf(
@@ -186,5 +186,4 @@ class InngangsvilkårKoronaTest {
                 ),
             )
         }
-    }
 }

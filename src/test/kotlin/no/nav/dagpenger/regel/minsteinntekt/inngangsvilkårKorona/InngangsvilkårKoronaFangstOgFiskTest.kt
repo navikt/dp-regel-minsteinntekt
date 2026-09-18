@@ -22,7 +22,7 @@ import java.time.YearMonth
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class InngangsvilkårKoronaFangstOgFiskTest() {
+class InngangsvilkårKoronaFangstOgFiskTest {
     @Suppress("ktlint:standard:property-naming")
     val G2019 = BigDecimal(99858)
 
