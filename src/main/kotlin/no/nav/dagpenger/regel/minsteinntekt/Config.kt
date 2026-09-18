@@ -33,7 +33,8 @@ object Config {
 
     val unleash: Unleash by lazy {
         DefaultUnleash(
-            UnleashConfig.builder()
+            UnleashConfig
+                .builder()
                 .appName("dp-regel-minsteinntekt")
                 .instanceId(runCatching { InetAddress.getLocalHost().hostName }.getOrElse { "ukjent" })
                 .unleashAPI(properties[Key("UNLEASH_SERVER_API_URL", stringType)] + "/api/")

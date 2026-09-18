@@ -17,8 +17,8 @@ fun generateArbeidsinntekt(
             2019,
             1,
         ),
-): List<KlassifisertInntektMåned> {
-    return (0 until numberOfMonths).toList().map {
+): List<KlassifisertInntektMåned> =
+    (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
             årMåned = senesteMåned.minusMonths(it.toLong()),
             klassifiserteInntekter =
@@ -27,7 +27,6 @@ fun generateArbeidsinntekt(
                 ),
         )
     }
-}
 
 fun generateFangstOgFiskInntekt(
     numberOfMonths: Int,
@@ -37,8 +36,8 @@ fun generateFangstOgFiskInntekt(
             2019,
             1,
         ),
-): List<KlassifisertInntektMåned> {
-    return (0 until numberOfMonths).toList().map {
+): List<KlassifisertInntektMåned> =
+    (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
             senesteMåned.minusMonths(it.toLong()),
             listOf(
@@ -49,7 +48,6 @@ fun generateFangstOgFiskInntekt(
             ),
         )
     }
-}
 
 fun generateArbeidsOgFangstOgFiskInntekt(
     numberOfMonths: Int,
@@ -60,8 +58,8 @@ fun generateArbeidsOgFangstOgFiskInntekt(
             2019,
             1,
         ),
-): List<KlassifisertInntektMåned> {
-    return (0 until numberOfMonths).toList().map {
+): List<KlassifisertInntektMåned> =
+    (0 until numberOfMonths).toList().map {
         KlassifisertInntektMåned(
             senesteMåned.minusMonths(it.toLong()),
             listOf(
@@ -70,12 +68,7 @@ fun generateArbeidsOgFangstOgFiskInntekt(
             ),
         )
     }
-}
 
-fun generate12MånederFangstOgFiskInntekt(): List<KlassifisertInntektMåned> {
-    return generateFangstOgFiskInntekt(12, BigDecimal(50000))
-}
+fun generate12MånederFangstOgFiskInntekt(): List<KlassifisertInntektMåned> = generateFangstOgFiskInntekt(12, BigDecimal(50000))
 
-fun generate36MånederFangstOgFiskInntekt(): List<KlassifisertInntektMåned> {
-    return generateFangstOgFiskInntekt(36, BigDecimal(50000))
-}
+fun generate36MånederFangstOgFiskInntekt(): List<KlassifisertInntektMåned> = generateFangstOgFiskInntekt(36, BigDecimal(50000))
